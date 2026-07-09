@@ -1,6 +1,7 @@
 # build output
 dist/
 .output/
+pabilo-web-lista.zip
 
 # dependencies
 node_modules/
