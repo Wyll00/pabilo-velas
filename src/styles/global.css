@@ -1,0 +1,611 @@
+/* ══════════════════════════════════════════════════════════════
+   PÁBILO — estilos globales
+   Concepto: la mecha (hilo ámbar) recorre la página; una sola
+   llama viva arriba. Mucha materia quieta, un punto de calor.
+   ══════════════════════════════════════════════════════════════ */
+
+:root {
+  /* Paleta de marca */
+  --crema:      #FAF4EA;
+  --ambar:      #D99A4E;
+  --terracota:  #B5533A;
+  --espresso:   #2B2521;
+  --salvia:     #8A8B6C;
+
+  /* Tonos derivados (casi monocromos, tonos de cera + ceniza) */
+  --cera:       #F3E9D8;  /* tarjetas, superficies elevadas */
+  --cera-borde: #E7DAC4;  /* líneas finas, bordes */
+  --ceniza:     #8C7F70;  /* texto secundario, apagado */
+  --espresso-70: rgba(43, 37, 33, 0.72);
+
+  /* Tipografía */
+  --serif: 'Newsreader', Georgia, 'Times New Roman', serif;
+  --sans:  'Hanken Grotesk', system-ui, -apple-system, sans-serif;
+
+  /* Medidas */
+  --ancho:   1140px;
+  --gutter:  clamp(1.25rem, 5vw, 3rem);
+  --seccion: clamp(5rem, 12vw, 9rem);
+}
+
+/* ── Reset ligero ─────────────────────────────────────────────── */
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  background: var(--crema);
+  color: var(--espresso);
+  font-family: var(--sans);
+  font-size: clamp(1rem, 0.96rem + 0.2vw, 1.075rem);
+  line-height: 1.75;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+img { max-width: 100%; display: block; }
+a { color: inherit; text-decoration: none; }
+
+/* ── Utilidades de layout ─────────────────────────────────────── */
+.contenedor {
+  width: 100%;
+  max-width: var(--ancho);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.seccion { padding-block: var(--seccion); }
+
+/* Etiqueta "eyebrow" con punto ámbar (mota de calor) */
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7em;
+  font-family: var(--sans);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--ceniza);
+  margin: 0 0 1.6rem;
+}
+.eyebrow::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--ambar);
+  box-shadow: 0 0 0 4px rgba(217, 154, 78, 0.16);
+}
+
+/* Títulos de sección: Hanken ligero para lo estructural */
+.titulo {
+  font-family: var(--sans);
+  font-weight: 300;
+  font-size: clamp(1.9rem, 1.3rem + 2.4vw, 3rem);
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  margin: 0 0 1.5rem;
+}
+
+/* Frases sensoriales: Newsreader en cursiva, solo para emoción */
+.sensorial {
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 400;
+  color: var(--terracota);
+}
+
+/* Divisor-mecha: un tramo de hilo ámbar que "cose" las secciones */
+.mecha-divisor {
+  width: 1px;
+  height: clamp(48px, 8vw, 84px);
+  margin: 0 auto;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    var(--ambar) 30%,
+    var(--ambar) 70%,
+    transparent
+  );
+  opacity: 0.55;
+}
+
+/* ── Botones ──────────────────────────────────────────────────── */
+.btn {
+  --_bg: var(--espresso);
+  --_fg: var(--crema);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
+  font-family: var(--sans);
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0.85em 1.6em;
+  border: 1px solid var(--_bg);
+  border-radius: 999px;
+  background: var(--_bg);
+  color: var(--_fg);
+  cursor: pointer;
+  transition: background 0.35s ease, color 0.35s ease, transform 0.35s ease;
+}
+.btn:hover { transform: translateY(-2px); }
+
+.btn--linea {
+  --_bg: transparent;
+  --_fg: var(--espresso);
+  border-color: var(--cera-borde);
+}
+.btn--linea:hover {
+  border-color: var(--ambar);
+  color: var(--terracota);
+}
+
+/* ── Aparición suave al hacer scroll ──────────────────────────── */
+.reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.9s ease, transform 0.9s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   Nav
+   ══════════════════════════════════════════════════════════════ */
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: color-mix(in srgb, var(--crema) 82%, transparent);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.4s ease;
+}
+.nav.desplazado { border-bottom-color: var(--cera-borde); }
+
+.nav__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-block: 1.15rem;
+}
+
+.marca {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.35em;
+  font-family: var(--sans);
+  font-weight: 500;
+  font-size: 1.05rem;
+  letter-spacing: 0.34em;
+  text-transform: lowercase;
+  color: var(--espresso);
+}
+.marca__punto {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--ambar);
+  box-shadow: 0 0 8px 1px rgba(217, 154, 78, 0.6);
+  transform: translateY(-1px);
+}
+
+.nav__links {
+  display: flex;
+  gap: 2.2rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.nav__links a {
+  font-size: 0.74rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ceniza);
+  transition: color 0.3s ease;
+}
+.nav__links a:hover { color: var(--espresso); }
+
+@media (max-width: 640px) {
+  .nav__links { display: none; }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   Hero — la llama y la mecha
+   ══════════════════════════════════════════════════════════════ */
+.hero {
+  position: relative;
+  text-align: center;
+  padding-top: clamp(3rem, 6vw, 5rem);
+  padding-bottom: var(--seccion);
+  overflow: hidden;
+}
+
+/* halo tenue de calor detrás de la llama */
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -60px;
+  left: 50%;
+  width: 460px;
+  height: 460px;
+  transform: translateX(-50%);
+  background: radial-gradient(
+    circle,
+    rgba(217, 154, 78, 0.22),
+    rgba(217, 154, 78, 0) 62%
+  );
+  pointer-events: none;
+}
+
+.mecha {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 auto 2.4rem;
+}
+
+/* La llama: una gota cálida con núcleo claro */
+.llama {
+  position: relative;
+  width: 16px;
+  height: 24px;
+  margin-bottom: 2px;
+  border-radius: 50% 50% 50% 50% / 62% 62% 40% 40%;
+  background: radial-gradient(
+    ellipse at 50% 68%,
+    #FBE7C4 0%,
+    var(--ambar) 42%,
+    var(--terracota) 100%
+  );
+  box-shadow:
+    0 0 18px 5px rgba(217, 154, 78, 0.55),
+    0 0 42px 12px rgba(181, 83, 58, 0.28);
+  transform-origin: 50% 100%;
+  animation: parpadeo 3.6s ease-in-out infinite;
+}
+.llama::after {
+  content: '';
+  position: absolute;
+  inset: 34% 32% 12% 32%;
+  border-radius: 50%;
+  background: #FFF6E4;
+  opacity: 0.85;
+  filter: blur(0.5px);
+}
+
+/* El hilo/mecha que cae desde la llama */
+.hilo {
+  width: 1.5px;
+  height: clamp(70px, 12vw, 120px);
+  background: linear-gradient(
+    to bottom,
+    var(--espresso) 0%,
+    var(--espresso) 30%,
+    var(--ambar) 30%,
+    var(--ambar) 100%
+  );
+  opacity: 0.9;
+}
+
+@keyframes parpadeo {
+  0%, 100% { transform: scaleY(1) scaleX(1) rotate(-1deg); opacity: 1; }
+  25%      { transform: scaleY(1.06) scaleX(0.97) rotate(1deg); opacity: 0.95; }
+  50%      { transform: scaleY(0.97) scaleX(1.02) rotate(-0.5deg); opacity: 1; }
+  75%      { transform: scaleY(1.04) scaleX(0.98) rotate(0.5deg); opacity: 0.9; }
+}
+
+.hero__eslogan {
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(2.4rem, 1.4rem + 4.4vw, 4.4rem);
+  line-height: 1.06;
+  letter-spacing: -0.015em;
+  margin: 0 auto 1.4rem;
+  max-width: 14ch;
+}
+.hero__intro {
+  max-width: 42ch;
+  margin: 0 auto 2.4rem;
+  color: var(--espresso-70);
+  font-size: 1.08rem;
+}
+.hero__cta {
+  display: flex;
+  gap: 0.9rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   Historia
+   ══════════════════════════════════════════════════════════════ */
+.historia__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(2.5rem, 6vw, 5.5rem);
+  align-items: center;
+}
+.historia__texto p {
+  color: var(--espresso-70);
+  margin: 0 0 1.15rem;
+}
+.historia__texto p:last-child { margin-bottom: 0; }
+.firma {
+  margin-top: 2rem;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 1.15rem;
+  color: var(--espresso);
+}
+
+/* Retrato placeholder (bloque cálido con la mecha) */
+.retrato {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  border-radius: 4px;
+  background: linear-gradient(155deg, var(--cera), #EAD9BE);
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+}
+.retrato::after {
+  content: '';
+  position: absolute;
+  top: 12%;
+  bottom: 12%;
+  left: 50%;
+  width: 1.5px;
+  background: linear-gradient(to bottom, transparent, var(--ambar), transparent);
+  opacity: 0.7;
+}
+.retrato span {
+  position: relative;
+  z-index: 1;
+  font-family: var(--sans);
+  font-size: 0.7rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--ceniza);
+  background: color-mix(in srgb, var(--cera) 80%, transparent);
+  padding: 0.4em 0.9em;
+  border-radius: 999px;
+}
+
+@media (max-width: 760px) {
+  .historia__grid { grid-template-columns: 1fr; }
+  .retrato { max-width: 340px; margin-inline: auto; order: -1; }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   Colección
+   ══════════════════════════════════════════════════════════════ */
+.coleccion__cabecera {
+  text-align: center;
+  max-width: 46ch;
+  margin: 0 auto clamp(3rem, 6vw, 4.5rem);
+}
+.coleccion__cabecera p {
+  color: var(--espresso-70);
+  margin: 0;
+}
+
+.velas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: clamp(1.5rem, 3.5vw, 2.6rem);
+}
+
+.vela {
+  display: flex;
+  flex-direction: column;
+  background: var(--cera);
+  border: 1px solid var(--cera-borde);
+  border-radius: 6px;
+  overflow: hidden;
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+.vela:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 22px 40px -26px rgba(43, 37, 33, 0.45);
+}
+
+.vela__foto {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  display: grid;
+  place-items: center;
+}
+/* etiqueta de la vela sobre la "foto" — mini mock de etiqueta */
+.vela__etiqueta {
+  width: 46%;
+  aspect-ratio: 3 / 4;
+  background: var(--crema);
+  border-radius: 3px;
+  box-shadow: 0 8px 22px -12px rgba(43, 37, 33, 0.55);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
+  text-align: center;
+  padding: 0.8em;
+}
+.vela__etiqueta .marca {
+  font-size: 0.62rem;
+  letter-spacing: 0.3em;
+}
+.vela__etiqueta .llama-min {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--ambar);
+  box-shadow: 0 0 6px 1px rgba(217, 154, 78, 0.7);
+}
+
+.vela__cuerpo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  padding: 1.5rem 1.5rem 1.7rem;
+  flex: 1;
+}
+.vela__familia {
+  font-size: 0.66rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--salvia);
+}
+.vela__nombre {
+  font-family: var(--sans);
+  font-weight: 500;
+  font-size: 1.35rem;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+.vela__nota {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 1.02rem;
+  line-height: 1.5;
+  color: var(--espresso-70);
+  margin: 0;
+}
+.vela__pie {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+  padding-top: 1.1rem;
+}
+.vela__precio {
+  font-family: var(--sans);
+  font-weight: 500;
+  font-size: 1.15rem;
+  font-variant-numeric: tabular-nums;
+}
+.vela__precio small {
+  display: block;
+  font-size: 0.66rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ceniza);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   Proceso — cómo pedimos
+   ══════════════════════════════════════════════════════════════ */
+.proceso { background: var(--espresso); color: var(--crema); }
+.proceso .eyebrow { color: rgba(250, 244, 234, 0.6); }
+.proceso .titulo { color: var(--crema); }
+.proceso .sensorial { color: var(--ambar); }
+
+.pasos {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(2rem, 5vw, 4rem);
+  margin-top: 3.5rem;
+}
+.paso__num {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 1.6rem;
+  color: var(--ambar);
+  margin-bottom: 0.9rem;
+}
+.paso h3 {
+  font-family: var(--sans);
+  font-weight: 500;
+  font-size: 1.2rem;
+  margin: 0 0 0.6rem;
+}
+.paso p {
+  margin: 0;
+  color: rgba(250, 244, 234, 0.68);
+  font-size: 0.98rem;
+}
+.paso + .paso { position: relative; }
+
+@media (max-width: 760px) {
+  .pasos { grid-template-columns: 1fr; gap: 2.4rem; }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   Contacto (datos en blanco por ahora)
+   ══════════════════════════════════════════════════════════════ */
+.contacto { text-align: center; }
+.contacto__caja {
+  max-width: 52ch;
+  margin: 0 auto;
+}
+.contacto__caja p {
+  color: var(--espresso-70);
+  margin: 0 0 2rem;
+}
+.contacto__pendiente {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
+  font-size: 0.74rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ceniza);
+  padding: 0.7em 1.3em;
+  border: 1px dashed var(--cera-borde);
+  border-radius: 999px;
+}
+.contacto__pendiente::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--salvia);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   Footer
+   ══════════════════════════════════════════════════════════════ */
+.footer {
+  border-top: 1px solid var(--cera-borde);
+  padding-block: 3.5rem;
+}
+.footer__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+.footer__lema {
+  font-family: var(--serif);
+  font-style: italic;
+  color: var(--espresso-70);
+}
+.footer__meta {
+  font-size: 0.76rem;
+  letter-spacing: 0.06em;
+  color: var(--ceniza);
+}
+.footer__meta a:hover { color: var(--espresso); }
+
+/* ── Accesibilidad: respeta reducción de movimiento ───────────── */
+@media (prefers-reduced-motion: reduce) {
+  * { scroll-behavior: auto !important; }
+  .llama { animation: none; }
+  .reveal { transition: none; opacity: 1; transform: none; }
+}

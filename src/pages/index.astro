@@ -1,0 +1,213 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { velas } from '../data/velas.js';
+---
+
+<Layout>
+  <!-- ══════════════ NAV ══════════════ -->
+  <header class="nav" id="nav">
+    <div class="contenedor nav__inner">
+      <a href="#top" class="marca" aria-label="Pábilo, inicio">
+        pábilo<span class="marca__punto" aria-hidden="true"></span>
+      </a>
+      <nav aria-label="Principal">
+        <ul class="nav__links">
+          <li><a href="#coleccion">Colección</a></li>
+          <li><a href="#historia">Historia</a></li>
+          <li><a href="#proceso">Cómo pedimos</a></li>
+          <li><a href="#contacto">Contacto</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <!-- ══════════════ HERO ══════════════ -->
+    <section class="hero">
+      <div class="contenedor">
+        <div class="mecha" aria-hidden="true">
+          <span class="llama"></span>
+          <span class="hilo"></span>
+        </div>
+        <h1 class="hero__eslogan">El alma de la llama.</h1>
+        <p class="hero__intro">
+          Velas artesanales en pequeñas tandas, con cera natural. Hechas a mano,
+          para volver a casa y bajar el ritmo.
+        </p>
+        <div class="hero__cta">
+          <a href="#coleccion" class="btn">Ver la colección</a>
+          <a href="#historia" class="btn btn--linea">Nuestra historia</a>
+        </div>
+      </div>
+    </section>
+
+    <div class="mecha-divisor" aria-hidden="true"></div>
+
+    <!-- ══════════════ HISTORIA ══════════════ -->
+    <section class="seccion" id="historia">
+      <div class="contenedor">
+        <div class="historia__grid">
+          <div class="historia__texto reveal">
+            <p class="eyebrow">Nace de una amistad</p>
+            <h2 class="titulo">Dos manos, una mesa<br />y mucha calma.</h2>
+            <p>
+              Pábilo empezó como empieza lo bueno: entre dos amigas, una tarde,
+              probando ceras en la cocina. Nos gustaba el olor de casa cuando
+              todo se apaga y solo queda una luz encendida.
+            </p>
+            <p>
+              Hacemos cada tanda a mano, poca cantidad, sin prisa. Cera natural,
+              aromas que reconoces, nada de humo raro. Lo local y lo cercano no
+              es una etiqueta: es cómo trabajamos.
+            </p>
+            <p class="firma">— Claudia &amp; Ana</p>
+          </div>
+          <div class="retrato reveal" role="img" aria-label="Retrato de las fundadoras (pendiente de foto)">
+            <span>Foto · pronto</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="mecha-divisor" aria-hidden="true"></div>
+
+    <!-- ══════════════ COLECCIÓN ══════════════ -->
+    <section class="seccion" id="coleccion">
+      <div class="contenedor">
+        <div class="coleccion__cabecera reveal">
+          <p class="eyebrow">La colección</p>
+          <h2 class="titulo">Cinco aromas,<br />cinco momentos.</h2>
+          <p>
+            Cada vela es <span class="sensorial">un lugar y un estado de ánimo</span>.
+            Elige el tuyo o regálalo con intención.
+          </p>
+        </div>
+
+        <div class="velas">
+          {velas.map((vela) => (
+            <article class="vela reveal">
+              <div
+                class="vela__foto"
+                style={`background: linear-gradient(150deg, ${vela.tono[0]}, ${vela.tono[1]});`}
+              >
+                <div class="vela__etiqueta">
+                  <span class="marca">pábilo</span>
+                  <span class="llama-min" aria-hidden="true"></span>
+                  <span style="font-size:0.6rem; letter-spacing:0.12em; color:var(--ceniza); text-transform:uppercase;">
+                    {vela.nombre}
+                  </span>
+                </div>
+              </div>
+              <div class="vela__cuerpo">
+                <span class="vela__familia">{vela.familia}</span>
+                <h3 class="vela__nombre">{vela.nombre}</h3>
+                <p class="vela__nota">{vela.nota}</p>
+                <div class="vela__pie">
+                  <span class="vela__precio">
+                    {vela.precio} €
+                    <small>{vela.duracion} h aprox.</small>
+                  </span>
+                  {/* TODO: cuando haya WhatsApp, cambiar href por:
+                      https://wa.me/34XXXXXXXXX?text=Hola%20Pábilo,%20quiero%20la%20vela%20{nombre} */}
+                  <a href="#contacto" class="btn btn--linea">Pedir</a>
+                </div>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════ PROCESO ══════════════ -->
+    <section class="seccion proceso" id="proceso">
+      <div class="contenedor">
+        <div class="reveal" style="max-width: 46ch;">
+          <p class="eyebrow">Cómo pedimos</p>
+          <h2 class="titulo">Hecho a mano<br />significa <span class="sensorial">sin prisa</span>.</h2>
+        </div>
+        <div class="pasos">
+          <div class="paso reveal">
+            <div class="paso__num">01</div>
+            <h3>Eliges tu vela</h3>
+            <p>Nos escribes con el aroma que quieres. Te contamos qué hay listo y qué entra en la próxima tanda.</p>
+          </div>
+          <div class="paso reveal">
+            <div class="paso__num">02</div>
+            <h3>La hacemos</h3>
+            <p>Vertimos a mano, en pequeña cantidad. Cada vela reposa antes de salir. Eso lleva unos días.</p>
+          </div>
+          <div class="paso reveal">
+            <div class="paso__num">03</div>
+            <h3>Llega a casa</h3>
+            <p>Envuelta con cuidado, lista para encender o para regalar. Entrega local o envío, como prefieras.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="mecha-divisor" aria-hidden="true"></div>
+
+    <!-- ══════════════ CONTACTO (datos en blanco) ══════════════ -->
+    <section class="seccion contacto" id="contacto">
+      <div class="contenedor">
+        <div class="contacto__caja reveal">
+          <p class="eyebrow" style="justify-content:center;">Hablemos</p>
+          <h2 class="titulo">¿Una vela en mente?</h2>
+          <p>
+            Escríbenos y la preparamos. Encargos, regalos y detalles para eventos:
+            cuéntanos qué buscas y damos con ello.
+          </p>
+          <!-- ══════════════════════════════════════════════════════════
+               DATOS DE CONTACTO — PENDIENTES DE CONFIRMAR
+               Cuando Claudia y Ana los den, sustituir este bloque por:
+                 · Botón WhatsApp: <a class="btn" href="https://wa.me/34XXXXXXXXX?text=...">Escríbenos por WhatsApp</a>
+                 · Email:          <a class="btn btn--linea" href="mailto:hola@pabilovelas.com">Enviar un email</a>
+                 · Instagram:      @pabilo.velas
+               ══════════════════════════════════════════════════════════ -->
+          <span class="contacto__pendiente">Datos de contacto · próximamente</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════ FOOTER ══════════════ -->
+    <footer class="footer">
+      <div class="contenedor footer__inner">
+        <a href="#top" class="marca" aria-label="Pábilo, volver arriba">
+          pábilo<span class="marca__punto" aria-hidden="true"></span>
+        </a>
+        <p class="footer__lema">El alma de la llama.</p>
+        <p class="footer__meta">
+          {/* TODO: confirmar usuario y dominio reales */}
+          @pabilo.velas · pabilovelas.com · Islas Canarias
+        </p>
+      </div>
+    </footer>
+  </main>
+</Layout>
+
+<script>
+  // Sombra sutil en el nav al desplazar
+  const nav = document.getElementById('nav');
+  const onScroll = () => nav?.classList.toggle('desplazado', window.scrollY > 8);
+  onScroll();
+  window.addEventListener('scroll', onScroll, { passive: true });
+
+  // Aparición suave de los elementos .reveal
+  const items = document.querySelectorAll('.reveal');
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            e.target.classList.add('visible');
+            io.unobserve(e.target);
+          }
+        });
+      },
+      { threshold: 0.15 }
+    );
+    items.forEach((el) => io.observe(el));
+  } else {
+    items.forEach((el) => el.classList.add('visible'));
+  }
+</script>
