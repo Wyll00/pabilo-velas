@@ -1,0 +1,10 @@
+// Configuración de Cloudflare Workers para servir la web estática de Pábilo.
+// No hay código de servidor: solo se publican los archivos que Astro genera
+// en dist/ tras `npm run build`. El deploy lo hace `npx wrangler deploy`.
+{
+  "name": "pabilo-velas",
+  "compatibility_date": "2026-07-01",
+  "assets": {
+    "directory": "./dist"
+  }
+}
