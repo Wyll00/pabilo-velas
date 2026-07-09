@@ -7,7 +7,7 @@ interface Props {
 }
 
 const {
-  titulo = 'Pábilo · Velas artesanales',
+  titulo = 'Pábilo · Velas de autor',
   descripcion = 'Velas artesanales en pequeñas tandas, con cera natural. El alma de la llama.',
 } = Astro.props;
 ---
@@ -21,6 +21,7 @@ const {
 
     <title>{titulo}</title>
     <meta name="description" content={descripcion} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
     <!-- Open Graph (para cuando se comparta el enlace) -->
     <meta property="og:type" content="website" />

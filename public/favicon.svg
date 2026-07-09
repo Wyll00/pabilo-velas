@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Favicon Pábilo — versión sólida del kit de marca:
+       círculo espresso, «p» crema (Newsreader) y punto de llama ámbar -->
+  <circle cx="32" cy="32" r="32" fill="#2B2521"/>
+  <text x="33" y="43" font-family="Newsreader, Georgia, 'Times New Roman', serif" font-size="40" font-weight="500" fill="#FAF4EA" text-anchor="middle">p</text>
+  <circle cx="30" cy="17" r="4" fill="#CE8E44"/>
+</svg>

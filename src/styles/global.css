@@ -5,12 +5,13 @@
    ══════════════════════════════════════════════════════════════ */
 
 :root {
-  /* Paleta de marca */
+  /* Paleta de marca (kit de marca — selección final) */
   --crema:      #FAF4EA;
-  --ambar:      #D99A4E;
+  --ambar:      #CE8E44;
   --terracota:  #B5533A;
   --espresso:   #2B2521;
   --salvia:     #8A8B6C;
+  --llama-nucleo: #F6DCA9;  /* núcleo claro de la llama del logotipo */
 
   /* Tonos derivados (casi monocromos, tonos de cera + ceniza) */
   --cera:       #F3E9D8;  /* tarjetas, superficies elevadas */
@@ -79,7 +80,7 @@ a { color: inherit; text-decoration: none; }
   height: 6px;
   border-radius: 50%;
   background: var(--ambar);
-  box-shadow: 0 0 0 4px rgba(217, 154, 78, 0.16);
+  box-shadow: 0 0 0 4px rgba(206, 142, 68, 0.16);
 }
 
 /* Títulos de sección: Hanken ligero para lo estructural */
@@ -186,7 +187,7 @@ a { color: inherit; text-decoration: none; }
   font-family: var(--sans);
   font-weight: 500;
   font-size: 1.05rem;
-  letter-spacing: 0.34em;
+  letter-spacing: 0.2em;
   text-transform: lowercase;
   color: var(--espresso);
 }
@@ -195,7 +196,7 @@ a { color: inherit; text-decoration: none; }
   height: 6px;
   border-radius: 50%;
   background: var(--ambar);
-  box-shadow: 0 0 8px 1px rgba(217, 154, 78, 0.6);
+  box-shadow: 0 0 8px 1px rgba(206, 142, 68, 0.6);
   transform: translateY(-1px);
 }
 
@@ -242,8 +243,8 @@ a { color: inherit; text-decoration: none; }
   transform: translateX(-50%);
   background: radial-gradient(
     circle,
-    rgba(217, 154, 78, 0.22),
-    rgba(217, 154, 78, 0) 62%
+    rgba(206, 142, 68, 0.22),
+    rgba(206, 142, 68, 0) 62%
   );
   pointer-events: none;
 }
@@ -256,47 +257,63 @@ a { color: inherit; text-decoration: none; }
   margin: 0 auto 2.4rem;
 }
 
-/* La llama: una gota cálida con núcleo claro */
+/* La llama del logotipo: gota ámbar con núcleo claro (kit de marca) */
 .llama {
   position: relative;
-  width: 16px;
-  height: 24px;
-  margin-bottom: 2px;
-  border-radius: 50% 50% 50% 50% / 62% 62% 40% 40%;
-  background: radial-gradient(
-    ellipse at 50% 68%,
-    #FBE7C4 0%,
-    var(--ambar) 42%,
-    var(--terracota) 100%
-  );
-  box-shadow:
-    0 0 18px 5px rgba(217, 154, 78, 0.55),
-    0 0 42px 12px rgba(181, 83, 58, 0.28);
+  width: 22px;
+  height: 22px;
+  margin-bottom: 5px;
   transform-origin: 50% 100%;
   animation: parpadeo 3.6s ease-in-out infinite;
+}
+.llama::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--ambar);
+  border-radius: 0 50% 50% 50%;
+  transform: rotate(45deg);
+  box-shadow: 0 0 17px 2px rgba(206, 142, 68, 0.42);
 }
 .llama::after {
   content: '';
   position: absolute;
-  inset: 34% 32% 12% 32%;
+  bottom: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
-  background: #FFF6E4;
-  opacity: 0.85;
-  filter: blur(0.5px);
+  background: var(--llama-nucleo);
 }
 
-/* El hilo/mecha que cae desde la llama */
+/* La mecha corta entre llama y vaso */
 .hilo {
-  width: 1.5px;
-  height: clamp(70px, 12vw, 120px);
-  background: linear-gradient(
-    to bottom,
-    var(--espresso) 0%,
-    var(--espresso) 30%,
-    var(--ambar) 30%,
-    var(--ambar) 100%
-  );
-  opacity: 0.9;
+  width: 2px;
+  height: 10px;
+  background: var(--espresso);
+}
+
+/* El vaso de la vela, en línea */
+.vaso {
+  position: relative;
+  width: 48px;
+  height: 68px;
+  margin-top: 1px;
+  border: 2px solid var(--espresso);
+  border-radius: 7px;
+}
+.vaso::before {
+  content: '';
+  position: absolute;
+  top: 5px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 32px;
+  height: 6px;
+  border-radius: 50%;
+  border: 1.5px solid var(--espresso);
+  background: var(--crema);
 }
 
 @keyframes parpadeo {
@@ -452,7 +469,7 @@ a { color: inherit; text-decoration: none; }
   height: 5px;
   border-radius: 50%;
   background: var(--ambar);
-  box-shadow: 0 0 6px 1px rgba(217, 154, 78, 0.7);
+  box-shadow: 0 0 6px 1px rgba(206, 142, 68, 0.7);
 }
 
 .vela__cuerpo {
@@ -591,10 +608,36 @@ a { color: inherit; text-decoration: none; }
   flex-wrap: wrap;
   gap: 1.5rem;
 }
+.footer__centro {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.7rem;
+}
+.footer__divisor {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.footer__divisor::before,
+.footer__divisor::after {
+  content: '';
+  width: 30px;
+  height: 1px;
+  background: rgba(43, 37, 33, 0.34);
+}
+.footer__divisor span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--ambar);
+}
 .footer__lema {
   font-family: var(--serif);
   font-style: italic;
-  color: var(--espresso-70);
+  font-size: 1.1rem;
+  color: var(--salvia);
+  margin: 0;
 }
 .footer__meta {
   font-size: 0.76rem;
