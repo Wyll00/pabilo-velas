@@ -1,5 +1,5 @@
 // ─────────────────────────────────────────────────────────────
-//  Colección Pábilo — velas
+//  Colección Pabilo — velas
 //  Edita aquí nombres, notas, precios y tiempos sin tocar el diseño.
 //  · nombre   → el nombre de la vela
 //  · nota     → la frase sensorial (se muestra en cursiva Newsreader)
