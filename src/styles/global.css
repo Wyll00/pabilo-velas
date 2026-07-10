@@ -638,6 +638,11 @@ button:focus-visible {
   border-color: var(--ambar);
   outline: none;
 }
+.mezclador select:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  border-color: var(--cera-borde);
+}
 .mezclador__resultado {
   max-width: 52ch;
   margin: 2rem auto 0;

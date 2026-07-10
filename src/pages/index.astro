@@ -1,8 +1,13 @@
 ---
 import { Image } from 'astro:assets';
 import Layout from '../layouts/Layout.astro';
-import { velas, aromas } from '../data/velas.js';
+import { velas, combinaciones } from '../data/velas.js';
 import fotoHistoria from '../assets/historia.png';
+
+// Solo se pueden mezclar aromas con combinación probada (con descripción)
+const aromasCombinables = [...new Set(combinaciones.flatMap((c) => c.par))].sort((a, b) =>
+  a.localeCompare(b, 'es')
+);
 ---
 
 <Layout>
@@ -138,24 +143,23 @@ import fotoHistoria from '../assets/historia.png';
           <p class="eyebrow" style="justify-content:center;">El taller de mezclas</p>
           <h3 class="mezclador__titulo">¿Y si combinas dos aromas?</h3>
           <p class="mezclador__intro">
-            Elige dos y te contamos qué nace. Las mezclas las vertemos a mano,
-            como todo aquí.
+            Estas son las mezclas que ya hemos probado en el taller.
+            Elige un aroma y su pareja, y te contamos qué nace.
           </p>
           <div class="mezclador__controles">
             <label class="visualmente-oculto" for="aroma-a">Primer aroma</label>
             <select id="aroma-a">
               <option value="">Elige un aroma</option>
-              {aromas.map((a) => <option value={a}>{a}</option>)}
+              {aromasCombinables.map((a) => <option value={a}>{a}</option>)}
             </select>
             <span class="mezclador__mas" aria-hidden="true">+</span>
             <label class="visualmente-oculto" for="aroma-b">Segundo aroma</label>
-            <select id="aroma-b">
+            <select id="aroma-b" disabled>
               <option value="">Combínalo con…</option>
-              {aromas.map((a) => <option value={a}>{a}</option>)}
             </select>
           </div>
           <div class="mezclador__resultado" id="mezcla-resultado" aria-live="polite">
-            <p class="mezclador__pista">Elige dos aromas y te contamos qué nace. ✨</p>
+            <p class="mezclador__pista">Elige un aroma para empezar. ✨</p>
           </div>
         </div>
       </div>
@@ -308,6 +312,8 @@ import fotoHistoria from '../assets/historia.png';
   import { combinaciones } from '../data/velas.js';
 
   // ── El mezclador de aromas ──
+  // Solo se ofrecen las mezclas probadas: al elegir el primer aroma,
+  // el segundo desplegable se filtra a sus parejas con descripción.
   const selA = document.getElementById('aroma-a') as HTMLSelectElement | null;
   const selB = document.getElementById('aroma-b') as HTMLSelectElement | null;
   const resultado = document.getElementById('mezcla-resultado');
@@ -315,34 +321,51 @@ import fotoHistoria from '../assets/historia.png';
   const claveDe = (a: string, b: string) => [a, b].sort().join('+');
   const mezclas = new Map(combinaciones.map((c) => [claveDe(c.par[0], c.par[1]), c]));
 
+  // aroma → lista de parejas probadas
+  const parejas = new Map<string, string[]>();
+  combinaciones.forEach(({ par: [x, y] }) => {
+    parejas.set(x, [...(parejas.get(x) ?? []), y]);
+    parejas.set(y, [...(parejas.get(y) ?? []), x]);
+  });
+
   function pintarMezcla() {
     if (!selA || !selB || !resultado) return;
     const a = selA.value;
     const b = selB.value;
 
-    if (!a || !b) {
-      resultado.innerHTML = '<p class="mezclador__pista">Elige dos aromas y te contamos qué nace. ✨</p>';
+    if (!a) {
+      resultado.innerHTML = '<p class="mezclador__pista">Elige un aroma para empezar. ✨</p>';
       return;
     }
-    if (a === b) {
-      resultado.innerHTML = '<p class="mezclador__pista">Elige dos aromas distintos — la gracia está en la mezcla.</p>';
+    if (!b) {
+      resultado.innerHTML = '<p class="mezclador__pista">Ahora elige su pareja. ✨</p>';
       return;
     }
     const mezcla = mezclas.get(claveDe(a, b));
-    if (mezcla) {
-      resultado.innerHTML = `
-        <h4>${mezcla.titulo}</h4>
-        <p>${mezcla.texto}</p>`;
-    } else {
-      resultado.innerHTML = `
-        <p class="mezclador__pista">
-          <strong>${a} y ${b.toLowerCase()}</strong> aún no la hemos probado en el taller…
-          pero nos encantan los retos. <a href="#contacto">Escríbenos</a> y la intentamos contigo.
-        </p>`;
-    }
+    if (!mezcla) return;
+    resultado.innerHTML = `
+      <h4>${mezcla.titulo}</h4>
+      <p>${mezcla.texto}</p>`;
   }
 
-  selA?.addEventListener('change', pintarMezcla);
+  function actualizarParejas() {
+    if (!selA || !selB) return;
+    const a = selA.value;
+    const anterior = selB.value;
+    const opciones = (parejas.get(a) ?? []).sort((x, y) => x.localeCompare(y, 'es'));
+
+    selB.innerHTML = '<option value="">Combínalo con…</option>' +
+      opciones.map((o) => `<option value="${o}">${o}</option>`).join('');
+    selB.disabled = !a;
+
+    // si solo hay una pareja posible, la elegimos por él
+    if (opciones.length === 1) selB.value = opciones[0];
+    else if (opciones.includes(anterior)) selB.value = anterior;
+
+    pintarMezcla();
+  }
+
+  selA?.addEventListener('change', actualizarParejas);
   selB?.addEventListener('change', pintarMezcla);
 
   // Sombra sutil en el nav al desplazar
