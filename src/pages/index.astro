@@ -32,6 +32,8 @@ const aromasCombinables = [...new Set(combinaciones.flatMap((c) => c.par))].sort
     </div>
   </header>
 
+  <div class="luz-vela" id="luz-vela" aria-hidden="true"></div>
+
   <main id="top">
     <!-- ══════════════ HERO ══════════════ -->
     <section class="hero">
@@ -367,6 +369,41 @@ const aromasCombinables = [...new Set(combinaciones.flatMap((c) => c.par))].sort
 
   selA?.addEventListener('change', actualizarParejas);
   selB?.addEventListener('change', pintarMezcla);
+
+  // ── Luz de vela que sigue al ratón ──
+  // Solo en dispositivos con puntero fino (en móvil no hay cursor).
+  const luz = document.getElementById('luz-vela');
+  if (luz && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    let destinoX = window.innerWidth / 2;
+    let destinoY = window.innerHeight * 0.35;
+    let lx = destinoX;
+    let ly = destinoY;
+    let encendida = false;
+
+    window.addEventListener(
+      'pointermove',
+      (e) => {
+        destinoX = e.clientX;
+        destinoY = e.clientY;
+        if (!encendida) {
+          encendida = true;
+          lx = destinoX;
+          ly = destinoY;
+          luz.classList.add('encendida');
+        }
+      },
+      { passive: true }
+    );
+
+    // La luz persigue al cursor con un poco de pereza, como una llama
+    (function bucleLuz() {
+      lx += (destinoX - lx) * 0.14;
+      ly += (destinoY - ly) * 0.14;
+      luz.style.setProperty('--luz-x', lx.toFixed(1) + 'px');
+      luz.style.setProperty('--luz-y', ly.toFixed(1) + 'px');
+      requestAnimationFrame(bucleLuz);
+    })();
+  }
 
   // Sombra sutil en el nav al desplazar
   const nav = document.getElementById('nav');

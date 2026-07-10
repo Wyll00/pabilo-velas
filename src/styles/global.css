@@ -926,9 +926,60 @@ button:focus-visible {
   margin: 0;
 }
 
+/* ══════════════════════════════════════════════════════════════
+   Luz de vela — el ratón ilumina por donde pasa
+   Dos capas: «screen» hace brillar las zonas oscuras y «multiply»
+   entibia las claras, como la luz real de una llama.
+   ══════════════════════════════════════════════════════════════ */
+.luz-vela {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 1.4s ease;
+}
+.luz-vela::before,
+.luz-vela::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+}
+/* brillo sobre lo oscuro (suave para no lavar el texto en claro) */
+.luz-vela::before {
+  background: radial-gradient(
+    circle 360px at var(--luz-x, 50%) var(--luz-y, 35%),
+    rgba(255, 190, 105, 0.3),
+    rgba(206, 142, 68, 0.12) 45%,
+    transparent 72%
+  );
+  mix-blend-mode: screen;
+}
+/* calidez sobre lo claro */
+.luz-vela::after {
+  background: radial-gradient(
+    circle 360px at var(--luz-x, 50%) var(--luz-y, 35%),
+    rgba(255, 202, 135, 0.3),
+    rgba(255, 214, 160, 0.12) 45%,
+    transparent 72%
+  );
+  mix-blend-mode: multiply;
+}
+.luz-vela.encendida {
+  opacity: 1;
+  animation: respiracion-luz 3.8s ease-in-out infinite;
+}
+@keyframes respiracion-luz {
+  0%, 100% { filter: brightness(1); }
+  28%      { filter: brightness(1.12); }
+  55%      { filter: brightness(0.94); }
+  78%      { filter: brightness(1.06); }
+}
+
 /* ── Accesibilidad: respeta reducción de movimiento ───────────── */
 @media (prefers-reduced-motion: reduce) {
   * { scroll-behavior: auto !important; }
   .llama { animation: none; }
   .reveal { transition: none; opacity: 1; transform: none; }
+  .luz-vela.encendida { animation: none; }
 }
