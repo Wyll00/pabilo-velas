@@ -4,12 +4,19 @@ import '../styles/global.css';
 interface Props {
   titulo?: string;
   descripcion?: string;
+  imagen?: string;
 }
 
 const {
   titulo = 'Pabilo · Velas de autor',
   descripcion = 'Velas artesanales en pequeñas tandas, con cera de soja y cristal. El fuego de los pequeños placeres.',
+  imagen = '/og.png',
 } = Astro.props;
+
+// URL absoluta de la página y de la imagen (para las tarjetas al compartir).
+// Se apoyan en `site` de astro.config.mjs — cámbialo por el dominio real.
+const urlCanonica = new URL(Astro.url.pathname, Astro.site).href;
+const urlImagen = new URL(imagen, Astro.site).href;
 ---
 
 <!doctype html>
@@ -21,13 +28,24 @@ const {
 
     <title>{titulo}</title>
     <meta name="description" content={descripcion} />
+    <link rel="canonical" href={urlCanonica} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="theme-color" content="#2B2521" />
 
-    <!-- Open Graph (para cuando se comparta el enlace) -->
+    <!-- Open Graph (tarjeta al compartir en WhatsApp, Instagram, etc.) -->
     <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Pabilo" />
     <meta property="og:title" content={titulo} />
     <meta property="og:description" content={descripcion} />
+    <meta property="og:url" content={urlCanonica} />
+    <meta property="og:image" content={urlImagen} />
     <meta property="og:locale" content="es_ES" />
+
+    <!-- Twitter / X -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={titulo} />
+    <meta name="twitter:description" content={descripcion} />
+    <meta name="twitter:image" content={urlImagen} />
 
     <!-- Fuentes: Hanken Grotesk (estructura) + Newsreader (sensorial) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />

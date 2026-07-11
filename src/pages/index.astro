@@ -2,12 +2,22 @@
 import { Image } from 'astro:assets';
 import Layout from '../layouts/Layout.astro';
 import { velas, combinaciones } from '../data/velas.js';
+import { contacto, linkWhatsApp } from '../data/contacto.js';
+import { faq } from '../data/faq.js';
+import { testimonios } from '../data/testimonios.js';
 import fotoHistoria from '../assets/historia.png';
 
 // Solo se pueden mezclar aromas con combinación probada (con descripción)
 const aromasCombinables = [...new Set(combinaciones.flatMap((c) => c.par))].sort((a, b) =>
   a.localeCompare(b, 'es')
 );
+
+// Enlaces de WhatsApp con mensaje pre-escrito (o #contacto si no hay número)
+const waGeneral = linkWhatsApp('Hola Pabilo, me interesan vuestras velas.') ?? '#contacto';
+const waWax = linkWhatsApp('Hola Pabilo, me interesan los wax melts. ¿Qué aromas tenéis?') ?? '#contacto';
+const waRegalo = linkWhatsApp('Hola Pabilo, quiero preparar un regalo. ¿Me ayudáis?') ?? '#contacto';
+const waVela = (nombre) =>
+  linkWhatsApp(`Hola Pabilo, me interesa la vela «${nombre}». ¿Está disponible?`) ?? '#contacto';
 ---
 
 <Layout>
@@ -20,14 +30,14 @@ const aromasCombinables = [...new Set(combinaciones.flatMap((c) => c.par))].sort
       <div class="nav__derecha">
         <nav aria-label="Principal">
           <ul class="nav__links">
-            <li><a href="#historia">Historia</a></li>
             <li><a href="#coleccion">Colección</a></li>
+            <li><a href="#regalo">Regalo</a></li>
             <li><a href="#waxmelts">Wax melts</a></li>
-            <li><a href="#proceso">Cómo pedimos</a></li>
+            <li><a href="#faq">FAQ</a></li>
             <li><a href="#contacto">Contacto</a></li>
           </ul>
         </nav>
-        <a href="#contacto" class="btn btn--mini">Pedir</a>
+        <a href={waGeneral} class="btn btn--mini" target="_blank" rel="noopener">Pedir</a>
       </div>
     </div>
   </header>
@@ -131,9 +141,7 @@ const aromasCombinables = [...new Set(combinaciones.flatMap((c) => c.par))].sort
                     {vela.precio} €
                     <small>{vela.duracion} h aprox.</small>
                   </span>
-                  {/* TODO: cuando haya WhatsApp, cambiar href por:
-                      https://wa.me/34XXXXXXXXX?text=Hola%20Pabilo,%20quiero%20la%20vela%20{nombre} */}
-                  <a href="#contacto" class="btn btn--linea">Pedir</a>
+                  <a href={waVela(vela.nombre)} class="btn btn--linea" target="_blank" rel="noopener">Pedir</a>
                 </div>
               </div>
             </article>
@@ -204,8 +212,63 @@ const aromasCombinables = [...new Set(combinaciones.flatMap((c) => c.par))].sort
           </div>
         </div>
         <div class="wax__cta reveal">
-          <a href="#contacto" class="btn btn--linea">Pídelos con tu aroma favorito</a>
+          <a href={waWax} class="btn btn--linea" target="_blank" rel="noopener">Pídelos con tu aroma favorito</a>
         </div>
+      </div>
+    </section>
+
+    <!-- ══════════════ REGALO ══════════════ -->
+    <section class="seccion" id="regalo">
+      <div class="contenedor">
+        <div class="coleccion__cabecera reveal">
+          <p class="eyebrow" style="justify-content:center;"><span class="eyebrow__num">04</span>Para regalar</p>
+          <h2 class="titulo">Un detalle que se recuerda.</h2>
+          <p>
+            Una vela hecha a mano dice más que cualquier cosa comprada con prisa.
+            Te ayudamos a que <span class="sensorial">quede perfecto</span>.
+          </p>
+        </div>
+        <div class="regalo__grid">
+          <div class="regalo__item reveal">
+            <div class="regalo__icono" aria-hidden="true">✦</div>
+            <h3>Packs a medida</h3>
+            <p>Eliges los aromas y montamos un pack bonito, listo para regalar sin que tengas que pensar en nada más.</p>
+          </div>
+          <div class="regalo__item reveal">
+            <div class="regalo__icono" aria-hidden="true">✎</div>
+            <h3>Tarjeta con dedicatoria</h3>
+            <p>Escribimos tu mensaje a mano en una tarjeta y va dentro del pedido. El detalle que marca la diferencia.</p>
+          </div>
+          <div class="regalo__item reveal">
+            <div class="regalo__icono" aria-hidden="true">❦</div>
+            <h3>Bodas y eventos</h3>
+            <p>Detalles para invitados en la cantidad que necesites. Cuéntanos tu idea y te pasamos una propuesta.</p>
+          </div>
+        </div>
+        <div class="regalo__cta reveal">
+          <a href={waRegalo} class="btn" target="_blank" rel="noopener">Preparar un regalo</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════ GALERÍA ══════════════ -->
+    <section class="seccion" id="galeria">
+      <div class="contenedor">
+        <div class="coleccion__cabecera reveal">
+          <p class="eyebrow" style="justify-content:center;">Del taller</p>
+          <h2 class="titulo">Lo hacemos así.</h2>
+        </div>
+        <div class="galeria reveal">
+          <figure class="galeria__pieza galeria__pieza--destacada">
+            <Image src={fotoHistoria} alt="Vela Pabilo con flores secas, hecha a mano en el taller" width={720} quality={78} />
+          </figure>
+          {velas.slice(0, 4).map((v) => (
+            <div class="galeria__pieza galeria__pronto" style={`background: linear-gradient(150deg, ${v.tono[0]}, ${v.tono[1]});`}>
+              <span style="color: color-mix(in srgb, #FAF4EA 78%, transparent);">pronto</span>
+            </div>
+          ))}
+        </div>
+        <p class="galeria__nota">Pronto, más fotos reales del taller y de cada vela. 📷</p>
       </div>
     </section>
 
@@ -214,7 +277,7 @@ const aromasCombinables = [...new Set(combinaciones.flatMap((c) => c.par))].sort
       <div class="contenedor">
         <div class="proceso__cabecera">
           <div class="reveal" style="max-width: 46ch;">
-            <p class="eyebrow"><span class="eyebrow__num">04</span>Cómo pedimos</p>
+            <p class="eyebrow"><span class="eyebrow__num">05</span>Cómo pedimos</p>
             <h2 class="titulo">Hecho a mano<br />significa <span class="sensorial">sin prisa</span>.</h2>
           </div>
           <div class="sello reveal" role="img" aria-label="Sello Pabilo — velas de autor">
@@ -245,24 +308,76 @@ const aromasCombinables = [...new Set(combinaciones.flatMap((c) => c.par))].sort
 
     <div class="mecha-divisor" aria-hidden="true"></div>
 
+    <!-- ══════════════ FAQ ══════════════ -->
+    <section class="seccion" id="faq">
+      <div class="contenedor">
+        <div class="coleccion__cabecera reveal">
+          <p class="eyebrow" style="justify-content:center;"><span class="eyebrow__num">06</span>Preguntas frecuentes</p>
+          <h2 class="titulo">Lo que suelen preguntarnos.</h2>
+        </div>
+        <div class="faq reveal">
+          {faq.map((item) => (
+            <details class="faq__item">
+              <summary>{item.pregunta}</summary>
+              <p class="faq__respuesta">{item.respuesta}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    {/* ══════════════ RESEÑAS ══════════════ */}
+    {testimonios.length > 0 && (
+      <section class="seccion resenas" id="resenas">
+        <div class="contenedor">
+          <div class="coleccion__cabecera reveal">
+            <p class="eyebrow" style="justify-content:center;">Lo que dicen</p>
+            <h2 class="titulo">Cariño que vuelve.</h2>
+          </div>
+          <div class="resenas__grid">
+            {testimonios.map((t) => (
+              <figure class="resena reveal">
+                <div class="resena__estrellas" aria-label="Cinco estrellas">★★★★★</div>
+                <blockquote class="resena__texto">«{t.texto}»</blockquote>
+                <figcaption class="resena__autor">{t.autor} · {t.lugar}</figcaption>
+              </figure>
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
+
+    <div class="mecha-divisor" aria-hidden="true"></div>
+
     <!-- ══════════════ CONTACTO (datos en blanco) ══════════════ -->
     <section class="seccion contacto" id="contacto">
       <div class="contenedor">
         <div class="contacto__caja reveal">
-          <p class="eyebrow" style="justify-content:center;"><span class="eyebrow__num">05</span>Hablemos</p>
+          <p class="eyebrow" style="justify-content:center;"><span class="eyebrow__num">07</span>Hablemos</p>
           <h2 class="titulo">¿Una vela en mente?</h2>
           <p>
             Escríbenos y la preparamos. Encargos, regalos y detalles para eventos:
             cuéntanos qué buscas y damos con ello.
           </p>
-          <!-- ══════════════════════════════════════════════════════════
-               DATOS DE CONTACTO — PENDIENTES DE CONFIRMAR
-               Cuando Claudia y Ana los den, sustituir este bloque por:
-                 · Botón WhatsApp: <a class="btn" href="https://wa.me/34XXXXXXXXX?text=...">Escríbenos por WhatsApp</a>
-                 · Email:          <a class="btn btn--linea" href="mailto:hola@pabilovelas.com">Enviar un email</a>
-                 · Instagram:      @pabilo.velas
-               ══════════════════════════════════════════════════════════ -->
-          <span class="contacto__pendiente">Datos de contacto · próximamente</span>
+          <div class="contacto__acciones">
+            {linkWhatsApp('Hola Pabilo, me gustaría hacer un pedido.') && (
+              <a href={linkWhatsApp('Hola Pabilo, me gustaría hacer un pedido.')} class="btn" target="_blank" rel="noopener">
+                Escríbenos por WhatsApp
+              </a>
+            )}
+            {contacto.email && (
+              <a href={`mailto:${contacto.email}`} class="btn btn--linea">Enviar un email</a>
+            )}
+          </div>
+          <p class="contacto__redes">
+            {contacto.instagram && (
+              <>
+                <a href={`https://instagram.com/${contacto.instagram}`} target="_blank" rel="noopener">@{contacto.instagram}</a>
+                <span aria-hidden="true"> · </span>
+              </>
+            )}
+            {contacto.ciudad}
+          </p>
         </div>
       </div>
     </section>
@@ -285,18 +400,25 @@ const aromasCombinables = [...new Set(combinaciones.flatMap((c) => c.par))].sort
             <ul class="footer__lista">
               <li><a href="#historia">Historia</a></li>
               <li><a href="#coleccion">Colección</a></li>
+              <li><a href="#regalo">Regalo</a></li>
               <li><a href="#waxmelts">Wax melts</a></li>
-              <li><a href="#proceso">Cómo pedimos</a></li>
+              <li><a href="#faq">Preguntas frecuentes</a></li>
               <li><a href="#contacto">Contacto</a></li>
             </ul>
           </nav>
           <div>
             <p class="footer__titulo">Contacto</p>
             <ul class="footer__lista">
-              {/* TODO: confirmar usuario, dominio y datos reales */}
-              <li><span>Datos · próximamente</span></li>
-              <li><span>@pabilo.velas</span></li>
-              <li><span>Islas Canarias</span></li>
+              {linkWhatsApp() && (
+                <li><a href={linkWhatsApp('Hola Pabilo, me interesan vuestras velas.')} target="_blank" rel="noopener">WhatsApp</a></li>
+              )}
+              {contacto.email && (
+                <li><a href={`mailto:${contacto.email}`}>{contacto.email}</a></li>
+              )}
+              {contacto.instagram && (
+                <li><a href={`https://instagram.com/${contacto.instagram}`} target="_blank" rel="noopener">@{contacto.instagram}</a></li>
+              )}
+              <li><span>{contacto.ciudad}</span></li>
             </ul>
           </div>
         </div>
@@ -308,6 +430,20 @@ const aromasCombinables = [...new Set(combinaciones.flatMap((c) => c.par))].sort
       </div>
     </footer>
   </main>
+
+  {linkWhatsApp() && (
+    <a
+      class="wsp-flotante"
+      href={linkWhatsApp('Hola Pabilo, me interesan vuestras velas.')}
+      target="_blank"
+      rel="noopener"
+      aria-label="Escríbenos por WhatsApp"
+    >
+      <svg viewBox="0 0 32 32" width="28" height="28" aria-hidden="true" fill="currentColor">
+        <path d="M16.001 3C9.373 3 4 8.373 4 15c0 2.1.55 4.152 1.594 5.965L4 29l8.223-1.57A11.94 11.94 0 0 0 16 27c6.627 0 12-5.373 12-12S22.628 3 16.001 3Zm0 21.727c-1.78 0-3.52-.48-5.04-1.386l-.36-.214-4.88.932.93-4.76-.235-.377A9.68 9.68 0 0 1 6.273 15c0-5.36 4.365-9.727 9.728-9.727 5.362 0 9.726 4.367 9.726 9.727 0 5.362-4.364 9.727-9.726 9.727Zm5.34-7.29c-.293-.146-1.73-.853-1.998-.95-.268-.098-.463-.146-.658.147-.195.293-.756.95-.927 1.145-.17.195-.341.22-.634.073-.293-.146-1.237-.456-2.356-1.454-.87-.776-1.458-1.735-1.63-2.028-.17-.293-.018-.451.129-.597.132-.131.293-.341.44-.512.146-.17.195-.293.293-.488.098-.195.049-.366-.024-.512-.073-.146-.658-1.586-.902-2.172-.237-.57-.479-.492-.658-.5l-.561-.01c-.195 0-.512.073-.78.366-.268.293-1.024 1-1.024 2.44 0 1.44 1.049 2.83 1.195 3.026.146.195 2.064 3.152 5.001 4.42.699.302 1.244.482 1.669.617.701.223 1.339.192 1.843.117.562-.084 1.73-.708 1.974-1.39.244-.683.244-1.269.17-1.39-.072-.122-.267-.195-.56-.341Z"/>
+      </svg>
+    </a>
+  )}
 </Layout>
 
 <script>

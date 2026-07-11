@@ -3,5 +3,7 @@ import { defineConfig } from 'astro/config';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://pabilovelas.com', // placeholder — cambiar por el dominio real
+  // Dominio público — se usa para las URLs de compartir (Open Graph).
+  // Cámbialo cuando tengáis dominio propio (p. ej. https://pabilovelas.com).
+  site: 'https://pabilo-velas.pages.dev',
 });
