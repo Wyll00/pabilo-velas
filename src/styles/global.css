@@ -570,6 +570,134 @@ button:focus-visible {
 }
 
 /* ══════════════════════════════════════════════════════════════
+   Carrusel de velas (una card a la vez, auto-avance)
+   ══════════════════════════════════════════════════════════════ */
+.carrusel {
+  position: relative;
+  margin-top: clamp(2.5rem, 5vw, 3.5rem);
+}
+.carrusel__ventana {
+  overflow: hidden;
+  border-radius: 8px;
+}
+/* Las velas van apiladas y se funden de una a otra (crossfade) */
+.carrusel__pista {
+  display: grid;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.carrusel__slide {
+  grid-area: 1 / 1;
+  min-width: 0;
+  opacity: 0;
+  transform: scale(0.985);
+  transition: opacity 0.9s ease, transform 0.9s ease;
+  pointer-events: none;
+}
+.carrusel__slide.activa {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+
+.showcase {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background: var(--cera);
+  border: 1px solid var(--cera-borde);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.showcase__foto {
+  position: relative;
+  min-height: 340px;
+  display: grid;
+  place-items: center;
+}
+.showcase__cuerpo {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.7rem;
+  padding: clamp(1.8rem, 4vw, 3.2rem);
+}
+.showcase__nombre {
+  font-family: var(--sans);
+  font-weight: 500;
+  font-size: clamp(1.6rem, 1.2rem + 1.6vw, 2.3rem);
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+.showcase__pie {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-top: 1.2rem;
+}
+
+/* Flechas */
+.carrusel__flecha {
+  position: absolute;
+  top: calc(50% - 1.4rem);
+  transform: translateY(-50%);
+  z-index: 3;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  font-size: 1.6rem;
+  line-height: 1;
+  color: var(--espresso);
+  background: color-mix(in srgb, var(--crema) 88%, transparent);
+  border: 1px solid var(--cera-borde);
+  border-radius: 50%;
+  cursor: pointer;
+  backdrop-filter: blur(4px);
+  transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+.carrusel__flecha:hover {
+  color: var(--terracota);
+  border-color: var(--ambar);
+}
+.carrusel__flecha--prev { left: clamp(-6px, -1vw, 12px); }
+.carrusel__flecha--next { right: clamp(-6px, -1vw, 12px); }
+
+/* Puntos */
+.carrusel__dots {
+  display: flex;
+  justify-content: center;
+  gap: 0.55rem;
+  margin-top: 1.6rem;
+}
+.carrusel__dot {
+  width: 8px;
+  height: 8px;
+  padding: 0;
+  border: none;
+  border-radius: 999px;
+  background: var(--cera-borde);
+  cursor: pointer;
+  transition: width 0.35s ease, background 0.35s ease;
+}
+.carrusel__dot[aria-selected='true'] {
+  width: 24px;
+  background: var(--ambar);
+}
+
+@media (max-width: 720px) {
+  .showcase { grid-template-columns: 1fr; }
+  .showcase__foto { min-height: 300px; }
+  .carrusel__flecha { top: 150px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  /* Se mantiene el fundido (es suave), pero sin el zoom sutil */
+  .carrusel__slide { transform: none; transition: opacity 0.9s ease; }
+}
+
+/* ══════════════════════════════════════════════════════════════
    El mezclador de aromas
    ══════════════════════════════════════════════════════════════ */
 .visualmente-oculto {

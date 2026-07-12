@@ -117,35 +117,55 @@ const waVela = (nombre) =>
           </p>
         </div>
 
-        <div class="velas">
-          {velas.map((vela) => (
-            <article class="vela reveal">
-              <div
-                class="vela__foto"
-                style={`background: linear-gradient(150deg, ${vela.tono[0]}, ${vela.tono[1]});`}
-              >
-                <div class="vela__etiqueta">
-                  <span class="marca">pabilo</span>
-                  <span class="llama-min" aria-hidden="true"></span>
-                  <span style="font-size:0.6rem; letter-spacing:0.12em; color:var(--ceniza); text-transform:uppercase;">
-                    {vela.nombre}
-                  </span>
-                </div>
-              </div>
-              <div class="vela__cuerpo">
-                <span class="vela__familia">{vela.familia}</span>
-                <h3 class="vela__nombre">{vela.nombre}</h3>
-                <p class="vela__nota">{vela.nota}</p>
-                <div class="vela__pie">
-                  <span class="vela__precio">
-                    {vela.precio} €
-                    <small>{vela.duracion} h aprox.</small>
-                  </span>
-                  <a href={waVela(vela.nombre)} class="btn btn--linea" target="_blank" rel="noopener">Pedir</a>
-                </div>
-              </div>
-            </article>
-          ))}
+        <div class="carrusel reveal" id="carrusel-velas">
+          <button class="carrusel__flecha carrusel__flecha--prev" type="button" data-prev aria-label="Vela anterior">‹</button>
+          <div class="carrusel__ventana">
+            <ul class="carrusel__pista" data-pista>
+              {velas.map((vela) => (
+                <li class="carrusel__slide" aria-roledescription="Vela">
+                  <article class="showcase">
+                    <div
+                      class="showcase__foto"
+                      style={`background: linear-gradient(150deg, ${vela.tono[0]}, ${vela.tono[1]});`}
+                    >
+                      <div class="vela__etiqueta">
+                        <span class="marca">pabilo</span>
+                        <span class="llama-min" aria-hidden="true"></span>
+                        <span style="font-size:0.6rem; letter-spacing:0.12em; color:var(--ceniza); text-transform:uppercase;">
+                          {vela.nombre}
+                        </span>
+                      </div>
+                    </div>
+                    <div class="showcase__cuerpo">
+                      <span class="vela__familia">{vela.familia}</span>
+                      <h3 class="showcase__nombre">{vela.nombre}</h3>
+                      <p class="vela__nota">{vela.nota}</p>
+                      <div class="showcase__pie">
+                        <span class="vela__precio">
+                          {vela.precio} €
+                          <small>{vela.duracion} h aprox.</small>
+                        </span>
+                        <a href={waVela(vela.nombre)} class="btn btn--linea" target="_blank" rel="noopener">Pedir</a>
+                      </div>
+                    </div>
+                  </article>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <button class="carrusel__flecha carrusel__flecha--next" type="button" data-next aria-label="Vela siguiente">›</button>
+          <div class="carrusel__dots" data-dots role="tablist" aria-label="Elegir vela">
+            {velas.map((vela, i) => (
+              <button
+                class="carrusel__dot"
+                type="button"
+                data-dot
+                role="tab"
+                aria-label={vela.nombre}
+                aria-selected={i === 0 ? 'true' : 'false'}
+              ></button>
+            ))}
+          </div>
         </div>
 
         <!-- El mezclador: combina dos aromas y mira qué nace -->
@@ -539,6 +559,43 @@ const waVela = (nombre) =>
       luz.style.setProperty('--luz-y', ly.toFixed(1) + 'px');
       requestAnimationFrame(bucleLuz);
     })();
+  }
+
+  // ── Carrusel de velas (auto-avance cada 4 s, con fundido suave) ──
+  const carrusel = document.getElementById('carrusel-velas');
+  if (carrusel) {
+    const slides = Array.from(carrusel.querySelectorAll('.carrusel__slide'));
+    const dots = Array.from(carrusel.querySelectorAll('[data-dot]'));
+    const total = slides.length;
+    let indice = 0;
+    let timer: number | undefined;
+
+    const mostrar = (i: number) => {
+      indice = (i + total) % total;
+      slides.forEach((s, j) => s.classList.toggle('activa', j === indice));
+      dots.forEach((d, j) => d.setAttribute('aria-selected', j === indice ? 'true' : 'false'));
+    };
+    const siguiente = () => mostrar(indice + 1);
+
+    const arrancar = () => {
+      if (total <= 1) return;
+      detener();
+      timer = window.setInterval(siguiente, 4000);
+    };
+    const detener = () => { if (timer) window.clearInterval(timer); timer = undefined; };
+
+    carrusel.querySelector('[data-next]')?.addEventListener('click', () => { siguiente(); arrancar(); });
+    carrusel.querySelector('[data-prev]')?.addEventListener('click', () => { mostrar(indice - 1); arrancar(); });
+    dots.forEach((d, j) => d.addEventListener('click', () => { mostrar(j); arrancar(); }));
+
+    // Pausa al pasar el ratón o al enfocar con teclado
+    carrusel.addEventListener('mouseenter', detener);
+    carrusel.addEventListener('mouseleave', arrancar);
+    carrusel.addEventListener('focusin', detener);
+    carrusel.addEventListener('focusout', arrancar);
+
+    mostrar(0);
+    arrancar();
   }
 
   // Sombra sutil en el nav al desplazar
