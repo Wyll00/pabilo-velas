@@ -1066,6 +1066,18 @@ button:focus-visible {
   letter-spacing: 0.06em;
   color: var(--ceniza);
 }
+.footer__credito {
+  margin: 0.2rem 0 0;
+  font-size: 0.7rem;
+  letter-spacing: 0.05em;
+  color: color-mix(in srgb, var(--ceniza) 75%, transparent);
+}
+.footer__credito a {
+  color: var(--ceniza);
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+.footer__credito a:hover { color: var(--terracota); }
 
 @media (max-width: 760px) {
   .footer__grid { grid-template-columns: 1fr; gap: 2.2rem; }
