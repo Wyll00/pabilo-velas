@@ -466,11 +466,15 @@ const waVela = (nombre) =>
       <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <rect x="8" y="10.5" width="8" height="10" rx="1.8" />
         <path
+          class="chat__flama"
           d="M12 3c1.5 1.9 2.2 3.2 2.2 4.3a2.2 2.2 0 1 1-4.4 0C9.8 6.2 10.5 4.9 12 3Z"
           stroke="none"
           style="fill: var(--ambar, #CE8E44);"
         />
       </svg>
+    </button>
+    <button class="chat__saludo" id="chat-saludo" type="button" hidden>
+      ¿Te ayudo a elegir tu vela? 🕯️
     </button>
 
     <div class="chat__panel" id="chat-panel" role="dialog" aria-label="Chat de ayuda de Pabilo" hidden>
@@ -692,6 +696,25 @@ const waVela = (nombre) =>
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && !chatPanel.hidden) cerrar();
     });
+
+    // Burbujita de saludo: aparece a los segundos, una vez por sesión
+    const saludoBurbuja = document.getElementById('chat-saludo');
+    const YA_SALUDADO = 'pabilo-chat-saludado';
+    const ocultarSaludo = () => saludoBurbuja?.setAttribute('hidden', '');
+    if (saludoBurbuja && !sessionStorage.getItem(YA_SALUDADO)) {
+      window.setTimeout(() => {
+        if (chatPanel.hidden && !sessionStorage.getItem(YA_SALUDADO)) {
+          saludoBurbuja.hidden = false;
+          sessionStorage.setItem(YA_SALUDADO, '1');
+          window.setTimeout(ocultarSaludo, 14000);
+        }
+      }, 6000);
+      saludoBurbuja.addEventListener('click', () => {
+        ocultarSaludo();
+        abrir();
+      });
+    }
+    chatBoton.addEventListener('click', ocultarSaludo);
 
     const enviar = async (texto: string) => {
       const limpio = texto.trim();
