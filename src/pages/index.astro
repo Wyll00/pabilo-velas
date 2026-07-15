@@ -271,29 +271,6 @@ const waVela = (nombre) =>
       </div>
     </section>
 
-    <div class="mecha-divisor" aria-hidden="true"></div>
-
-    <!-- ══════════════ GALERÍA ══════════════ -->
-    <section class="seccion" id="galeria">
-      <div class="contenedor">
-        <div class="coleccion__cabecera reveal">
-          <p class="eyebrow" style="justify-content:center;">Del taller</p>
-          <h2 class="titulo">Lo hacemos así.</h2>
-        </div>
-        <div class="galeria reveal">
-          <figure class="galeria__pieza galeria__pieza--destacada">
-            <Image src={fotoHistoria} alt="Vela Pabilo con flores secas, hecha a mano en el taller" width={720} quality={78} />
-          </figure>
-          {velas.slice(0, 4).map((v) => (
-            <div class="galeria__pieza galeria__pronto" style={`background: linear-gradient(150deg, ${v.tono[0]}, ${v.tono[1]});`}>
-              <span style="color: color-mix(in srgb, #FAF4EA 78%, transparent);">pronto</span>
-            </div>
-          ))}
-        </div>
-        <p class="galeria__nota">Pronto, más fotos reales del taller y de cada vela. 📷</p>
-      </div>
-    </section>
-
     <!-- ══════════════ PROCESO ══════════════ -->
     <section class="seccion proceso" id="proceso">
       <div class="contenedor">
@@ -409,8 +386,8 @@ const waVela = (nombre) =>
               pabilo<span class="marca__punto" aria-hidden="true"></span>
             </a>
             <p class="footer__desc">
-              Velas artesanales en pequeñas tandas, con cera de soja y cristal.
-              Hechas a mano en Canarias.
+              Velas de autor hechas a mano en Canarias.
+              El fuego de los pequeños placeres.
             </p>
           </div>
           <nav aria-label="Enlaces del pie">

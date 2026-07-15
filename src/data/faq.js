@@ -29,9 +29,4 @@ export const faq = [
     respuesta:
       'Claro. Además de la colección, hacemos mezclas y encargos personalizados. Escríbenos y lo vemos contigo.',
   },
-  {
-    pregunta: '¿Y para regalos o eventos?',
-    respuesta:
-      'Preparamos packs, tarjeta con dedicatoria y detalles para bodas y eventos. Dinos la idea y la cantidad y te pasamos una propuesta.',
-  },
 ];
