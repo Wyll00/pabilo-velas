@@ -7,6 +7,7 @@
 //  · precio   → número en euros (se formatea automáticamente)
 //  · duracion → horas de combustión aproximadas
 //  · tono     → [colorA, colorB] para el degradado del placeholder de foto
+//  · circulo  → color del círculo de fondo en la tarjeta (rediseño)
 // ─────────────────────────────────────────────────────────────
 
 export const velas = [
@@ -18,6 +19,7 @@ export const velas = [
     precio: 22,
     duracion: 45,
     tono: ['#C98A4B', '#8F5730'],
+    circulo: '#F2D9B8',
   },
   {
     id: 'sandalo-jazmin',
@@ -27,6 +29,7 @@ export const velas = [
     precio: 24,
     duracion: 50,
     tono: ['#8A6B4F', '#54402F'],
+    circulo: '#EAD9E2',
   },
   {
     id: 'lavanda',
@@ -36,6 +39,7 @@ export const velas = [
     precio: 20,
     duracion: 40,
     tono: ['#8A8B6C', '#6E6F54'],
+    circulo: '#D8DCE8',
   },
   {
     id: 'cereza',
@@ -45,6 +49,7 @@ export const velas = [
     precio: 20,
     duracion: 40,
     tono: ['#A33E36', '#6C2823'],
+    circulo: '#F0CFCB',
   },
   {
     id: 'coco',
@@ -54,6 +59,7 @@ export const velas = [
     precio: 22,
     duracion: 45,
     tono: ['#C9B291', '#9A8266'],
+    circulo: '#EFE8D6',
   },
 ];
 
