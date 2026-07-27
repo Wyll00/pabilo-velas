@@ -23,3 +23,13 @@ Thumbs.db
 
 # astro
 .astro/
+.wrangler/
+
+# herramientas locales
+.claude/
+
+# material de trabajo (no forma parte de la web)
+Imagenes de Pruebas para el contenido de la App/
+Menus Nuevos/
+Nueva UI de la Web/
+pabilo-web-completa.html
