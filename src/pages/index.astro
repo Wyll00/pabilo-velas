@@ -18,7 +18,7 @@ const waVela = (nombre) =>
 
 <Layout>
   <!-- ══════════════ NAV ══════════════ -->
-  <nav class="nav">
+  <nav class="nav" id="nav">
     <div class="contenedor nav__inner">
       <a href="#top" class="marca" aria-label="Pabilo, inicio">pabilo</a>
       <div class="nav__derecha">
@@ -29,10 +29,57 @@ const waVela = (nombre) =>
           <li><a href="#faq">FAQ</a></li>
           <li><a href="#contacto">Contacto</a></li>
         </ul>
+
+        <!-- Enciende la vela: apaga la web y deja que alumbre la llama -->
+        <button
+          class="vela-boton"
+          id="vela-boton"
+          type="button"
+          aria-pressed="false"
+          title="Enciende la vela"
+        >
+          <span class="visualmente-oculto">Enciende la vela</span>
+          <svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true">
+            <path
+              class="vela-boton__llama"
+              d="M12 2.5c1.9 2.4 2.8 4.1 2.8 5.5a2.8 2.8 0 1 1-5.6 0c0-1.4.9-3.1 2.8-5.5Z"
+              fill="currentColor"
+            />
+            <rect x="8.5" y="12.5" width="7" height="9" rx="1.6" fill="none" stroke="currentColor" stroke-width="1.5" />
+          </svg>
+        </button>
+
         <a href={waGeneral} class="pill pill--acento pill--mini" target="_blank" rel="noopener">Pedir</a>
+
+        <button
+          class="nav__hamburguesa"
+          id="nav-hamburguesa"
+          type="button"
+          aria-expanded="false"
+          aria-controls="nav-movil"
+        >
+          <span class="visualmente-oculto">Abrir el menú</span>
+          <span class="nav__raya" aria-hidden="true"></span>
+          <span class="nav__raya" aria-hidden="true"></span>
+          <span class="nav__raya" aria-hidden="true"></span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Menú desplegable en pantallas pequeñas -->
+    <div class="nav__movil" id="nav-movil" hidden>
+      <div class="contenedor">
+        <a href="#historia">Historia</a>
+        <a href="#coleccion">Colección</a>
+        <a href="#regalo">Regalo</a>
+        <a href="#waxmelts">Wax melts</a>
+        <a href="#faq">Preguntas frecuentes</a>
+        <a href="#contacto">Contacto</a>
       </div>
     </div>
   </nav>
+
+  <div class="luz-vela" id="luz-vela" aria-hidden="true"></div>
 
   <main id="top">
     <!-- ══════════════ HERO ══════════════ -->
@@ -529,6 +576,92 @@ const waVela = (nombre) =>
   import { linkWhatsApp } from '../data/contacto.js';
 
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // ── Menú de pantallas pequeñas ──
+  const hamburguesa = document.getElementById('nav-hamburguesa');
+  const menuMovil = document.getElementById('nav-movil');
+  if (hamburguesa && menuMovil) {
+    const abrirMenu = (abierto: boolean) => {
+      menuMovil.hidden = !abierto;
+      hamburguesa.setAttribute('aria-expanded', String(abierto));
+      hamburguesa.classList.toggle('abierta', abierto);
+      const etiqueta = hamburguesa.querySelector('.visualmente-oculto');
+      if (etiqueta) etiqueta.textContent = abierto ? 'Cerrar el menú' : 'Abrir el menú';
+    };
+
+    hamburguesa.addEventListener('click', () => abrirMenu(menuMovil.hidden));
+    // al elegir un destino, el menú se aparta
+    menuMovil.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => abrirMenu(false)));
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !menuMovil.hidden) {
+        abrirMenu(false);
+        hamburguesa.focus();
+      }
+    });
+    // si la ventana se ensancha, el menú deja de tener sentido
+    window.matchMedia('(min-width: 861px)').addEventListener('change', (e) => {
+      if (e.matches) abrirMenu(false);
+    });
+  }
+
+  // ── «Enciende la vela»: la web se apaga y alumbra la llama ──
+  const velaBoton = document.getElementById('vela-boton');
+  const luz = document.getElementById('luz-vela');
+  const raiz = document.documentElement;
+  const NOCHE = 'pabilo-noche';
+
+  const pintarVela = (encendida: boolean) => {
+    raiz.classList.toggle('noche', encendida);
+    velaBoton?.setAttribute('aria-pressed', String(encendida));
+    velaBoton?.setAttribute('title', encendida ? 'Apaga la vela' : 'Enciende la vela');
+    const etiqueta = velaBoton?.querySelector('.visualmente-oculto');
+    if (etiqueta) etiqueta.textContent = encendida ? 'Apaga la vela' : 'Enciende la vela';
+    // el color de la barra del navegador acompaña
+    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', encendida ? '#16120F' : '#2B2521');
+  };
+
+  // el <script> del <head> ya pudo encenderla: partimos de ahí
+  pintarVela(raiz.classList.contains('noche'));
+
+  velaBoton?.addEventListener('click', () => {
+    const encendida = !raiz.classList.contains('noche');
+    pintarVela(encendida);
+    try { localStorage.setItem(NOCHE, encendida ? '1' : '0'); } catch (e) {}
+  });
+
+  // La luz sigue al cursor con un poco de pereza, como una llama.
+  // Solo con ratón: en táctil no hay puntero al que seguir.
+  if (luz && window.matchMedia('(hover: hover) and (pointer: fine)').matches && !reduceMotion) {
+    let destinoX = window.innerWidth / 2;
+    let destinoY = window.innerHeight * 0.35;
+    let lx = destinoX;
+    let ly = destinoY;
+    let despierta = false;
+
+    window.addEventListener(
+      'pointermove',
+      (e) => {
+        destinoX = e.clientX;
+        destinoY = e.clientY;
+        if (!despierta) {
+          despierta = true;
+          lx = destinoX;
+          ly = destinoY;
+          luz.classList.add('encendida');
+        }
+      },
+      { passive: true }
+    );
+
+    const seguirLuz = () => {
+      lx += (destinoX - lx) * 0.14;
+      ly += (destinoY - ly) * 0.14;
+      luz.style.setProperty('--luz-x', lx.toFixed(1) + 'px');
+      luz.style.setProperty('--luz-y', ly.toFixed(1) + 'px');
+      requestAnimationFrame(seguirLuz);
+    };
+    requestAnimationFrame(seguirLuz);
+  }
 
   // ── La cinta de velas: rota sola, en bucle, como una marquesina ──
   const cinta = document.getElementById('cinta-velas');

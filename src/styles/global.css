@@ -213,8 +213,90 @@ select:focus-visible {
 }
 .nav__links a:hover { color: var(--acento); }
 
+/* Botón «Enciende la vela» */
+.vela-boton {
+  flex: none;
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--borde-3);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--etiqueta);
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+.vela-boton:hover { color: var(--acento); border-color: var(--acento); }
+.vela-boton[aria-pressed='true'] {
+  color: var(--acento);
+  border-color: color-mix(in srgb, var(--acento) 55%, transparent);
+  box-shadow: 0 0 14px rgba(224, 138, 85, 0.3);
+}
+/* con la vela encendida, la llamita del botón tiembla */
+.vela-boton[aria-pressed='true'] .vela-boton__llama {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: flama-boton 2.4s ease-in-out infinite;
+}
+
+/* Hamburguesa (solo en pantallas pequeñas) */
+.nav__hamburguesa {
+  display: none;
+  flex: none;
+  width: 38px;
+  height: 38px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+  place-items: center;
+  gap: 4px;
+  grid-auto-flow: row;
+}
+.nav__raya {
+  display: block;
+  width: 20px;
+  height: 1.5px;
+  border-radius: 2px;
+  background: var(--tinta);
+  transition: transform 0.3s ease, opacity 0.25s ease;
+}
+.nav__hamburguesa.abierta .nav__raya:nth-child(2) { transform: translateY(5.5px) rotate(45deg); }
+.nav__hamburguesa.abierta .nav__raya:nth-child(3) { opacity: 0; }
+.nav__hamburguesa.abierta .nav__raya:nth-child(4) { transform: translateY(-5.5px) rotate(-45deg); }
+
+/* Panel desplegable */
+.nav__movil[hidden] { display: none; }
+.nav__movil {
+  border-top: 1px solid var(--borde);
+  padding: 14px 0 22px;
+  animation: fadeUp 0.3s ease both;
+}
+.nav__movil .contenedor {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.nav__movil a {
+  font-family: var(--serif);
+  font-size: 21px;
+  color: var(--tinta);
+  padding: 11px 2px;
+  border-bottom: 1px solid var(--borde);
+  transition: color 0.25s ease;
+}
+.nav__movil a:last-child { border-bottom: none; }
+.nav__movil a:hover { color: var(--acento); }
+
 @media (max-width: 860px) {
   .nav__links { display: none; }
+  .nav__hamburguesa { display: grid; }
+  .nav__derecha { gap: 10px; }
+}
+@media (min-width: 861px) {
+  .nav__movil { display: none; }
 }
 
 /* ══════════════════════════════════════════════════════════════
@@ -1339,8 +1421,101 @@ select:focus-visible {
   white-space: nowrap;
 }
 
+/* ══════════════════════════════════════════════════════════════
+   «Enciende la vela» — la web se apaga y alumbra la llama
+   Se cambian los tokens y todo lo demás viene solo. Solo hay que
+   repasar lo que estaba pensado para fondo claro.
+   ══════════════════════════════════════════════════════════════ */
+html.noche {
+  --crema:    #16120F;
+  --arena:    #1E1815;
+  --tarjeta:  #241D18;
+  --tinta:    #F4EADB;
+  --texto:    #C6B7A4;
+  --etiqueta: #9C8B76;
+  --acento:      #E08A55;
+  --acento-osc:  #F0A570;
+  --oscuro:   #100D0B;
+  --placa:    #6B5433;
+
+  --borde:        rgba(240, 225, 200, 0.13);
+  --borde-2:      rgba(240, 225, 200, 0.2);
+  --borde-3:      rgba(240, 225, 200, 0.26);
+  --borde-fuerte: rgba(240, 225, 200, 0.34);
+}
+
+/* El apagado es gradual, como cuando bajas la luz de una habitación */
+body { transition: background-color 0.7s ease, color 0.7s ease; }
+
+html.noche .nav {
+  background: rgba(22, 18, 15, 0.9);
+  border-bottom-color: rgba(240, 225, 200, 0.12);
+}
+html.noche .nav__links a { color: var(--texto); }
+
+/* Botones pensados para fondo claro: se les da la vuelta */
+html.noche .pill--oscura { background: var(--tinta); color: #17130F; }
+html.noche .pill--oscura:hover { background: var(--acento); color: #17130F; }
+html.noche .pill--borde,
+html.noche .pill--borde-lleno { border-color: rgba(244, 234, 219, 0.32); }
+html.noche .pill--borde:hover { border-color: var(--tinta); }
+html.noche .pill--borde-lleno:hover { background: var(--tinta); color: #17130F; border-color: var(--tinta); }
+html.noche .flecha { border-color: rgba(244, 234, 219, 0.28); }
+html.noche .flecha:hover { background: var(--tinta); color: #17130F; border-color: var(--tinta); }
+
+/* De noche el ámbar se aclara: encima le va texto oscuro, no crema */
+html.noche .pill--acento,
+html.noche .pill--acento:hover,
+html.noche .tarjeta__pedir:hover,
+html.noche .chat__enviar { color: #17130F; }
+
+/* Líneas que iban en tinta tierra */
+html.noche .faq__item { border-bottom-color: rgba(240, 225, 200, 0.15); }
+html.noche .mezclas__resultado { border-color: rgba(240, 225, 200, 0.26); }
+
+/* La vela sigue siendo de cera clara: su rótulo y su mecha, oscuros */
+html.noche .velon__logo,
+html.noche .mini__logo { color: #2A241E; }
+html.noche .velon__mecha,
+html.noche .mini__mecha { background: #2A241E; }
+html.noche .velon__etiqueta,
+html.noche .mini__etiqueta { border-color: rgba(120, 95, 70, 0.45); }
+
+/* La llama alumbra más fuerte cuando todo está apagado */
+html.noche .velon__halo {
+  width: 200px;
+  height: 200px;
+  top: -150px;
+  background: radial-gradient(circle, rgba(255, 176, 92, 0.6) 0%, rgba(255, 176, 92, 0) 70%);
+}
+html.noche .velon__tarro { box-shadow: inset 0 -18px 30px rgba(140, 115, 90, 0.18), 0 0 70px -14px rgba(255, 176, 92, 0.35); }
+
+/* Los pasteles se apagan un poco para no chillar en la penumbra */
+html.noche .tarjeta__circulo { opacity: 0.5; }
+html.noche .taller__pronto { opacity: 0.55; }
+
+/* La luz que sigue al cursor — solo con la vela encendida */
+.luz-vela {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 1.2s ease;
+  background: radial-gradient(
+    circle 380px at var(--luz-x, 50%) var(--luz-y, 35%),
+    rgba(255, 190, 105, 0.15),
+    rgba(224, 138, 85, 0.06) 45%,
+    transparent 72%
+  );
+  mix-blend-mode: screen;
+}
+html.noche .luz-vela.encendida { opacity: 1; }
+
 /* ── Accesibilidad: respeta reducción de movimiento ───────────── */
 @media (prefers-reduced-motion: reduce) {
+  .nav__movil { animation: none; }
+  body { transition: none; }
   * { scroll-behavior: auto !important; }
   .velon,
   .velon__llama,

@@ -1,5 +1,8 @@
 ---
 import '../styles/global.css';
+import { velas } from '../data/velas.js';
+import { contacto } from '../data/contacto.js';
+import { faq } from '../data/faq.js';
 
 interface Props {
   titulo?: string;
@@ -17,6 +20,63 @@ const {
 // Se apoyan en `site` de astro.config.mjs — cámbialo por el dominio real.
 const urlCanonica = new URL(Astro.url.pathname, Astro.site).href;
 const urlImagen = new URL(imagen, Astro.site).href;
+
+// ── Datos estructurados (Schema.org) ──
+// Le explican a Google qué es Pabilo, qué vende y a qué precio, para que
+// pueda mostrar la ficha del negocio y las velas en los resultados.
+const perfiles = [
+  contacto.instagram && `https://instagram.com/${contacto.instagram}`,
+].filter(Boolean);
+
+const datosEstructurados = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'LocalBusiness',
+      '@id': `${new URL('/', Astro.site).href}#negocio`,
+      name: 'Pabilo',
+      description: descripcion,
+      slogan: 'El fuego de los pequeños placeres',
+      url: new URL('/', Astro.site).href,
+      image: urlImagen,
+      priceRange: '20 € - 24 €',
+      areaServed: contacto.ciudad,
+      address: { '@type': 'PostalAddress', addressRegion: contacto.ciudad, addressCountry: 'ES' },
+      ...(contacto.email && { email: contacto.email }),
+      ...(perfiles.length && { sameAs: perfiles }),
+    },
+    {
+      '@type': 'ItemList',
+      name: 'Colección de velas Pabilo',
+      itemListElement: velas.map((v, i) => ({
+        '@type': 'ListItem',
+        position: i + 1,
+        item: {
+          '@type': 'Product',
+          name: v.nombre,
+          description: v.nota,
+          category: v.familia,
+          brand: { '@type': 'Brand', name: 'Pabilo' },
+          offers: {
+            '@type': 'Offer',
+            price: String(v.precio),
+            priceCurrency: 'EUR',
+            availability: 'https://schema.org/InStock',
+            seller: { '@type': 'Organization', name: 'Pabilo' },
+          },
+        },
+      })),
+    },
+    {
+      '@type': 'FAQPage',
+      mainEntity: faq.map((f) => ({
+        '@type': 'Question',
+        name: f.pregunta,
+        acceptedAnswer: { '@type': 'Answer', text: f.respuesta },
+      })),
+    },
+  ],
+};
 ---
 
 <!doctype html>
@@ -54,6 +114,18 @@ const urlImagen = new URL(imagen, Astro.site).href;
       href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=Newsreader:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&display=swap"
       rel="stylesheet"
     />
+
+    <!-- Datos estructurados para buscadores -->
+    <script type="application/ld+json" set:html={JSON.stringify(datosEstructurados)} />
+
+    <!-- Deja la vela encendida antes de pintar, para que no parpadee al cargar -->
+    <script is:inline>
+      try {
+        if (localStorage.getItem('pabilo-noche') === '1') {
+          document.documentElement.classList.add('noche');
+        }
+      } catch (e) {}
+    </script>
   </head>
   <body>
     <slot />

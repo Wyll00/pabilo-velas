@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://pabilo-velas.pages.dev/sitemap.xml
