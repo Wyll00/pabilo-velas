@@ -525,7 +525,7 @@ const waVela = (nombre) =>
 </Layout>
 
 <script>
-  import { aromas, combinaciones } from '../data/velas.js';
+  import { combinaciones } from '../data/velas.js';
   import { linkWhatsApp } from '../data/contacto.js';
 
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -611,13 +611,22 @@ const waVela = (nombre) =>
   const resultado = document.getElementById('mezcla-resultado');
 
   if (selA && selB && resultado) {
-    const lista = [...aromas].sort((a, b) => a.localeCompare(b, 'es'));
-    selA.innerHTML =
-      '<option value="">Elige un aroma</option>' +
-      lista.map((a) => `<option value="${a}">${a}</option>`).join('');
-
     const claveDe = (a: string, b: string) => [a, b].sort().join('+');
     const probadas = new Map(combinaciones.map((c) => [claveDe(c.par[0], c.par[1]), c]));
+
+    // Solo se ofrecen mezclas que existen de verdad: cada aroma se saca de
+    // las combinaciones probadas, y su pareja se limita a las suyas.
+    const parejas = new Map<string, string[]>();
+    combinaciones.forEach(({ par: [x, y] }) => {
+      parejas.set(x, [...(parejas.get(x) ?? []), y]);
+      parejas.set(y, [...(parejas.get(y) ?? []), x]);
+    });
+    const ordenar = (l: string[]) => [...l].sort((a, b) => a.localeCompare(b, 'es'));
+    const combinables = ordenar([...parejas.keys()]);
+
+    selA.innerHTML =
+      '<option value="">Elige un aroma</option>' +
+      combinables.map((a) => `<option value="${a}">${a}</option>`).join('');
 
     const pintar = () => {
       const a = selA.value;
@@ -630,23 +639,27 @@ const waVela = (nombre) =>
         resultado.innerHTML = '<span class="mezclas__pista">Ahora elige su pareja. ✨</span>';
         return;
       }
-      const etiqueta = `${a} + ${b}`;
-      const wa =
-        linkWhatsApp(`Hola Pabilo, ¿qué nace de la mezcla «${etiqueta}»?`) ?? '#contacto';
       const combo = probadas.get(claveDe(a, b));
+      if (!combo) return; // no debería ocurrir: el desplegable ya filtra
+      const wa =
+        linkWhatsApp(`Hola Pabilo, me interesa la mezcla «${combo.titulo}».`) ?? '#contacto';
       resultado.innerHTML =
-        `<span class="mezclas__nombre">«${etiqueta}»</span>` +
-        `<span style="color: var(--texto);"> — </span>` +
-        `<a href="${wa}" target="_blank" rel="noopener">pregúntanos qué nace →</a>` +
-        (combo ? `<p class="mezclas__detalle">${combo.texto}</p>` : '');
+        `<span class="mezclas__nombre">«${combo.titulo}»</span>` +
+        `<p class="mezclas__detalle">${combo.texto}</p>` +
+        `<a href="${wa}" target="_blank" rel="noopener">pedir esta mezcla →</a>`;
     };
 
     selA.addEventListener('change', () => {
       const a = selA.value;
+      const suyas = ordenar(parejas.get(a) ?? []);
+      const anterior = selB.value;
       selB.innerHTML =
         '<option value="">Combínalo con…</option>' +
-        lista.filter((x) => x !== a).map((x) => `<option value="${x}">${x}</option>`).join('');
+        suyas.map((x) => `<option value="${x}">${x}</option>`).join('');
       selB.disabled = !a;
+      // si solo hay una pareja posible, la elegimos nosotros
+      if (suyas.length === 1) selB.value = suyas[0];
+      else if (suyas.includes(anterior)) selB.value = anterior;
       pintar();
     });
     selB.addEventListener('change', pintar);

@@ -63,11 +63,11 @@ export const velas = [
   },
 ];
 
-// Aromas disponibles para el mezclador
-export const aromas = ['Vainilla', 'Canela', 'Sándalo', 'Jazmín', 'Lavanda', 'Cereza', 'Coco'];
-
 // Combinaciones probadas en el taller.
-// La clave es el par ordenado alfabéticamente y unido con «+».
+// ⚠️ El mezclador de la web sale ENTERO de aquí: solo se ofrecen los aromas
+//    que aparecen en algún par, y cada uno solo se puede cruzar con sus
+//    parejas de esta lista. Para añadir una opción al mezclador, añade su
+//    combinación aquí (con su título y su texto); no hay otra lista que tocar.
 export const combinaciones = [
   {
     par: ['Sándalo', 'Jazmín'],
