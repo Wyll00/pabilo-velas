@@ -1,7 +1,8 @@
 # build output
 dist/
 .output/
-pabilo-web-lista.zip
+# paquetes de despliegue (Cloudflare construye solo desde el repo)
+*.zip
 
 # dependencies
 node_modules/

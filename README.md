@@ -128,23 +128,35 @@ Si la clave no está configurada, el chat falla con elegancia e invita a escribi
 
 ## Despliegue
 
-La web se publica en **Cloudflare Pages**. Hay dos formas:
-
-**Subiendo el paquete a mano**
-
-```bash
-npm run build
-```
-
-Y arrastrar el contenido de `dist/` (o el zip) a Cloudflare Pages como nuevo deployment.
-
-**Con Wrangler**
+La web se publica sola en **Cloudflare Pages**: el proyecto está conectado a este
+repositorio, así que **cada push a `main` lanza un despliegue nuevo**. No hay que
+subir nada a mano.
 
 ```bash
-npx wrangler deploy
+git push origin main
 ```
 
-La configuración está en `wrangler.jsonc`.
+En unos dos minutos está publicado. El progreso se ve en Cloudflare →
+Workers & Pages → `pabilo-velas` → **Deployments**.
+
+### Configuración del proyecto en Cloudflare
+
+Si alguna vez hay que reconectar el repositorio, estos son los ajustes:
+
+| Ajuste | Valor |
+|---|---|
+| Framework preset | Astro (o *None*) |
+| Build command | `npm run build` |
+| Build output directory | `dist` |
+| Production branch | `main` |
+| Variable de entorno | `NODE_VERSION` = `20` |
+| Secreto | `GROQ_API_KEY` (para el chat) |
+
+El chat viaja en `public/_worker.js`, que Astro copia a `dist/` durante el build,
+así que se despliega junto con la web sin pasos extra.
+
+> ⚠️ Al conectar el repositorio, Cloudflare **desactiva la subida manual** de
+> archivos: a partir de ahí, la única vía es hacer push.
 
 ---
 
