@@ -48,10 +48,16 @@ REGALOS Y EVENTOS
 - Packs a medida, tarjeta con dedicatoria escrita a mano, y detalles para bodas y eventos por encargo.
 `;
 
-const INSTRUCCIONES = `Eres «el ayudante de Pabilo», el asistente de la web de Pabilo, una marca artesanal de velas de las Islas Canarias.
+// El idioma lo manda la web: «es» desde / y «en» desde /en/.
+const IDIOMA_REGLA = {
+  es: '- Responde SIEMPRE en español, de tú, con el tono de la marca: cercano, cálido, tranquilo. Frases cortas.',
+  en: '- ALWAYS reply in English, warm and close, in the brand tone: calm and unhurried. Short sentences. Prices stay in euros.',
+};
+
+const instrucciones = (idioma) => `Eres «el ayudante de Pabilo», el asistente de la web de Pabilo, una marca artesanal de velas de las Islas Canarias.
 
 REGLAS:
-- Responde SIEMPRE en español, de tú, con el tono de la marca: cercano, cálido, tranquilo. Frases cortas.
+${IDIOMA_REGLA[idioma] ?? IDIOMA_REGLA.es}
 - Responde SOLO con la información del contexto de abajo. No inventes datos, precios ni plazos.
 - Respuestas breves: 2 a 4 frases como máximo. Sin listas largas salvo que las pidan.
 - Si no sabes algo o no está en el contexto, dilo con naturalidad e invita a escribir por WhatsApp (el botón verde de la web).
@@ -60,6 +66,12 @@ REGLAS:
 
 CONTEXTO:
 ${CONOCIMIENTO}`;
+
+// Mensaje de reserva cuando el chat no está disponible
+const DESCANSO = {
+  es: 'Ahora mismo el chat está descansando 🕯️ Escríbenos por WhatsApp (el botón verde de aquí al lado) y te atendemos al momento.',
+  en: "The chat is resting right now 🕯️ Message us on WhatsApp (the green button next door) and we'll help you straight away.",
+};
 
 export default {
   async fetch(request, env) {
@@ -82,18 +94,17 @@ function json(obj, status = 200) {
 }
 
 async function manejarChat(request, env) {
-  if (!env.GROQ_API_KEY) {
-    return json({
-      respuesta:
-        'Ahora mismo el chat está descansando 🕯️ Escríbenos por WhatsApp (el botón verde de aquí al lado) y te atendemos al momento.',
-    });
-  }
-
   let cuerpo;
   try {
     cuerpo = await request.json();
   } catch {
-    return json({ error: 'Cuerpo inválido' }, 400);
+    cuerpo = {};
+  }
+
+  const idioma = cuerpo.idioma === 'en' ? 'en' : 'es';
+
+  if (!env.GROQ_API_KEY) {
+    return json({ respuesta: DESCANSO[idioma] });
   }
 
   // Saneado: máximo 8 mensajes, 400 caracteres cada uno
@@ -118,7 +129,7 @@ async function manejarChat(request, env) {
       },
       body: JSON.stringify({
         model: 'llama-3.1-8b-instant',
-        messages: [{ role: 'system', content: INSTRUCCIONES }, ...mensajes],
+        messages: [{ role: 'system', content: instrucciones(idioma) }, ...mensajes],
         max_tokens: 300,
         temperature: 0.4,
       }),

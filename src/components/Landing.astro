@@ -1,0 +1,870 @@
+---
+// La web entera, en el idioma que se le pase.
+// Español en «/», inglés en «/en/» — mismo diseño, mismos datos.
+import { Image } from 'astro:assets';
+import { velas, combinaciones } from '../data/velas.js';
+import { contacto, linkWhatsApp } from '../data/contacto.js';
+import { faq } from '../data/faq.js';
+import { testimonios } from '../data/testimonios.js';
+import fotoHistoria from '../assets/historia.png';
+import { textos, campo, nombreAroma } from '../i18n/index.js';
+
+const { lang = 'es' } = Astro.props;
+const t = textos(lang);
+
+// Enlaces de WhatsApp con el mensaje ya escrito (o #contacto si no hay número)
+const wa = (mensaje) => linkWhatsApp(mensaje) ?? '#contacto';
+const waGeneral = wa(t.whatsapp.general);
+const waContacto = wa(t.whatsapp.pedido);
+const waMelts = wa(t.whatsapp.melts);
+const waRegalo = wa(t.whatsapp.regalo);
+
+// Todo lo que el navegador necesita, ya resuelto aquí: así el JS del
+// cliente solo pinta y no tiene que cargar los datos ni traducir nada.
+const claveDe = (a, b) => [a, b].sort().join('+');
+const parejas = new Map();
+combinaciones.forEach(({ par: [x, y] }) => {
+  parejas.set(x, [...(parejas.get(x) ?? []), y]);
+  parejas.set(y, [...(parejas.get(y) ?? []), x]);
+});
+const ordenarPorEtiqueta = (lista) =>
+  [...lista].sort((a, b) => nombreAroma(a, lang).localeCompare(nombreAroma(b, lang), lang));
+
+const datosCliente = {
+  mezclador: {
+    aromas: ordenarPorEtiqueta([...parejas.keys()]).map((clave) => ({
+      clave,
+      etiqueta: nombreAroma(clave, lang),
+      parejas: ordenarPorEtiqueta(parejas.get(clave)).map((p) => ({
+        clave: p,
+        etiqueta: nombreAroma(p, lang),
+      })),
+    })),
+    combos: Object.fromEntries(
+      combinaciones.map((c) => {
+        const titulo = campo(c, 'titulo', lang);
+        return [
+          claveDe(c.par[0], c.par[1]),
+          { titulo, texto: campo(c, 'texto', lang), wa: wa(t.whatsapp.mezcla(titulo)) },
+        ];
+      })
+    ),
+    textos: {
+      eligeAroma: t.mezclas.eligeAroma,
+      combinaCon: t.mezclas.combinaCon,
+      pistaInicio: t.mezclas.pistaInicio,
+      pistaPareja: t.mezclas.pistaPareja,
+      pedirMezcla: t.mezclas.pedirMezcla,
+    },
+  },
+  chat: {
+    idioma: lang,
+    saludo: t.chat.saludo,
+    sinRespuesta: t.chat.sinRespuesta,
+    error: t.chat.error,
+  },
+  nav: { abrirMenu: t.nav.abrirMenu, cerrarMenu: t.nav.cerrarMenu, encender: t.nav.encender, apagar: t.nav.apagar },
+};
+---
+
+<!-- ══════════════ NAV ══════════════ -->
+<nav class="nav" id="nav">
+  <div class="contenedor nav__inner">
+    <a href="#top" class="marca" aria-label={t.nav.inicio}>pabilo</a>
+    <div class="nav__derecha">
+      <ul class="nav__links" aria-label={t.nav.principal}>
+        <li><a href="#coleccion">{t.nav.coleccion}</a></li>
+        <li><a href="#regalo">{t.nav.regalo}</a></li>
+        <li><a href="#waxmelts">{t.nav.waxmelts}</a></li>
+        <li><a href="#faq">{t.nav.faq}</a></li>
+        <li><a href="#contacto">{t.nav.contacto}</a></li>
+      </ul>
+
+      <a class="idioma" href={t.otroIdioma.url} title={t.otroIdioma.titulo} lang={t.otroIdioma.codigo}>
+        {t.otroIdioma.etiqueta}
+      </a>
+
+      <!-- Enciende la vela: apaga la web y deja que alumbre la llama -->
+      <button class="vela-boton" id="vela-boton" type="button" aria-pressed="false" title={t.nav.encender}>
+        <span class="visualmente-oculto">{t.nav.encender}</span>
+        <svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true">
+          <path
+            class="vela-boton__llama"
+            d="M12 2.5c1.9 2.4 2.8 4.1 2.8 5.5a2.8 2.8 0 1 1-5.6 0c0-1.4.9-3.1 2.8-5.5Z"
+            fill="currentColor"
+          />
+          <rect x="8.5" y="12.5" width="7" height="9" rx="1.6" fill="none" stroke="currentColor" stroke-width="1.5" />
+        </svg>
+      </button>
+
+      <a href={waGeneral} class="pill pill--acento pill--mini" target="_blank" rel="noopener">{t.nav.pedir}</a>
+
+      <button class="nav__hamburguesa" id="nav-hamburguesa" type="button" aria-expanded="false" aria-controls="nav-movil">
+        <span class="visualmente-oculto">{t.nav.abrirMenu}</span>
+        <span class="nav__raya" aria-hidden="true"></span>
+        <span class="nav__raya" aria-hidden="true"></span>
+        <span class="nav__raya" aria-hidden="true"></span>
+      </button>
+    </div>
+  </div>
+
+  <div class="nav__movil" id="nav-movil" hidden>
+    <div class="contenedor">
+      <a href="#historia">{t.nav.historia}</a>
+      <a href="#coleccion">{t.nav.coleccion}</a>
+      <a href="#regalo">{t.nav.regalo}</a>
+      <a href="#waxmelts">{t.nav.waxmelts}</a>
+      <a href="#faq">{t.nav.faqLargo}</a>
+      <a href="#contacto">{t.nav.contacto}</a>
+    </div>
+  </div>
+</nav>
+
+<div class="luz-vela" id="luz-vela" aria-hidden="true"></div>
+
+<main id="top">
+  <!-- ══════════════ HERO ══════════════ -->
+  <section class="hero">
+    <div class="contenedor hero__grid">
+      <div class="hero__texto">
+        <div class="kicker">
+          <span class="kicker__linea" style="background: var(--acento);"></span>
+          <span class="kicker__texto">{t.hero.eyebrow}</span>
+        </div>
+        <h1 class="hero__titulo">
+          {t.hero.tituloAntes}<em>{t.hero.tituloEnfasis}</em>{t.hero.tituloDespues}
+        </h1>
+        <p class="hero__parrafo">{t.hero.intro}</p>
+        <div class="hero__ctas">
+          <a href="#coleccion" class="pill pill--oscura">{t.hero.verColeccion}</a>
+          <a href="#historia" class="pill pill--borde">{t.hero.nuestraHistoria}</a>
+        </div>
+        <div class="microclaims" aria-label={t.hero.compromisos}>
+          {t.hero.claims.map((claim, i) => (
+            <>
+              {i > 0 && <i aria-hidden="true"></i>}
+              <span>{claim}</span>
+            </>
+          ))}
+        </div>
+      </div>
+
+      <!-- La vela encendida, dibujada en CSS -->
+      <div class="hero__escena" aria-hidden="true">
+        <div class="escena">
+          <div class="escena__circulo"></div>
+          <div class="velon-zoom">
+            <div class="velon">
+              <div class="velon__halo"></div>
+              <div class="velon__mecha"></div>
+              <div class="velon__llama"></div>
+              <div class="velon__sombra"></div>
+              <div class="velon__tarro">
+                <div class="velon__boca"></div>
+                <div class="velon__etiqueta"><span class="velon__logo">pabilo</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════ 01 · HISTORIA ══════════════ -->
+  <section class="seccion" id="historia">
+    <div class="contenedor historia__grid">
+      <div class="historia__texto">
+        <div class="kicker">
+          <span class="kicker__num">01</span>
+          <span class="kicker__linea"></span>
+          <span class="kicker__texto">{t.historia.eyebrow}</span>
+        </div>
+        <h2 class="titulo">
+          {t.historia.tituloAntes}<em>{t.historia.tituloEnfasis}</em>{t.historia.tituloDespues}
+        </h2>
+        <p class="parrafo">{t.historia.parrafo1}</p>
+        <p class="parrafo">{t.historia.parrafo2}</p>
+        <p class="firma">{t.historia.firma}</p>
+      </div>
+      <div class="historia__foto">
+        <div class="placa">
+          <Image src={fotoHistoria} alt={t.historia.altFoto} width={1040} quality={80} />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════ 02 · COLECCIÓN (cinta rotatoria) ══════════════ -->
+  <section class="seccion" id="coleccion" style="padding-bottom: 90px;">
+    <div class="contenedor">
+      <div class="coleccion__cabecera">
+        <div>
+          <div class="kicker">
+            <span class="kicker__num">02</span>
+            <span class="kicker__linea"></span>
+            <span class="kicker__texto">{t.coleccion.eyebrow}</span>
+          </div>
+          <h2 class="titulo">
+            {t.coleccion.tituloAntes}<em>{t.coleccion.tituloEnfasis}</em>{t.coleccion.tituloDespues}
+          </h2>
+          <p class="parrafo">{t.coleccion.intro}</p>
+        </div>
+        <div class="flechas">
+          <button type="button" class="flecha" data-prev aria-label={t.coleccion.anterior}>‹</button>
+          <button type="button" class="flecha" data-next aria-label={t.coleccion.siguiente}>›</button>
+        </div>
+      </div>
+
+      <div class="cinta" id="cinta-velas" aria-label={t.coleccion.listaAria}>
+        {velas.map((vela) => {
+          const nombre = campo(vela, 'nombre', lang);
+          return (
+            <article class="tarjeta">
+              <div class="tarjeta__escena" aria-hidden="true">
+                <div class="tarjeta__circulo" style={`background: ${vela.circulo};`}></div>
+                <div class="mini">
+                  <div class="mini__mecha"></div>
+                  <div class="mini__tarro">
+                    <div class="mini__boca"></div>
+                    <div class="mini__etiqueta">
+                      <span class="mini__logo">pabilo</span>
+                      <span class="mini__nombre">{nombre}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="tarjeta__cuerpo">
+                <div class="tarjeta__tag">{campo(vela, 'familia', lang)}</div>
+                <h3 class="tarjeta__nombre">{nombre}</h3>
+                <p class="tarjeta__desc">{campo(vela, 'nota', lang)}</p>
+                <div class="tarjeta__pie">
+                  <span class="tarjeta__precio">{vela.precio} €</span>
+                  <span class="tarjeta__horas">{vela.duracion} {t.coleccion.horas}</span>
+                </div>
+                <a href={wa(t.whatsapp.vela(nombre))} class="tarjeta__pedir" target="_blank" rel="noopener">
+                  {t.coleccion.pedir}
+                </a>
+              </div>
+            </article>
+          );
+        })}
+      </div>
+
+      <!-- El taller de mezclas -->
+      <div class="mezclas" id="aromas">
+        <div class="mezclas__intro">
+          <div class="mezclas__eyebrow">{t.mezclas.eyebrow}</div>
+          <h3 class="mezclas__titulo">
+            {t.mezclas.tituloAntes}<em>{t.mezclas.tituloEnfasis}</em>{t.mezclas.tituloDespues}
+          </h3>
+          <p class="mezclas__texto">{t.mezclas.intro}</p>
+        </div>
+        <div class="mezclas__panel">
+          <div class="mezclas__controles">
+            <div class="mezclas__campo">
+              <label class="mezclas__label" for="aroma-a">{t.mezclas.primerAroma}</label>
+              <select id="aroma-a"><option value="">{t.mezclas.eligeAroma}</option></select>
+            </div>
+            <div class="mezclas__mas" aria-hidden="true">+</div>
+            <div class="mezclas__campo">
+              <label class="mezclas__label" for="aroma-b">{t.mezclas.segundoAroma}</label>
+              <select id="aroma-b" disabled><option value="">{t.mezclas.combinaCon}</option></select>
+            </div>
+          </div>
+          <div class="mezclas__resultado" id="mezcla-resultado" aria-live="polite">
+            <span class="mezclas__pista">{t.mezclas.pistaInicio}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════ 03 · WAX MELTS ══════════════ -->
+  <section class="seccion seccion--arena" id="waxmelts">
+    <div class="contenedor wax__grid">
+      <div class="wax__intro">
+        <div class="kicker">
+          <span class="kicker__num">03</span>
+          <span class="kicker__linea"></span>
+          <span class="kicker__texto">{t.wax.eyebrow}</span>
+        </div>
+        <h2 class="titulo">{t.wax.tituloAntes}<em>{t.wax.tituloEnfasis}</em>{t.wax.tituloDespues}</h2>
+        <p class="parrafo">{t.wax.intro}</p>
+        <a href={waMelts} class="pill pill--acento" target="_blank" rel="noopener">{t.wax.cta}</a>
+      </div>
+      <div class="wax__filas">
+        {t.wax.filas.map((fila) => (
+          <div class="wax__fila">
+            <h3>{fila.titulo}</h3>
+            <p>{fila.texto}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════ 04 · REGALO ══════════════ -->
+  <section class="seccion" id="regalo">
+    <div class="contenedor">
+      <div class="regalo__cabecera">
+        <div class="kicker">
+          <span class="kicker__num">04</span>
+          <span class="kicker__linea"></span>
+          <span class="kicker__texto">{t.regalo.eyebrow}</span>
+        </div>
+        <h2 class="titulo">
+          {t.regalo.tituloAntes}<em>{t.regalo.tituloEnfasis}</em>{t.regalo.tituloDespues}
+        </h2>
+        <p class="parrafo">{t.regalo.intro}</p>
+      </div>
+      <div class="regalo__grid">
+        {t.regalo.tarjetas.map((tarjeta) => (
+          <div class="regalo__tarjeta">
+            <div class="regalo__icono" aria-hidden="true">{tarjeta.icono}</div>
+            <h3>{tarjeta.titulo}</h3>
+            <p>{tarjeta.texto}</p>
+          </div>
+        ))}
+      </div>
+      <div class="regalo__cta">
+        <a href={waRegalo} class="pill pill--borde-lleno" target="_blank" rel="noopener">{t.regalo.cta}</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════ DEL TALLER ══════════════ -->
+  <section class="taller" id="taller">
+    <div class="contenedor">
+      <div class="kicker">
+        <span class="kicker__linea"></span>
+        <span class="kicker__texto">{t.taller.eyebrow}</span>
+      </div>
+      <h2 class="titulo">{t.taller.tituloAntes}<em>{t.taller.tituloEnfasis}</em>{t.taller.tituloDespues}</h2>
+      <div class="taller__grid">
+        <Image class="taller__foto" src={fotoHistoria} alt={t.taller.altFoto} width={720} quality={78} />
+        <div class="taller__mosaico">
+          {velas.slice(0, 4).map((v) => (
+            <div class="taller__pronto" style={`background: ${v.circulo};`}>{t.taller.pronto}</div>
+          ))}
+        </div>
+      </div>
+      <p class="taller__nota">{t.taller.nota}</p>
+    </div>
+  </section>
+
+  <!-- ══════════════ 05 · CÓMO PEDIMOS ══════════════ -->
+  <section class="seccion seccion--arena" id="pedidos">
+    <div class="contenedor">
+      <div class="pedidos__cabecera">
+        <div class="kicker">
+          <span class="kicker__num">05</span>
+          <span class="kicker__linea"></span>
+          <span class="kicker__texto">{t.pedidos.eyebrow}</span>
+        </div>
+        <h2 class="titulo">
+          {t.pedidos.tituloAntes}<em>{t.pedidos.tituloEnfasis}</em>{t.pedidos.tituloDespues}
+        </h2>
+      </div>
+      <div class="pasos">
+        {t.pedidos.pasos.map((paso, i) => (
+          <div class="paso">
+            <div class="paso__num">{String(i + 1).padStart(2, '0')}</div>
+            <h3>{paso.titulo}</h3>
+            <p>{paso.texto}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════ 06 · FAQ ══════════════ -->
+  <section class="seccion" id="faq">
+    <div class="contenedor faq__grid">
+      <div class="faq__cabecera">
+        <div class="kicker">
+          <span class="kicker__num">06</span>
+          <span class="kicker__linea"></span>
+          <span class="kicker__texto">{t.faq.eyebrow}</span>
+        </div>
+        <h2 class="titulo">{t.faq.tituloAntes}<em>{t.faq.tituloEnfasis}</em>{t.faq.tituloDespues}</h2>
+      </div>
+      <div class="faq__lista">
+        {faq.map((item, i) => (
+          <details class="faq__item" open={i === 0}>
+            <summary>
+              <span class="faq__q">{campo(item, 'pregunta', lang)}</span>
+              <span class="faq__signo" aria-hidden="true"></span>
+            </summary>
+            <p class="faq__r">{campo(item, 'respuesta', lang)}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  {/* ══════════════ OPINIONES ══════════════ */}
+  {testimonios.length > 0 && (
+    <section class="seccion" id="resenas" style="padding-top: 0;">
+      <div class="contenedor">
+        <div class="opiniones__cabecera">
+          <div class="kicker kicker--centro">
+            <span class="kicker__linea"></span>
+            <span class="kicker__texto">{t.opiniones.eyebrow}</span>
+            <span class="kicker__linea"></span>
+          </div>
+          <h2 class="titulo">
+            {t.opiniones.tituloAntes}<em>{t.opiniones.tituloEnfasis}</em>{t.opiniones.tituloDespues}
+          </h2>
+        </div>
+        <div class="opiniones__grid">
+          {testimonios.map((op) => (
+            <figure class="opinion">
+              <div class="opinion__estrellas" aria-label={t.opiniones.estrellas}>★★★★★</div>
+              <blockquote class="opinion__texto">«{campo(op, 'texto', lang)}»</blockquote>
+              <figcaption class="opinion__autor"><strong>{op.autor}</strong> · {op.lugar}</figcaption>
+            </figure>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- ══════════════ 07 · CONTACTO + FOOTER ══════════════ -->
+  <section class="contacto" id="contacto">
+    <div class="contenedor">
+      <div class="contacto__centro">
+        <div class="kicker kicker--centro">
+          <span class="kicker__num">07</span>
+          <span class="kicker__linea"></span>
+          <span class="kicker__texto">{t.contacto.eyebrow}</span>
+        </div>
+        <h2 class="contacto__titulo">
+          {t.contacto.tituloAntes}<em>{t.contacto.tituloEnfasis}</em>{t.contacto.tituloDespues}
+        </h2>
+        <p class="contacto__parrafo">{t.contacto.intro}</p>
+        <div class="contacto__cta">
+          <a href={waContacto} class="pill pill--clara" target="_blank" rel="noopener">{t.contacto.cta}</a>
+        </div>
+        <p class="contacto__lugar">{t.contacto.lugar}</p>
+      </div>
+
+      <div class="footer__cols">
+        <div class="footer__marca">
+          <a href="#top" class="marca" aria-label={t.footer.volverArriba}>pabilo</a>
+          <p class="footer__desc">{t.footer.desc}</p>
+        </div>
+        <nav aria-label={t.footer.enlacesPie}>
+          <div class="footer__titulo">{t.footer.explora}</div>
+          <div class="footer__lista">
+            <a href="#historia">{t.nav.historia}</a>
+            <a href="#coleccion">{t.nav.coleccion}</a>
+            <a href="#regalo">{t.nav.regalo}</a>
+            <a href="#waxmelts">{t.nav.waxmelts}</a>
+            <a href="#faq">{t.nav.faqLargo}</a>
+          </div>
+        </nav>
+        <div>
+          <div class="footer__titulo">{t.footer.contacto}</div>
+          <div class="footer__lista">
+            {linkWhatsApp() && <a href={waGeneral} target="_blank" rel="noopener">WhatsApp</a>}
+            {contacto.email && <a href={`mailto:${contacto.email}`}>{contacto.email}</a>}
+            {contacto.instagram && (
+              <a href={`https://instagram.com/${contacto.instagram}`} target="_blank" rel="noopener">
+                @{contacto.instagram}
+              </a>
+            )}
+            <span>{t.contacto.lugar}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer__base">
+        <span class="footer__lema">{t.footer.lema}</span>
+        <span class="footer__copy">{t.footer.copy}</span>
+        <span class="footer__credito">
+          {t.footer.creditoAntes}
+          <a href="https://portafoliowilliam.pages.dev" target="_blank" rel="noopener"> William González</a>
+        </span>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- ══════════════ CHAT DE AYUDA (Groq vía /api/chat) ══════════════ -->
+<div class="chat" id="chat">
+  <button class="chat__boton" id="chat-boton" type="button" aria-expanded="false" aria-controls="chat-panel" aria-label={t.chat.abrir}>
+    <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <rect x="8" y="10.5" width="8" height="10" rx="1.8" />
+      <path
+        class="chat__flama"
+        d="M12 3c1.5 1.9 2.2 3.2 2.2 4.3a2.2 2.2 0 1 1-4.4 0C9.8 6.2 10.5 4.9 12 3Z"
+        stroke="none"
+        style="fill: var(--llama, #CE5B2A);"
+      />
+    </svg>
+  </button>
+  <button class="chat__saludo" id="chat-saludo" type="button" hidden>{t.chat.saludoBurbuja}</button>
+
+  <div class="chat__panel" id="chat-panel" role="dialog" aria-label={t.chat.dialogo} hidden>
+    <div class="chat__cabecera">
+      <div>
+        <span class="chat__titulo">{t.chat.titulo}</span>
+        <span class="chat__sub">{t.chat.sub}</span>
+      </div>
+      <button class="chat__cerrar" id="chat-cerrar" type="button" aria-label={t.chat.cerrar}>×</button>
+    </div>
+    <div class="chat__mensajes" id="chat-mensajes" aria-live="polite"></div>
+    <div class="chat__chips" id="chat-chips">
+      {t.chat.chips.map((chip) => <button type="button" data-chip>{chip}</button>)}
+    </div>
+    <form class="chat__form" id="chat-form">
+      <label class="visualmente-oculto" for="chat-input">{t.chat.tuPregunta}</label>
+      <input id="chat-input" type="text" placeholder={t.chat.placeholder} maxlength="300" autocomplete="off" />
+      <button type="submit" class="chat__enviar" aria-label={t.chat.enviar}>
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
+          <path d="M2.7 21.3 22.6 12 2.7 2.7l.05 7.4L17 12 2.75 13.9z"/>
+        </svg>
+      </button>
+    </form>
+  </div>
+</div>
+
+{linkWhatsApp() && (
+  <a class="wsp-flotante" href={waGeneral} target="_blank" rel="noopener" aria-label={t.whatsapp.flotante}>
+    <svg viewBox="0 0 32 32" width="28" height="28" aria-hidden="true" fill="currentColor">
+      <path d="M16.001 3C9.373 3 4 8.373 4 15c0 2.1.55 4.152 1.594 5.965L4 29l8.223-1.57A11.94 11.94 0 0 0 16 27c6.627 0 12-5.373 12-12S22.628 3 16.001 3Zm0 21.727c-1.78 0-3.52-.48-5.04-1.386l-.36-.214-4.88.932.93-4.76-.235-.377A9.68 9.68 0 0 1 6.273 15c0-5.36 4.365-9.727 9.728-9.727 5.362 0 9.726 4.367 9.726 9.727 0 5.362-4.364 9.727-9.726 9.727Zm5.34-7.29c-.293-.146-1.73-.853-1.998-.95-.268-.098-.463-.146-.658.147-.195.293-.756.95-.927 1.145-.17.195-.341.22-.634.073-.293-.146-1.237-.456-2.356-1.454-.87-.776-1.458-1.735-1.63-2.028-.17-.293-.018-.451.129-.597.132-.131.293-.341.44-.512.146-.17.195-.293.293-.488.098-.195.049-.366-.024-.512-.073-.146-.658-1.586-.902-2.172-.237-.57-.479-.492-.658-.5l-.561-.01c-.195 0-.512.073-.78.366-.268.293-1.024 1-1.024 2.44 0 1.44 1.049 2.83 1.195 3.026.146.195 2.064 3.152 5.001 4.42.699.302 1.244.482 1.669.617.701.223 1.339.192 1.843.117.562-.084 1.73-.708 1.974-1.39.244-.683.244-1.269.17-1.39-.072-.122-.267-.195-.56-.341Z"/>
+    </svg>
+  </a>
+)}
+
+<!-- Todo lo que el navegador necesita, ya traducido y resuelto -->
+<script type="application/json" id="datos-pabilo" set:html={JSON.stringify(datosCliente)} />
+
+<script>
+  // Los textos y las mezclas vienen resueltos desde el servidor,
+  // así este archivo sirve igual para la web en español y en inglés.
+  const datos = JSON.parse(document.getElementById('datos-pabilo')?.textContent || '{}');
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // ── Menú de pantallas pequeñas ──
+  const hamburguesa = document.getElementById('nav-hamburguesa');
+  const menuMovil = document.getElementById('nav-movil');
+  if (hamburguesa && menuMovil) {
+    const abrirMenu = (abierto: boolean) => {
+      menuMovil.hidden = !abierto;
+      hamburguesa.setAttribute('aria-expanded', String(abierto));
+      hamburguesa.classList.toggle('abierta', abierto);
+      const etiqueta = hamburguesa.querySelector('.visualmente-oculto');
+      if (etiqueta) etiqueta.textContent = abierto ? datos.nav.cerrarMenu : datos.nav.abrirMenu;
+    };
+
+    hamburguesa.addEventListener('click', () => abrirMenu(menuMovil.hidden));
+    menuMovil.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => abrirMenu(false)));
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !menuMovil.hidden) {
+        abrirMenu(false);
+        hamburguesa.focus();
+      }
+    });
+    window.matchMedia('(min-width: 861px)').addEventListener('change', (e) => {
+      if (e.matches) abrirMenu(false);
+    });
+  }
+
+  // ── «Enciende la vela»: la web se apaga y alumbra la llama ──
+  const velaBoton = document.getElementById('vela-boton');
+  const luz = document.getElementById('luz-vela');
+  const raiz = document.documentElement;
+  const NOCHE = 'pabilo-noche';
+
+  const pintarVela = (encendida: boolean) => {
+    raiz.classList.toggle('noche', encendida);
+    velaBoton?.setAttribute('aria-pressed', String(encendida));
+    const rotulo = encendida ? datos.nav.apagar : datos.nav.encender;
+    velaBoton?.setAttribute('title', rotulo);
+    const etiqueta = velaBoton?.querySelector('.visualmente-oculto');
+    if (etiqueta) etiqueta.textContent = rotulo;
+    document
+      .querySelector('meta[name="theme-color"]')
+      ?.setAttribute('content', encendida ? '#16120F' : '#2B2521');
+  };
+
+  pintarVela(raiz.classList.contains('noche'));
+
+  velaBoton?.addEventListener('click', () => {
+    const encendida = !raiz.classList.contains('noche');
+    pintarVela(encendida);
+    try { localStorage.setItem(NOCHE, encendida ? '1' : '0'); } catch (e) {}
+  });
+
+  // La luz sigue al cursor con un poco de pereza, como una llama
+  if (luz && window.matchMedia('(hover: hover) and (pointer: fine)').matches && !reduceMotion) {
+    let destinoX = window.innerWidth / 2;
+    let destinoY = window.innerHeight * 0.35;
+    let lx = destinoX;
+    let ly = destinoY;
+    let despierta = false;
+
+    window.addEventListener(
+      'pointermove',
+      (e) => {
+        destinoX = e.clientX;
+        destinoY = e.clientY;
+        if (!despierta) {
+          despierta = true;
+          lx = destinoX;
+          ly = destinoY;
+          luz.classList.add('encendida');
+        }
+      },
+      { passive: true }
+    );
+
+    const seguirLuz = () => {
+      lx += (destinoX - lx) * 0.14;
+      ly += (destinoY - ly) * 0.14;
+      luz.style.setProperty('--luz-x', lx.toFixed(1) + 'px');
+      luz.style.setProperty('--luz-y', ly.toFixed(1) + 'px');
+      requestAnimationFrame(seguirLuz);
+    };
+    requestAnimationFrame(seguirLuz);
+  }
+
+  // ── La cinta de velas: rota sola, en bucle, como una marquesina ──
+  const cinta = document.getElementById('cinta-velas');
+  if (cinta) {
+    const originales = Array.from(cinta.children);
+
+    // Clonamos el set completo para que el bucle no tenga costuras.
+    // Los clones son decorativos: ocultos a lectores y sin foco de teclado.
+    originales.forEach((el) => {
+      const clon = el.cloneNode(true) as HTMLElement;
+      clon.setAttribute('aria-hidden', 'true');
+      clon.querySelectorAll('a').forEach((a) => a.setAttribute('tabindex', '-1'));
+      cinta.appendChild(clon);
+    });
+
+    let anchoSet = 0;
+    const medir = () => {
+      const primerClon = cinta.children[originales.length] as HTMLElement | undefined;
+      const primero = originales[0] as HTMLElement;
+      anchoSet = primerClon ? primerClon.offsetLeft - primero.offsetLeft : 0;
+    };
+    medir();
+    window.addEventListener('resize', medir);
+
+    let auto = !reduceMotion;
+    let reanudarTimer: number | undefined;
+    const pausar = () => {
+      auto = false;
+      if (reanudarTimer) window.clearTimeout(reanudarTimer);
+    };
+    const reanudar = (ms = 1200) => {
+      if (reanudarTimer) window.clearTimeout(reanudarTimer);
+      reanudarTimer = window.setTimeout(() => { auto = !reduceMotion; }, ms);
+    };
+
+    cinta.addEventListener('pointerenter', pausar);
+    cinta.addEventListener('pointerleave', () => reanudar(600));
+    cinta.addEventListener('touchstart', pausar, { passive: true });
+    cinta.addEventListener('touchend', () => reanudar(2400), { passive: true });
+    cinta.addEventListener('focusin', pausar);
+    cinta.addEventListener('focusout', () => reanudar(800));
+
+    const VELOCIDAD = 34; // píxeles por segundo — pausado, como una cinta
+    let pos = cinta.scrollLeft;
+    let anterior = performance.now();
+    const bucle = (ahora: number) => {
+      const dt = Math.min((ahora - anterior) / 1000, 0.1);
+      anterior = ahora;
+      if (Math.abs(cinta.scrollLeft - pos) > 2) pos = cinta.scrollLeft;
+      if (auto && anchoSet > 0) {
+        pos += VELOCIDAD * dt;
+        if (pos >= anchoSet) pos -= anchoSet;
+        cinta.scrollLeft = pos;
+      }
+      requestAnimationFrame(bucle);
+    };
+    if (!reduceMotion) requestAnimationFrame(bucle);
+
+    const PASO = 320;
+    document.querySelector('[data-prev]')?.addEventListener('click', () => {
+      pausar();
+      if (cinta.scrollLeft < PASO && anchoSet > 0) cinta.scrollLeft += anchoSet;
+      cinta.scrollBy({ left: -PASO, behavior: 'smooth' });
+      reanudar(2600);
+    });
+    document.querySelector('[data-next]')?.addEventListener('click', () => {
+      pausar();
+      cinta.scrollBy({ left: PASO, behavior: 'smooth' });
+      reanudar(2600);
+    });
+  }
+
+  // ── El taller de mezclas ──
+  // Solo se ofrecen mezclas que existen: los desplegables salen de las
+  // combinaciones probadas, que llegan ya resueltas desde el servidor.
+  const selA = document.getElementById('aroma-a') as HTMLSelectElement | null;
+  const selB = document.getElementById('aroma-b') as HTMLSelectElement | null;
+  const resultado = document.getElementById('mezcla-resultado');
+
+  if (selA && selB && resultado && datos.mezclador) {
+    const { aromas, combos, textos } = datos.mezclador;
+    const claveDe = (a: string, b: string) => [a, b].sort().join('+');
+    const pareja = (clave: string) => aromas.find((a) => a.clave === clave);
+
+    selA.innerHTML =
+      `<option value="">${textos.eligeAroma}</option>` +
+      aromas.map((a) => `<option value="${a.clave}">${a.etiqueta}</option>`).join('');
+
+    const pintar = () => {
+      const a = selA.value;
+      const b = selB.value;
+      if (!a) {
+        resultado.innerHTML = `<span class="mezclas__pista">${textos.pistaInicio}</span>`;
+        return;
+      }
+      if (!b) {
+        resultado.innerHTML = `<span class="mezclas__pista">${textos.pistaPareja}</span>`;
+        return;
+      }
+      const combo = combos[claveDe(a, b)];
+      if (!combo) return; // no debería ocurrir: el desplegable ya filtra
+      resultado.innerHTML =
+        `<span class="mezclas__nombre">«${combo.titulo}»</span>` +
+        `<p class="mezclas__detalle">${combo.texto}</p>` +
+        `<a href="${combo.wa}" target="_blank" rel="noopener">${textos.pedirMezcla}</a>`;
+    };
+
+    selA.addEventListener('change', () => {
+      const suyas = pareja(selA.value)?.parejas ?? [];
+      const anterior = selB.value;
+      selB.innerHTML =
+        `<option value="">${textos.combinaCon}</option>` +
+        suyas.map((p) => `<option value="${p.clave}">${p.etiqueta}</option>`).join('');
+      selB.disabled = !selA.value;
+      // si solo hay una pareja posible, la elegimos nosotros
+      if (suyas.length === 1) selB.value = suyas[0].clave;
+      else if (suyas.some((p) => p.clave === anterior)) selB.value = anterior;
+      pintar();
+    });
+    selB.addEventListener('change', pintar);
+  }
+
+  // ── FAQ: solo una pregunta abierta a la vez ──
+  const faqItems = Array.from(document.querySelectorAll('.faq__item')) as HTMLDetailsElement[];
+  faqItems.forEach((item) => {
+    item.addEventListener('toggle', () => {
+      if (item.open) faqItems.forEach((otro) => { if (otro !== item) otro.open = false; });
+    });
+  });
+
+  // ── Chat de ayuda (habla con /api/chat, que llama a Groq en el servidor) ──
+  const chatBoton = document.getElementById('chat-boton');
+  const chatPanel = document.getElementById('chat-panel');
+  const chatCerrar = document.getElementById('chat-cerrar');
+  const chatMensajes = document.getElementById('chat-mensajes');
+  const chatChips = document.getElementById('chat-chips');
+  const chatForm = document.getElementById('chat-form') as HTMLFormElement | null;
+  const chatInput = document.getElementById('chat-input') as HTMLInputElement | null;
+
+  if (chatBoton && chatPanel && chatMensajes && chatForm && chatInput) {
+    type Mensaje = { rol: 'usuario' | 'bot'; texto: string };
+    const historial: Mensaje[] = [];
+    let esperando = false;
+    let saludado = false;
+
+    const pintar = (rol: Mensaje['rol'], texto: string) => {
+      const burbuja = document.createElement('div');
+      burbuja.className = `chat__burbuja chat__burbuja--${rol}`;
+      burbuja.textContent = texto;
+      chatMensajes.appendChild(burbuja);
+      chatMensajes.scrollTop = chatMensajes.scrollHeight;
+      return burbuja;
+    };
+
+    const abrir = () => {
+      chatPanel.hidden = false;
+      chatBoton.setAttribute('aria-expanded', 'true');
+      if (!saludado) {
+        saludado = true;
+        historial.push({ rol: 'bot', texto: datos.chat.saludo });
+        pintar('bot', datos.chat.saludo);
+      }
+      chatInput.focus();
+    };
+    const cerrar = () => {
+      chatPanel.hidden = true;
+      chatBoton.setAttribute('aria-expanded', 'false');
+    };
+
+    chatBoton.addEventListener('click', () => (chatPanel.hidden ? abrir() : cerrar()));
+    chatCerrar?.addEventListener('click', cerrar);
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !chatPanel.hidden) cerrar();
+    });
+
+    // Burbujita de saludo: aparece a los segundos, una vez por sesión
+    const saludoBurbuja = document.getElementById('chat-saludo');
+    const YA_SALUDADO = 'pabilo-chat-saludado';
+    const ocultarSaludo = () => saludoBurbuja?.setAttribute('hidden', '');
+    if (saludoBurbuja && !sessionStorage.getItem(YA_SALUDADO)) {
+      window.setTimeout(() => {
+        if (chatPanel.hidden && !sessionStorage.getItem(YA_SALUDADO)) {
+          saludoBurbuja.hidden = false;
+          sessionStorage.setItem(YA_SALUDADO, '1');
+          window.setTimeout(ocultarSaludo, 14000);
+        }
+      }, 6000);
+      saludoBurbuja.addEventListener('click', () => {
+        ocultarSaludo();
+        abrir();
+      });
+    }
+    chatBoton.addEventListener('click', ocultarSaludo);
+
+    const enviar = async (texto: string) => {
+      const limpio = texto.trim();
+      if (!limpio || esperando) return;
+      esperando = true;
+      historial.push({ rol: 'usuario', texto: limpio });
+      pintar('usuario', limpio);
+      chatInput.value = '';
+      chatChips?.setAttribute('hidden', '');
+
+      const escribiendo = pintar('bot', '…');
+      escribiendo.classList.add('chat__burbuja--escribiendo');
+
+      try {
+        const r = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ mensajes: historial.slice(-8), idioma: datos.chat.idioma }),
+        });
+        if (!r.ok) throw new Error('respuesta no ok');
+        const respuestaJson = await r.json();
+        const respuesta =
+          typeof respuestaJson.respuesta === 'string' && respuestaJson.respuesta
+            ? respuestaJson.respuesta
+            : datos.chat.sinRespuesta;
+        historial.push({ rol: 'bot', texto: respuesta });
+        escribiendo.classList.remove('chat__burbuja--escribiendo');
+        escribiendo.textContent = respuesta;
+      } catch {
+        escribiendo.classList.remove('chat__burbuja--escribiendo');
+        escribiendo.textContent = datos.chat.error;
+      } finally {
+        esperando = false;
+        chatMensajes.scrollTop = chatMensajes.scrollHeight;
+      }
+    };
+
+    chatForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      enviar(chatInput.value);
+    });
+    chatChips?.querySelectorAll('[data-chip]').forEach((chip) => {
+      chip.addEventListener('click', () => enviar(chip.textContent || ''));
+    });
+  }
+</script>

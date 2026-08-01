@@ -3,30 +3,38 @@ import '../styles/global.css';
 import { velas } from '../data/velas.js';
 import { contacto } from '../data/contacto.js';
 import { faq } from '../data/faq.js';
+import { textos, campo, idiomas } from '../i18n/index.js';
 
 interface Props {
+  lang?: string;
   titulo?: string;
   descripcion?: string;
   imagen?: string;
 }
 
-const {
-  titulo = 'Pabilo · Velas de autor',
-  descripcion = 'Velas artesanales en pequeñas tandas, con cera de soja y cristal. El fuego de los pequeños placeres.',
-  imagen = '/og.png',
-} = Astro.props;
+const { lang = 'es', titulo, descripcion, imagen = '/og.jpg' } = Astro.props;
+const t = textos(lang);
+
+const tituloFinal = titulo ?? t.meta.titulo;
+const descripcionFinal = descripcion ?? t.meta.descripcion;
 
 // URL absoluta de la página y de la imagen (para las tarjetas al compartir).
 // Se apoyan en `site` de astro.config.mjs — cámbialo por el dominio real.
 const urlCanonica = new URL(Astro.url.pathname, Astro.site).href;
 const urlImagen = new URL(imagen, Astro.site).href;
 
+// Cada idioma en su dirección, para que los buscadores sepan que son
+// la misma página y ofrezcan a cada visitante la suya.
+const rutas = { es: '/', en: '/en/' };
+const alternativas = Object.entries(rutas).map(([codigo, ruta]) => ({
+  codigo,
+  href: new URL(ruta, Astro.site).href,
+}));
+
 // ── Datos estructurados (Schema.org) ──
 // Le explican a Google qué es Pabilo, qué vende y a qué precio, para que
 // pueda mostrar la ficha del negocio y las velas en los resultados.
-const perfiles = [
-  contacto.instagram && `https://instagram.com/${contacto.instagram}`,
-].filter(Boolean);
+const perfiles = [contacto.instagram && `https://instagram.com/${contacto.instagram}`].filter(Boolean);
 
 const datosEstructurados = {
   '@context': 'https://schema.org',
@@ -35,27 +43,27 @@ const datosEstructurados = {
       '@type': 'LocalBusiness',
       '@id': `${new URL('/', Astro.site).href}#negocio`,
       name: 'Pabilo',
-      description: descripcion,
-      slogan: 'El fuego de los pequeños placeres',
-      url: new URL('/', Astro.site).href,
+      description: descripcionFinal,
+      slogan: t.hero.tituloAntes + t.hero.tituloEnfasis,
+      url: urlCanonica,
       image: urlImagen,
       priceRange: '20 € - 24 €',
-      areaServed: contacto.ciudad,
-      address: { '@type': 'PostalAddress', addressRegion: contacto.ciudad, addressCountry: 'ES' },
+      areaServed: t.contacto.lugar,
+      address: { '@type': 'PostalAddress', addressRegion: t.contacto.lugar, addressCountry: 'ES' },
       ...(contacto.email && { email: contacto.email }),
       ...(perfiles.length && { sameAs: perfiles }),
     },
     {
       '@type': 'ItemList',
-      name: 'Colección de velas Pabilo',
+      name: t.coleccion.eyebrow,
       itemListElement: velas.map((v, i) => ({
         '@type': 'ListItem',
         position: i + 1,
         item: {
           '@type': 'Product',
-          name: v.nombre,
-          description: v.nota,
-          category: v.familia,
+          name: campo(v, 'nombre', lang),
+          description: campo(v, 'nota', lang),
+          category: campo(v, 'familia', lang),
           brand: { '@type': 'Brand', name: 'Pabilo' },
           offers: {
             '@type': 'Offer',
@@ -71,8 +79,8 @@ const datosEstructurados = {
       '@type': 'FAQPage',
       mainEntity: faq.map((f) => ({
         '@type': 'Question',
-        name: f.pregunta,
-        acceptedAnswer: { '@type': 'Answer', text: f.respuesta },
+        name: campo(f, 'pregunta', lang),
+        acceptedAnswer: { '@type': 'Answer', text: campo(f, 'respuesta', lang) },
       })),
     },
   ],
@@ -80,31 +88,42 @@ const datosEstructurados = {
 ---
 
 <!doctype html>
-<html lang="es">
+<html lang={t.htmlLang}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="generator" content={Astro.generator} />
 
-    <title>{titulo}</title>
-    <meta name="description" content={descripcion} />
+    <title>{tituloFinal}</title>
+    <meta name="description" content={descripcionFinal} />
     <link rel="canonical" href={urlCanonica} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="theme-color" content="#2B2521" />
 
+    <!-- La misma página en cada idioma -->
+    {alternativas.map((alt) => (
+      <link rel="alternate" hreflang={alt.codigo} href={alt.href} />
+    ))}
+    <link rel="alternate" hreflang="x-default" href={new URL('/', Astro.site).href} />
+
     <!-- Open Graph (tarjeta al compartir en WhatsApp, Instagram, etc.) -->
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Pabilo" />
-    <meta property="og:title" content={titulo} />
-    <meta property="og:description" content={descripcion} />
+    <meta property="og:title" content={tituloFinal} />
+    <meta property="og:description" content={descripcionFinal} />
     <meta property="og:url" content={urlCanonica} />
     <meta property="og:image" content={urlImagen} />
-    <meta property="og:locale" content="es_ES" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content={t.ogLocale} />
+    {Object.values(idiomas)
+      .filter((otro) => otro.codigo !== lang)
+      .map((otro) => <meta property="og:locale:alternate" content={otro.ogLocale} />)}
 
     <!-- Twitter / X -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content={titulo} />
-    <meta name="twitter:description" content={descripcion} />
+    <meta name="twitter:title" content={tituloFinal} />
+    <meta name="twitter:description" content={descripcionFinal} />
     <meta name="twitter:image" content={urlImagen} />
 
     <!-- Fuentes: Instrument Sans (UI) + Newsreader (display/serif) -->

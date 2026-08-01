@@ -65,18 +65,27 @@ src/
 │   ├── contacto.js       WhatsApp, email, Instagram, ciudad
 │   ├── faq.js            preguntas frecuentes
 │   └── testimonios.js    reseñas (array vacío = sección oculta)
+├── i18n/              ← los textos de la interfaz, por idioma
+│   ├── es.js             español
+│   ├── en.js             inglés
+│   └── index.js          carga los idiomas y traduce los datos
+├── components/
+│   └── Landing.astro  ← la web entera + su JavaScript, en el idioma que reciba
 ├── layouts/
-│   └── Layout.astro   ← <head>, metadatos, Open Graph y fuentes
+│   └── Layout.astro   ← <head>, metadatos, Open Graph, hreflang y fuentes
 ├── pages/
-│   └── index.astro    ← la página completa + su JavaScript
+│   ├── index.astro       la web en español  →  /
+│   └── en/index.astro    la web en inglés   →  /en/
 ├── styles/
 │   └── global.css     ← sistema de diseño y todos los estilos
 └── assets/            ← imágenes que Astro optimiza
 
 public/
 ├── _worker.js         ← Worker de Cloudflare: sirve la web y expone /api/chat
+├── robots.txt
+├── sitemap.xml
 ├── favicon.svg
-└── og.png             ← imagen al compartir en redes
+└── og.jpg             ← imagen al compartir (1200×630)
 ```
 
 ### Editar el contenido
@@ -87,6 +96,31 @@ public/
 - **Cambiar el WhatsApp** → `contacto.js`. Formato internacional sin `+` ni espacios (ej. `34612345678`). Si lo dejas vacío, los botones de WhatsApp desaparecen solos.
 - **Preguntas frecuentes** → `faq.js`.
 - **Reseñas** → `testimonios.js`. Si dejas el array vacío `[]`, la sección no se muestra.
+
+---
+
+## Los dos idiomas
+
+La web está en español (`/`) y en inglés (`/en/`), con un selector **ES / EN** en la
+barra superior. Ambas comparten diseño y datos, así que solo hay que mantener una.
+
+**Para cambiar un texto de la interfaz** (botones, títulos, mensajes del chat):
+está en `src/i18n/es.js` y su equivalente en `src/i18n/en.js`. Las claves son las
+mismas en los dos archivos.
+
+**Para traducir contenido** (velas, FAQ, reseñas): en `src/data/` cada campo tiene
+su versión inglesa con el sufijo `_en`.
+
+```js
+nombre: 'Lavanda',
+nombre_en: 'Lavender',
+```
+
+> Si olvidas una traducción no se rompe nada: esa web muestra el texto en español.
+> Añadir una vela nueva sin `_en` funciona, simplemente saldrá en español en `/en/`.
+
+El asistente de chat también responde en el idioma de la página: la web le manda
+cuál es y el Worker ajusta sus instrucciones.
 
 ---
 
