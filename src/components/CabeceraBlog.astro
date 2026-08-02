@@ -37,32 +37,11 @@ const inicio = lang === 'es' ? '/' : `/${lang}/`;
 </nav>
 
 <script>
-  // Encender la vela también desde el diario
-  const boton = document.getElementById('vela-boton');
-  const raiz = document.documentElement;
-  const rotulos = {
+  // La vela se enciende igual desde el diario
+  import { iniciarVela } from '../scripts/vela.ts';
+
+  iniciarVela({
     es: { encender: 'Enciende la vela', apagar: 'Apaga la vela' },
     en: { encender: 'Light the candle', apagar: 'Blow out the candle' },
-  };
-  const idioma = raiz.lang === 'en' ? 'en' : 'es';
-
-  const pintar = (encendida: boolean) => {
-    raiz.classList.toggle('noche', encendida);
-    boton?.setAttribute('aria-pressed', String(encendida));
-    const rotulo = encendida ? rotulos[idioma].apagar : rotulos[idioma].encender;
-    boton?.setAttribute('title', rotulo);
-    const etiqueta = boton?.querySelector('.visualmente-oculto');
-    if (etiqueta) etiqueta.textContent = rotulo;
-    document
-      .querySelector('meta[name="theme-color"]')
-      ?.setAttribute('content', encendida ? '#16120F' : '#2B2521');
-  };
-
-  pintar(raiz.classList.contains('noche'));
-
-  boton?.addEventListener('click', () => {
-    const encendida = !raiz.classList.contains('noche');
-    pintar(encendida);
-    try { localStorage.setItem('pabilo-noche', encendida ? '1' : '0'); } catch (e) {}
   });
 </script>

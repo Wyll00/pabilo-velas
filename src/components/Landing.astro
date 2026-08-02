@@ -550,6 +550,8 @@ const datosCliente = {
 <script type="application/json" id="datos-pabilo" set:html={JSON.stringify(datosCliente)} />
 
 <script>
+  import { iniciarVela, seguirConLaLuz } from '../scripts/vela.ts';
+
   // Los textos y las mezclas vienen resueltos desde el servidor,
   // así este archivo sirve igual para la web en español y en inglés.
   const datos = JSON.parse(document.getElementById('datos-pabilo')?.textContent || '{}');
@@ -580,64 +582,9 @@ const datosCliente = {
     });
   }
 
-  // ── «Enciende la vela»: la web se apaga y alumbra la llama ──
-  const velaBoton = document.getElementById('vela-boton');
-  const luz = document.getElementById('luz-vela');
-  const raiz = document.documentElement;
-  const NOCHE = 'pabilo-noche';
-
-  const pintarVela = (encendida: boolean) => {
-    raiz.classList.toggle('noche', encendida);
-    velaBoton?.setAttribute('aria-pressed', String(encendida));
-    const rotulo = encendida ? datos.nav.apagar : datos.nav.encender;
-    velaBoton?.setAttribute('title', rotulo);
-    const etiqueta = velaBoton?.querySelector('.visualmente-oculto');
-    if (etiqueta) etiqueta.textContent = rotulo;
-    document
-      .querySelector('meta[name="theme-color"]')
-      ?.setAttribute('content', encendida ? '#16120F' : '#2B2521');
-  };
-
-  pintarVela(raiz.classList.contains('noche'));
-
-  velaBoton?.addEventListener('click', () => {
-    const encendida = !raiz.classList.contains('noche');
-    pintarVela(encendida);
-    try { localStorage.setItem(NOCHE, encendida ? '1' : '0'); } catch (e) {}
-  });
-
-  // La luz sigue al cursor con un poco de pereza, como una llama
-  if (luz && window.matchMedia('(hover: hover) and (pointer: fine)').matches && !reduceMotion) {
-    let destinoX = window.innerWidth / 2;
-    let destinoY = window.innerHeight * 0.35;
-    let lx = destinoX;
-    let ly = destinoY;
-    let despierta = false;
-
-    window.addEventListener(
-      'pointermove',
-      (e) => {
-        destinoX = e.clientX;
-        destinoY = e.clientY;
-        if (!despierta) {
-          despierta = true;
-          lx = destinoX;
-          ly = destinoY;
-          luz.classList.add('encendida');
-        }
-      },
-      { passive: true }
-    );
-
-    const seguirLuz = () => {
-      lx += (destinoX - lx) * 0.14;
-      ly += (destinoY - ly) * 0.14;
-      luz.style.setProperty('--luz-x', lx.toFixed(1) + 'px');
-      luz.style.setProperty('--luz-y', ly.toFixed(1) + 'px');
-      requestAnimationFrame(seguirLuz);
-    };
-    requestAnimationFrame(seguirLuz);
-  }
+  // ── «Enciende la vela»: cae la noche sobre la web ──
+  iniciarVela({ [datos.chat.idioma]: { encender: datos.nav.encender, apagar: datos.nav.apagar } });
+  seguirConLaLuz();
 
   // ── La cinta de velas: rota sola, en bucle, como una marquesina ──
   const cinta = document.getElementById('cinta-velas');
