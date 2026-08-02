@@ -137,6 +137,9 @@ const datosEstructurados = {
     <!-- Datos estructurados para buscadores -->
     <script type="application/ld+json" set:html={JSON.stringify(datosEstructurados)} />
 
+    <!-- Lo que cada página quiera añadir al <head> (p. ej. la ficha de un artículo) -->
+    <slot name="head" />
+
     <!-- Deja la vela encendida antes de pintar, para que no parpadee al cargar -->
     <script is:inline>
       try {

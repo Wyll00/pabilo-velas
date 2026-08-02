@@ -99,6 +99,57 @@ public/
 
 ---
 
+## Escribir en el diario
+
+El blog vive en `/blog/`. **Cada artículo es un archivo `.md`** dentro de
+`src/content/blog/` — no hay panel ni base de datos: creas el archivo, escribes,
+haces push y se publica solo.
+
+El nombre del archivo es la dirección: `por-que-cera-de-soja.md` se publica en
+`/blog/por-que-cera-de-soja/`. Todo en minúsculas y con guiones, sin acentos ni eñes.
+
+Arriba del archivo van estos datos, entre `---`:
+
+```markdown
+---
+titulo: 'Cómo evitar que tu vela haga túnel'
+resumen: 'El error más común de la primera vez, y cómo se arregla.'
+fecha: 2026-09-15
+etiqueta: 'Cuidados'
+color: '#D8DCE8'
+---
+
+Aquí empieza el texto normal.
+
+## Un subtítulo
+
+Se escribe **en negrita** así, y *en cursiva* así.
+
+> Una frase destacada, para lo que quieras subrayar.
+
+- Un punto de una lista
+- Otro punto
+```
+
+| Dato | ¿Obligatorio? | Para qué sirve |
+|---|---|---|
+| `titulo` | sí | El título del artículo |
+| `resumen` | sí | Se ve en la lista y al compartir el enlace |
+| `fecha` | sí | Ordena el diario. Formato `2026-09-15` |
+| `etiqueta` | no | «El oficio», «Cuidados»… |
+| `color` | no | El tono de su tarjeta (por defecto, ámbar claro) |
+| `borrador` | no | `true` mientras lo escribes: no se publica |
+| `idioma` | no | `es` por defecto. `en` para un artículo en inglés |
+
+**Mientras escribes**, pon `borrador: true` y el artículo no aparecerá en la web
+aunque hagas push. Cuando lo quites, se publica.
+
+El enlace **Diario** aparece en el menú solo si hay algún artículo publicado en ese
+idioma, así que la web en inglés no lo muestra hasta que escribas uno con
+`idioma: en`. El mapa del sitio para Google también se actualiza solo.
+
+---
+
 ## Los dos idiomas
 
 La web está en español (`/`) y en inglés (`/en/`), con un selector **ES / EN** en la

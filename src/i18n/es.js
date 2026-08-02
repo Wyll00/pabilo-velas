@@ -31,6 +31,28 @@ export default {
     apagar: 'Apaga la vela',
     historia: 'Historia',
     faqLargo: 'Preguntas frecuentes',
+    diario: 'Diario',
+    laWeb: 'La web',
+  },
+
+  blog: {
+    eyebrow: 'El cuaderno del taller',
+    tituloAntes: 'Diario del ',
+    tituloEnfasis: 'taller',
+    tituloDespues: '.',
+    intro:
+      'Lo que vamos aprendiendo sobre la cera, los aromas y el oficio. Sin prisa, como lo hacemos todo.',
+    meta: {
+      titulo: 'Diario del taller · Pabilo',
+      descripcion:
+        'Cera, aromas y oficio: lo que aprendemos haciendo velas a mano en Canarias.',
+    },
+    leer: 'Seguir leyendo',
+    volver: '← Volver al diario',
+    escritoPor: 'Escrito por',
+    vacio: 'Aún no hay nada escrito por aquí. Pronto. 🕯️',
+    verTodos: 'Ver el diario',
+    tambien: 'Sigue leyendo',
   },
 
   hero: {

@@ -31,6 +31,27 @@ export default {
     apagar: 'Blow out the candle',
     historia: 'Our story',
     faqLargo: 'Frequently asked questions',
+    diario: 'Journal',
+    laWeb: 'The site',
+  },
+
+  blog: {
+    eyebrow: 'The studio notebook',
+    tituloAntes: 'Studio ',
+    tituloEnfasis: 'journal',
+    tituloDespues: '.',
+    intro:
+      'What we are learning about wax, scent and the craft. Unhurried, like everything else we do.',
+    meta: {
+      titulo: 'Studio journal · Pabilo',
+      descripcion: 'Wax, scent and craft: what we learn making candles by hand in the Canaries.',
+    },
+    leer: 'Keep reading',
+    volver: '← Back to the journal',
+    escritoPor: 'Written by',
+    vacio: 'Nothing written here yet. Soon. 🕯️',
+    verTodos: 'Read the journal',
+    tambien: 'Keep reading',
   },
 
   hero: {

@@ -2,6 +2,7 @@
 // La web entera, en el idioma que se le pase.
 // Español en «/», inglés en «/en/» — mismo diseño, mismos datos.
 import { Image } from 'astro:assets';
+import { getCollection } from 'astro:content';
 import { velas, combinaciones } from '../data/velas.js';
 import { contacto, linkWhatsApp } from '../data/contacto.js';
 import { faq } from '../data/faq.js';
@@ -11,6 +12,11 @@ import { textos, campo, nombreAroma } from '../i18n/index.js';
 
 const { lang = 'es' } = Astro.props;
 const t = textos(lang);
+
+// El diario solo se enseña si hay algo escrito en este idioma
+const articulos = await getCollection('blog', ({ data }) => !data.borrador && data.idioma === lang);
+const hayDiario = articulos.length > 0;
+const rutaDiario = lang === 'es' ? '/blog/' : `/${lang}/blog/`;
 
 // Enlaces de WhatsApp con el mensaje ya escrito (o #contacto si no hay número)
 const wa = (mensaje) => linkWhatsApp(mensaje) ?? '#contacto';
@@ -76,6 +82,7 @@ const datosCliente = {
         <li><a href="#coleccion">{t.nav.coleccion}</a></li>
         <li><a href="#regalo">{t.nav.regalo}</a></li>
         <li><a href="#waxmelts">{t.nav.waxmelts}</a></li>
+        {hayDiario && <li><a href={rutaDiario}>{t.nav.diario}</a></li>}
         <li><a href="#faq">{t.nav.faq}</a></li>
         <li><a href="#contacto">{t.nav.contacto}</a></li>
       </ul>
@@ -114,6 +121,7 @@ const datosCliente = {
       <a href="#coleccion">{t.nav.coleccion}</a>
       <a href="#regalo">{t.nav.regalo}</a>
       <a href="#waxmelts">{t.nav.waxmelts}</a>
+      {hayDiario && <a href={rutaDiario}>{t.nav.diario}</a>}
       <a href="#faq">{t.nav.faqLargo}</a>
       <a href="#contacto">{t.nav.contacto}</a>
     </div>

@@ -1446,6 +1446,266 @@ select:focus-visible {
 }
 
 /* ══════════════════════════════════════════════════════════════
+   Diario del taller
+   ══════════════════════════════════════════════════════════════ */
+.blog { padding: clamp(60px, 9vw, 100px) 0 90px; }
+.blog__cabecera {
+  max-width: 620px;
+  margin-bottom: clamp(48px, 7vw, 72px);
+}
+.blog__cabecera .titulo { margin-top: 20px; }
+.blog__intro { max-width: 52ch; }
+.blog__vacio {
+  padding: 60px 0;
+  text-align: center;
+  color: var(--etiqueta);
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 20px;
+}
+
+.blog__lista {
+  display: grid;
+  gap: 20px;
+}
+
+/* Cada apunte: una franja de color y el texto al lado */
+.apunte {
+  background: var(--tarjeta);
+  border: 1px solid var(--borde);
+  border-radius: 22px;
+  overflow: hidden;
+  transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+.apunte:hover {
+  transform: translateY(-3px);
+  border-color: color-mix(in srgb, var(--acento) 35%, var(--borde));
+  box-shadow: 0 22px 44px -32px rgba(43, 37, 33, 0.45);
+}
+.apunte__enlace {
+  display: grid;
+  grid-template-columns: 10px 1fr;
+  min-height: 100%;
+}
+.apunte__marca { width: 100%; height: 100%; }
+.apunte__cuerpo { padding: clamp(24px, 3.5vw, 36px); }
+.apunte__meta {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--etiqueta);
+}
+.apunte__etiqueta { color: var(--acento); font-weight: 600; }
+.apunte__titulo {
+  margin: 14px 0 0;
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: clamp(24px, 2.6vw, 32px);
+  line-height: 1.2;
+  color: var(--tinta);
+}
+.apunte__resumen {
+  margin: 12px 0 0;
+  font-size: 16px;
+  line-height: 1.65;
+  color: var(--texto);
+  max-width: 62ch;
+}
+.apunte__leer {
+  display: inline-block;
+  margin-top: 18px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--acento);
+}
+.apunte:hover .apunte__leer { color: var(--acento-osc); }
+
+/* ── Un artículo ─────────────────────────────────────────────── */
+.articulo { padding: clamp(40px, 6vw, 64px) 0 90px; }
+.articulo__volver {
+  display: inline-block;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--etiqueta);
+  margin-bottom: 40px;
+  transition: color 0.25s ease;
+}
+.articulo__volver:hover { color: var(--acento); }
+.articulo__cabecera { max-width: 720px; }
+.articulo__meta {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--etiqueta);
+}
+.articulo__titulo {
+  margin: 18px 0 0;
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: clamp(34px, 4.6vw, 54px);
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  color: var(--tinta);
+  text-wrap: pretty;
+}
+.articulo__resumen {
+  margin: 22px 0 0;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: clamp(19px, 2vw, 22px);
+  line-height: 1.5;
+  color: var(--texto);
+  max-width: 56ch;
+}
+.articulo__autor {
+  margin: 26px 0 0;
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--etiqueta);
+}
+.articulo__banda {
+  height: 6px;
+  border-radius: 999px;
+  margin: 44px 0;
+  max-width: 720px;
+}
+
+/* ── El texto del artículo ───────────────────────────────────── */
+.prosa {
+  max-width: 68ch;
+  font-size: 17.5px;
+  line-height: 1.75;
+  color: var(--texto);
+}
+.prosa > * + * { margin-top: 1.4em; }
+.prosa h2 {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: clamp(26px, 3vw, 34px);
+  line-height: 1.2;
+  color: var(--tinta);
+  margin-top: 2.2em;
+  margin-bottom: -0.4em;
+}
+.prosa h3 {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 23px;
+  color: var(--tinta);
+  margin-top: 1.8em;
+  margin-bottom: -0.5em;
+}
+.prosa strong { color: var(--tinta); font-weight: 600; }
+.prosa em { font-family: var(--serif); font-size: 1.05em; }
+.prosa a {
+  color: var(--acento);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+}
+.prosa a:hover { color: var(--acento-osc); }
+.prosa ul, .prosa ol { padding-left: 1.3em; }
+.prosa li + li { margin-top: 0.6em; }
+.prosa li::marker { color: var(--acento); }
+.prosa blockquote {
+  margin: 2em 0;
+  padding: 4px 0 4px 28px;
+  border-left: 2px solid var(--acento);
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 21px;
+  line-height: 1.5;
+  color: var(--tinta);
+}
+.prosa blockquote p { margin: 0; }
+.prosa img {
+  width: 100%;
+  border-radius: 18px;
+  margin-block: 2em;
+}
+.prosa hr {
+  border: none;
+  height: 1px;
+  background: var(--borde-2);
+  margin-block: 2.6em;
+}
+.prosa code {
+  font-size: 0.92em;
+  background: var(--tarjeta);
+  border: 1px solid var(--borde);
+  border-radius: 6px;
+  padding: 0.15em 0.4em;
+}
+
+/* ── Seguir leyendo ──────────────────────────────────────────── */
+.articulo__mas {
+  max-width: 720px;
+  margin-top: 80px;
+  padding-top: 40px;
+  border-top: 1px solid var(--borde-2);
+}
+.articulo__mas-lista {
+  display: grid;
+  gap: 14px;
+  margin-top: 26px;
+}
+.apunte-mini {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 18px 20px;
+  background: var(--tarjeta);
+  border: 1px solid var(--borde);
+  border-radius: 16px;
+  transition: border-color 0.25s ease, transform 0.25s ease;
+}
+.apunte-mini:hover {
+  border-color: color-mix(in srgb, var(--acento) 40%, var(--borde));
+  transform: translateX(3px);
+}
+.apunte-mini__punto {
+  flex: none;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-top: 7px;
+}
+.apunte-mini strong {
+  display: block;
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 19px;
+  color: var(--tinta);
+}
+.apunte-mini small {
+  display: block;
+  margin-top: 5px;
+  font-size: 14.5px;
+  line-height: 1.55;
+  color: var(--texto);
+}
+
+/* ── Pie de las páginas del diario ───────────────────────────── */
+.blog__pie {
+  border-top: 1px solid var(--borde);
+  padding-block: 44px;
+  text-align: center;
+}
+.blog__pie .footer__desc {
+  margin: 14px auto 0;
+  color: var(--texto);
+}
+
+/* ══════════════════════════════════════════════════════════════
    «Enciende la vela» — la web se apaga y alumbra la llama
    Se cambian los tokens y todo lo demás viene solo. Solo hay que
    repasar lo que estaba pensado para fondo claro.

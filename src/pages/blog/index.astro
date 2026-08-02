@@ -1,0 +1,66 @@
+---
+// El diario del taller — la lista de artículos.
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import CabeceraBlog from '../../components/CabeceraBlog.astro';
+import { textos } from '../../i18n/index.js';
+
+const lang = 'es';
+const t = textos(lang);
+
+// Los borradores se quedan fuera; el resto, del más nuevo al más viejo.
+const articulos = (await getCollection('blog', ({ data }) => !data.borrador && data.idioma === lang))
+  .sort((a, b) => b.data.fecha.valueOf() - a.data.fecha.valueOf());
+
+const fechaLarga = (fecha) =>
+  fecha.toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' });
+---
+
+<Layout lang={lang} titulo={t.blog.meta.titulo} descripcion={t.blog.meta.descripcion}>
+  <CabeceraBlog lang={lang} />
+
+  <main class="blog">
+    <div class="contenedor">
+      <header class="blog__cabecera">
+        <div class="kicker">
+          <span class="kicker__linea"></span>
+          <span class="kicker__texto">{t.blog.eyebrow}</span>
+        </div>
+        <h1 class="titulo">
+          {t.blog.tituloAntes}<em>{t.blog.tituloEnfasis}</em>{t.blog.tituloDespues}
+        </h1>
+        <p class="parrafo blog__intro">{t.blog.intro}</p>
+      </header>
+
+      {articulos.length === 0 ? (
+        <p class="blog__vacio">{t.blog.vacio}</p>
+      ) : (
+        <div class="blog__lista">
+          {articulos.map((articulo) => (
+            <article class="apunte">
+              <a class="apunte__enlace" href={`/blog/${articulo.slug}/`}>
+                <div class="apunte__marca" style={`background: ${articulo.data.color};`} aria-hidden="true"></div>
+                <div class="apunte__cuerpo">
+                  <div class="apunte__meta">
+                    {articulo.data.etiqueta && <span class="apunte__etiqueta">{articulo.data.etiqueta}</span>}
+                    <time datetime={articulo.data.fecha.toISOString()}>{fechaLarga(articulo.data.fecha)}</time>
+                  </div>
+                  <h2 class="apunte__titulo">{articulo.data.titulo}</h2>
+                  <p class="apunte__resumen">{articulo.data.resumen}</p>
+                  <span class="apunte__leer">{t.blog.leer} →</span>
+                </div>
+              </a>
+            </article>
+          ))}
+        </div>
+      )}
+    </div>
+  </main>
+
+  <footer class="blog__pie">
+    <div class="contenedor">
+      <a href="/" class="marca" aria-label={t.nav.inicio}>pabilo</a>
+      <p class="footer__desc">{t.footer.desc}</p>
+    </div>
+  </footer>
+</Layout>

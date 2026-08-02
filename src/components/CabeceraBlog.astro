@@ -1,0 +1,68 @@
+---
+// Barra superior de las páginas del diario: sencilla, con la vuelta
+// a la web y el botón de encender la vela.
+import { textos } from '../i18n/index.js';
+
+const { lang = 'es' } = Astro.props;
+const t = textos(lang);
+const inicio = lang === 'es' ? '/' : `/${lang}/`;
+---
+
+<nav class="nav">
+  <div class="contenedor nav__inner">
+    <a href={inicio} class="marca" aria-label={t.nav.inicio}>pabilo</a>
+    <div class="nav__derecha">
+      <ul class="nav__links" aria-label={t.nav.principal}>
+        <li><a href={`${inicio}#coleccion`}>{t.nav.coleccion}</a></li>
+        <li><a href={`${inicio}#regalo`}>{t.nav.regalo}</a></li>
+        <li><a href={`${inicio}#waxmelts`}>{t.nav.waxmelts}</a></li>
+        <li><a href={`${inicio}#contacto`}>{t.nav.contacto}</a></li>
+      </ul>
+
+      <button class="vela-boton" id="vela-boton" type="button" aria-pressed="false" title={t.nav.encender}>
+        <span class="visualmente-oculto">{t.nav.encender}</span>
+        <svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true">
+          <path
+            class="vela-boton__llama"
+            d="M12 2.5c1.9 2.4 2.8 4.1 2.8 5.5a2.8 2.8 0 1 1-5.6 0c0-1.4.9-3.1 2.8-5.5Z"
+            fill="currentColor"
+          />
+          <rect x="8.5" y="12.5" width="7" height="9" rx="1.6" fill="none" stroke="currentColor" stroke-width="1.5" />
+        </svg>
+      </button>
+
+      <a href={inicio} class="pill pill--acento pill--mini">{t.nav.laWeb}</a>
+    </div>
+  </div>
+</nav>
+
+<script>
+  // Encender la vela también desde el diario
+  const boton = document.getElementById('vela-boton');
+  const raiz = document.documentElement;
+  const rotulos = {
+    es: { encender: 'Enciende la vela', apagar: 'Apaga la vela' },
+    en: { encender: 'Light the candle', apagar: 'Blow out the candle' },
+  };
+  const idioma = raiz.lang === 'en' ? 'en' : 'es';
+
+  const pintar = (encendida: boolean) => {
+    raiz.classList.toggle('noche', encendida);
+    boton?.setAttribute('aria-pressed', String(encendida));
+    const rotulo = encendida ? rotulos[idioma].apagar : rotulos[idioma].encender;
+    boton?.setAttribute('title', rotulo);
+    const etiqueta = boton?.querySelector('.visualmente-oculto');
+    if (etiqueta) etiqueta.textContent = rotulo;
+    document
+      .querySelector('meta[name="theme-color"]')
+      ?.setAttribute('content', encendida ? '#16120F' : '#2B2521');
+  };
+
+  pintar(raiz.classList.contains('noche'));
+
+  boton?.addEventListener('click', () => {
+    const encendida = !raiz.classList.contains('noche');
+    pintar(encendida);
+    try { localStorage.setItem('pabilo-noche', encendida ? '1' : '0'); } catch (e) {}
+  });
+</script>
