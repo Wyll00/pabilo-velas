@@ -1500,6 +1500,18 @@ select:focus-visible {
   color: var(--etiqueta);
 }
 .apunte__etiqueta { color: var(--acento); font-weight: 600; }
+
+/* Distintivo de borrador: solo se ve trabajando en local */
+.marca-borrador {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  color: #8A5526;
+  background: #F2D9B8;
+  border-radius: 999px;
+  padding: 4px 10px;
+}
+html.noche .marca-borrador { color: #2A1C0E; background: #C8863F; }
 .apunte__titulo {
   margin: 14px 0 0;
   font-family: var(--serif);
@@ -1645,6 +1657,42 @@ select:focus-visible {
   border-radius: 6px;
   padding: 0.15em 0.4em;
 }
+
+/* Tablas comparativas: si no caben, se deslizan solas en el móvil */
+.prosa .tabla-envoltorio {
+  overflow-x: auto;
+  margin-block: 2em;
+  border: 1px solid var(--borde);
+  border-radius: 14px;
+}
+.prosa table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 15.5px;
+  min-width: 460px;
+}
+.prosa thead {
+  background: var(--tarjeta);
+}
+.prosa th {
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--etiqueta);
+  text-align: left;
+  padding: 14px 18px;
+  white-space: nowrap;
+}
+.prosa td {
+  padding: 14px 18px;
+  border-top: 1px solid var(--borde);
+  vertical-align: top;
+  line-height: 1.5;
+}
+.prosa td:first-child { color: var(--tinta); }
+.prosa tbody tr:hover { background: color-mix(in srgb, var(--tarjeta) 60%, transparent); }
 
 /* ── Seguir leyendo ──────────────────────────────────────────── */
 .articulo__mas {

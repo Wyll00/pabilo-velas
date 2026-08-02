@@ -2,7 +2,7 @@
 // La web entera, en el idioma que se le pase.
 // Español en «/», inglés en «/en/» — mismo diseño, mismos datos.
 import { Image } from 'astro:assets';
-import { getCollection } from 'astro:content';
+import { articulosDe } from '../lib/blog.js';
 import { velas, combinaciones } from '../data/velas.js';
 import { contacto, linkWhatsApp } from '../data/contacto.js';
 import { faq } from '../data/faq.js';
@@ -14,7 +14,7 @@ const { lang = 'es' } = Astro.props;
 const t = textos(lang);
 
 // El diario solo se enseña si hay algo escrito en este idioma
-const articulos = await getCollection('blog', ({ data }) => !data.borrador && data.idioma === lang);
+const articulos = await articulosDe(lang);
 const hayDiario = articulos.length > 0;
 const rutaDiario = lang === 'es' ? '/blog/' : `/${lang}/blog/`;
 

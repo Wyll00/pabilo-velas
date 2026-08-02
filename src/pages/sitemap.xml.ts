@@ -2,13 +2,14 @@
 // artículo del diario que esté publicado. Al añadir un .md nuevo,
 // aparece aquí sin tocar nada.
 import type { APIRoute } from 'astro';
-import { getCollection } from 'astro:content';
+import { articulosPublicados } from '../lib/blog.js';
 
 export const GET: APIRoute = async ({ site }) => {
   const base = site?.href ?? 'https://pabilo-velas.pages.dev/';
   const url = (ruta: string) => new URL(ruta, base).href;
 
-  const articulos = await getCollection('blog', ({ data }) => !data.borrador);
+  // Al mapa del sitio solo van los publicados, nunca los borradores
+  const articulos = await articulosPublicados();
   const hayEn = articulos.some((a) => a.data.idioma === 'en');
 
   const alternativas = `

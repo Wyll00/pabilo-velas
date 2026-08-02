@@ -4,9 +4,10 @@ import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import CabeceraBlog from '../../components/CabeceraBlog.astro';
 import { textos } from '../../i18n/index.js';
+import { seVe } from '../../lib/blog.js';
 
 export async function getStaticPaths() {
-  const articulos = await getCollection('blog', ({ data }) => !data.borrador);
+  const articulos = await getCollection('blog', seVe);
   return articulos.map((articulo) => ({
     params: { slug: articulo.slug },
     props: { articulo },
@@ -26,7 +27,7 @@ const fechaLarga = articulo.data.fecha.toLocaleDateString(lang === 'en' ? 'en-GB
 
 // Otros dos artículos del mismo idioma para seguir leyendo
 const otros = (
-  await getCollection('blog', ({ data, id }) => !data.borrador && data.idioma === lang && id !== articulo.id)
+  await getCollection('blog', (a) => seVe(a) && a.data.idioma === lang && a.id !== articulo.id)
 )
   .sort((a, b) => b.data.fecha.valueOf() - a.data.fecha.valueOf())
   .slice(0, 2);
@@ -56,6 +57,7 @@ const articuloSchema = {
 
       <header class="articulo__cabecera">
         <div class="articulo__meta">
+          {articulo.data.borrador && <span class="marca-borrador">Borrador · no publicado</span>}
           {articulo.data.etiqueta && <span class="apunte__etiqueta">{articulo.data.etiqueta}</span>}
           <time datetime={articulo.data.fecha.toISOString()}>{fechaLarga}</time>
         </div>

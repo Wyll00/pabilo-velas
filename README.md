@@ -141,8 +141,18 @@ Se escribe **en negrita** así, y *en cursiva* así.
 | `borrador` | no | `true` mientras lo escribes: no se publica |
 | `idioma` | no | `es` por defecto. `en` para un artículo en inglés |
 
-**Mientras escribes**, pon `borrador: true` y el artículo no aparecerá en la web
-aunque hagas push. Cuando lo quites, se publica.
+**Mientras escribes**, pon `borrador: true`. El artículo se ve en local con
+`npm run dev` (marcado con una etiqueta naranja de *Borrador*), pero **no se
+publica** aunque hagas push, ni entra en el mapa del sitio. Cuando quites esa
+línea, se publica en el siguiente push.
+
+Para repasar los borradores:
+
+```bash
+npm run dev
+```
+
+y abre `http://localhost:4321/blog/`.
 
 El enlace **Diario** aparece en el menú solo si hay algún artículo publicado en ese
 idioma, así que la web en inglés no lo muestra hasta que escribas uno con

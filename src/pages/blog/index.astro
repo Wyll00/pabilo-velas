@@ -1,16 +1,15 @@
 ---
 // El diario del taller — la lista de artículos.
-import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import CabeceraBlog from '../../components/CabeceraBlog.astro';
 import { textos } from '../../i18n/index.js';
+import { articulosDe } from '../../lib/blog.js';
 
 const lang = 'es';
 const t = textos(lang);
 
-// Los borradores se quedan fuera; el resto, del más nuevo al más viejo.
-const articulos = (await getCollection('blog', ({ data }) => !data.borrador && data.idioma === lang))
-  .sort((a, b) => b.data.fecha.valueOf() - a.data.fecha.valueOf());
+// En local salen también los borradores; en la web publicada, no.
+const articulos = await articulosDe(lang);
 
 const fechaLarga = (fecha) =>
   fecha.toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' });
@@ -42,6 +41,7 @@ const fechaLarga = (fecha) =>
                 <div class="apunte__marca" style={`background: ${articulo.data.color};`} aria-hidden="true"></div>
                 <div class="apunte__cuerpo">
                   <div class="apunte__meta">
+                    {articulo.data.borrador && <span class="marca-borrador">Borrador</span>}
                     {articulo.data.etiqueta && <span class="apunte__etiqueta">{articulo.data.etiqueta}</span>}
                     <time datetime={articulo.data.fecha.toISOString()}>{fechaLarga(articulo.data.fecha)}</time>
                   </div>
