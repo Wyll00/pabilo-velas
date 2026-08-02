@@ -1,20 +1,24 @@
 // ─────────────────────────────────────────────────────────────
 //  «Enciende la vela» — el interruptor de la noche
 //
-//  Al pulsarlo cae un telón con un horizonte ámbar: mientras la
-//  pantalla está tapada se cambia el tema, y el telón se retira
-//  dejando ver la web ya de noche (o ya de día).
+//  La noche entra como una mancha de tinta que sale del propio
+//  botón y se extiende por la pantalla hasta cubrirla. Al apagar,
+//  se recoge hacia el botón y vuelve el día.
 //
-//  Solo se animan «transform» y «opacity», que el navegador
-//  resuelve en la GPU sin volver a pintar la página. El telón se
-//  crea la primera vez que hace falta y se retira al acabar.
+//  Se apoya en la View Transitions API: el navegador toma una foto
+//  de la página, aplica el cambio y anima el paso de una a otra
+//  recortando un círculo. Como es el compositor quien lo hace, no
+//  se repinta la página en cada fotograma.
+//
+//  Si el navegador no la soporta, o si el sistema pide reducir el
+//  movimiento, el cambio es instantáneo y ya está.
 // ─────────────────────────────────────────────────────────────
 
 type Rotulos = { encender: string; apagar: string };
 
 const CLAVE = 'pabilo-noche';
-const DURACION = 900;   // lo que dura el telón entero
-const RELEVO = 360;     // cuándo cambia el tema, ya tapado
+const DURACION = 780;
+const CURVA = 'cubic-bezier(0.4, 0, 0.2, 1)';
 
 export function iniciarVela(rotulos: Record<string, Rotulos>) {
   const boton = document.getElementById('vela-boton');
@@ -22,11 +26,8 @@ export function iniciarVela(rotulos: Record<string, Rotulos>) {
   const idioma = raiz.lang === 'en' ? 'en' : 'es';
   const texto = rotulos[idioma] ?? rotulos.es;
 
-  const sinMovimiento = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-  let telon: HTMLElement | null = null;
-  let relevo: number | undefined;
-  let limpieza: number | undefined;
+  const sinMovimiento = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const soportado = () => typeof (document as any).startViewTransition === 'function';
 
   const pintar = (encendida: boolean) => {
     raiz.classList.toggle('noche', encendida);
@@ -40,18 +41,16 @@ export function iniciarVela(rotulos: Record<string, Rotulos>) {
       ?.setAttribute('content', encendida ? '#16120F' : '#2B2521');
   };
 
-  const echarTelon = (anochece: boolean) => {
-    if (!telon) {
-      telon = document.createElement('div');
-      telon.className = 'telon';
-      telon.setAttribute('aria-hidden', 'true');
-      document.body.appendChild(telon);
-    }
-    // reiniciar por si se pulsa dos veces seguidas
-    telon.classList.remove('telon--cae', 'telon--sube');
-    void telon.offsetWidth;
-    telon.classList.add(anochece ? 'telon--cae' : 'telon--sube');
+  // El centro del botón: de ahí sale (y ahí vuelve) la mancha
+  const centroDelBoton = () => {
+    const r = boton?.getBoundingClientRect();
+    if (!r) return { x: window.innerWidth / 2, y: 0 };
+    return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
   };
+
+  // Distancia del botón a la esquina más lejana: hasta dónde crecer
+  const radioNecesario = (x: number, y: number) =>
+    Math.hypot(Math.max(x, window.innerWidth - x), Math.max(y, window.innerHeight - y));
 
   // Al cargar, el <script> del <head> ya pudo dejarla encendida
   pintar(raiz.classList.contains('noche'));
@@ -60,21 +59,44 @@ export function iniciarVela(rotulos: Record<string, Rotulos>) {
     const encendida = !raiz.classList.contains('noche');
     try { localStorage.setItem(CLAVE, encendida ? '1' : '0'); } catch (e) {}
 
-    if (sinMovimiento) {
+    if (!soportado() || sinMovimiento()) {
       pintar(encendida);
       return;
     }
 
-    window.clearTimeout(relevo);
-    window.clearTimeout(limpieza);
+    const { x, y } = centroDelBoton();
+    const radio = radioNecesario(x, y);
+    const circuloChico = `circle(0px at ${x}px ${y}px)`;
+    const circuloGrande = `circle(${radio}px at ${x}px ${y}px)`;
 
-    echarTelon(encendida);
-    // el cambio ocurre a escondidas, con el telón cubriendo
-    relevo = window.setTimeout(() => pintar(encendida), RELEVO);
-    // y el telón se retira del todo cuando termina
-    limpieza = window.setTimeout(() => {
-      telon?.classList.remove('telon--cae', 'telon--sube');
-    }, DURACION);
+    // Al apagar, quien se mueve es la capa vieja: hay que ponerla delante
+    raiz.classList.toggle('vela-apagando', !encendida);
+
+    const transicion = (document as any).startViewTransition(() => pintar(encendida));
+
+    transicion.ready
+      .then(() => {
+        raiz.animate(
+          {
+            clipPath: encendida
+              ? [circuloChico, circuloGrande]   // la noche se extiende
+              : [circuloGrande, circuloChico],  // la noche se recoge
+          },
+          {
+            duration: DURACION,
+            easing: CURVA,
+            pseudoElement: encendida ? '::view-transition-new(root)' : '::view-transition-old(root)',
+          }
+        );
+      })
+      .catch(() => {});
+
+    transicion.finished.finally(() => {
+      raiz.classList.remove('vela-apagando');
+      // Red de seguridad: si el navegador cancelara la transición sin
+      // llegar a aplicar el cambio, lo dejamos como debe quedar.
+      if (raiz.classList.contains('noche') !== encendida) pintar(encendida);
+    });
   });
 }
 
