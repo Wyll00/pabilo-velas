@@ -134,6 +134,16 @@ export default {
       }
       return manejarChat(request, env);
     }
+
+    // Google comprueba que la web es nuestra pidiendo su archivo con la
+    // extensión .html. Cloudflare se la quita y responde con una redirección,
+    // y eso puede hacer fallar la verificación: se lo servimos directo.
+    if (/^\/google[0-9a-f]+\.html$/.test(url.pathname)) {
+      const directo = new URL(request.url);
+      directo.pathname = url.pathname.replace(/\.html$/, '');
+      return env.ASSETS.fetch(new Request(directo, request));
+    }
+
     return env.ASSETS.fetch(request);
   },
 };
