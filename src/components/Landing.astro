@@ -78,10 +78,11 @@ const datosCliente = {
   <div class="contenedor nav__inner">
     <a href="#top" class="marca" aria-label={t.nav.inicio}>pabilo</a>
     <div class="nav__derecha">
+      <!-- Wax melts no está aquí a propósito: sigue en el menú desplegable
+           y en el pie, para que la barra no se amontone. -->
       <ul class="nav__links" aria-label={t.nav.principal}>
         <li><a href="#coleccion">{t.nav.coleccion}</a></li>
         <li><a href="#regalo">{t.nav.regalo}</a></li>
-        <li><a href="#waxmelts">{t.nav.waxmelts}</a></li>
         {hayDiario && <li><a href={rutaDiario}>{t.nav.diario}</a></li>}
         <li><a href="#faq">{t.nav.faq}</a></li>
         <li><a href="#contacto">{t.nav.contacto}</a></li>
