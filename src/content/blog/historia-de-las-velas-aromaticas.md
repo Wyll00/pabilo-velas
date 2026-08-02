@@ -4,7 +4,6 @@ resumen: 'Durante miles de años una vela servía para ver de noche. Que hoy la 
 fecha: 2026-07-31
 etiqueta: 'Historia'
 color: '#EAD9E2'
-borrador: true
 ---
 
 Hoy encendemos una vela para relajarnos, para perfumar una habitación o para que la casa resulte más acogedora. Pero durante casi toda la historia la vela tuvo un trabajo mucho más práctico: dar luz cuando caía la noche.

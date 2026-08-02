@@ -4,7 +4,6 @@ resumen: 'Cera, mecha y fragancia. Tres cosas sencillas que, bien equilibradas, 
 fecha: 2026-08-02
 etiqueta: 'Lo básico'
 color: '#EFE8D6'
-borrador: true
 ---
 
 Una vela aromática no está ahí solo para dar luz. Está hecha para que, mientras arde, vaya soltando su aroma y cambie por completo la sensación de una habitación: la luz, el olor y el calor trabajando a la vez.

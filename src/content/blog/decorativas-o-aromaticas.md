@@ -4,7 +4,6 @@ resumen: 'Comparten cera y mecha, pero no se hacen para lo mismo. Saber la difer
 fecha: 2026-07-24
 etiqueta: 'Cómo elegir'
 color: '#F2D9B8'
-borrador: true
 ---
 
 Una vela puede servir para decorar, para perfumar o para las dos cosas. Aunque las decorativas y las aromáticas comparten los mismos ingredientes básicos, se diseñan pensando en objetivos distintos.

@@ -4,7 +4,6 @@ resumen: 'Ni cura el insomnio ni quita la ansiedad. Lo que sí hace es cambiar c
 fecha: 2026-07-26
 etiqueta: 'En casa'
 color: '#F0CFCB'
-borrador: true
 ---
 
 Una vela aromática junta luz, fragancia y diseño para cambiar la sensación de un espacio. Encender una puede ser la diferencia entre una habitación cualquiera y un sitio pensado para descansar, concentrarse o celebrar algo.

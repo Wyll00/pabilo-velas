@@ -4,7 +4,6 @@ resumen: 'La cera no arde. Lo que arde es su vapor. Te contamos el ciclo complet
 fecha: 2026-07-29
 etiqueta: 'Cómo funciona'
 color: '#D8DCE8'
-borrador: true
 ---
 
 Una vela parece de lo más simple: una mecha, algo de cera y una llama. Pero en cuanto la enciendes empieza un proceso donde intervienen el calor, la capilaridad, la combustión y la evaporación del perfume.
