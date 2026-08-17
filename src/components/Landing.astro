@@ -3,7 +3,8 @@
 // Español en «/», inglés en «/en/» — mismo diseño, mismos datos.
 import { Image } from 'astro:assets';
 import MorphIcon from 'morphicons/astro';
-import { Moon, Menu } from 'lucide';
+import { Moon, Menu, Plus, Minus } from 'lucide';
+import { Velita } from '../lib/iconos.js';
 import { articulosDe } from '../lib/blog.js';
 import { velas, combinaciones } from '../data/velas.js';
 import { contacto, linkWhatsApp } from '../data/contacto.js';
@@ -396,7 +397,15 @@ const datosCliente = {
           <details class="faq__item" open={i === 0}>
             <summary>
               <span class="faq__q">{campo(item, 'pregunta', lang)}</span>
-              <span class="faq__signo" aria-hidden="true"></span>
+              <MorphIcon
+                class="faq__signo"
+                id={`faq-icono-${i}`}
+                icon={i === 0 ? Minus : Plus}
+                size={19}
+                strokeWidth={2}
+                spring="snappy"
+                aria-hidden="true"
+              />
             </summary>
             <p class="faq__r">{campo(item, 'respuesta', lang)}</p>
           </details>
@@ -496,15 +505,7 @@ const datosCliente = {
 <!-- ══════════════ CHAT DE AYUDA (Groq vía /api/chat) ══════════════ -->
 <div class="chat" id="chat">
   <button class="chat__boton" id="chat-boton" type="button" aria-expanded="false" aria-controls="chat-panel" aria-label={t.chat.abrir}>
-    <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-      <rect x="8" y="10.5" width="8" height="10" rx="1.8" />
-      <path
-        class="chat__flama"
-        d="M12 3c1.5 1.9 2.2 3.2 2.2 4.3a2.2 2.2 0 1 1-4.4 0C9.8 6.2 10.5 4.9 12 3Z"
-        stroke="none"
-        style="fill: var(--llama, #CE5B2A);"
-      />
-    </svg>
+    <MorphIcon id="chat-icono" icon={Velita} size={26} strokeWidth={1.6} spring="snappy" aria-hidden="true" />
   </button>
   <button class="chat__saludo" id="chat-saludo" type="button" hidden>{t.chat.saludoBurbuja}</button>
 
@@ -545,7 +546,8 @@ const datosCliente = {
 
 <script>
   import { iniciarVela, seguirConLaLuz } from '../scripts/vela.ts';
-  import { Menu, X } from 'lucide';
+  import { Menu, X, Plus, Minus } from 'lucide';
+  import { Velita } from '../lib/iconos.js';
   import type { MorphIconElement } from 'morphicons/element';
 
   // Los textos y las mezclas vienen resueltos desde el servidor,
@@ -706,8 +708,12 @@ const datosCliente = {
 
   // ── FAQ: solo una pregunta abierta a la vez ──
   const faqItems = Array.from(document.querySelectorAll('.faq__item')) as HTMLDetailsElement[];
-  faqItems.forEach((item) => {
+  faqItems.forEach((item, i) => {
     item.addEventListener('toggle', () => {
+      // el signo pasa de + a − (y al revés) según se abra o se cierre
+      const signo = document.getElementById(`faq-icono-${i}`) as MorphIconElement | null;
+      if (typeof signo?.morphTo === 'function') signo.morphTo(item.open ? Minus : Plus);
+      // al abrir una, las demás se cierran (y sus signos se actualizan solos)
       if (item.open) faqItems.forEach((otro) => { if (otro !== item) otro.open = false; });
     });
   });
@@ -736,9 +742,16 @@ const datosCliente = {
       return burbuja;
     };
 
+    // La velita del botón se convierte en un aspa mientras el chat está abierto
+    const chatIcono = document.getElementById('chat-icono') as MorphIconElement | null;
+    const pintarIconoChat = (abierto: boolean) => {
+      if (typeof chatIcono?.morphTo === 'function') chatIcono.morphTo(abierto ? X : Velita);
+    };
+
     const abrir = () => {
       chatPanel.hidden = false;
       chatBoton.setAttribute('aria-expanded', 'true');
+      pintarIconoChat(true);
       if (!saludado) {
         saludado = true;
         historial.push({ rol: 'bot', texto: datos.chat.saludo });
@@ -749,6 +762,7 @@ const datosCliente = {
     const cerrar = () => {
       chatPanel.hidden = true;
       chatBoton.setAttribute('aria-expanded', 'false');
+      pintarIconoChat(false);
     };
 
     chatBoton.addEventListener('click', () => (chatPanel.hidden ? abrir() : cerrar()));
