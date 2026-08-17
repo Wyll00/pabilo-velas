@@ -251,14 +251,8 @@ select:focus-visible {
   border-color: color-mix(in srgb, var(--acento) 55%, transparent);
   box-shadow: 0 0 14px rgba(224, 138, 85, 0.3);
 }
-/* con la vela encendida, la llamita del botón tiembla */
-.vela-boton[aria-pressed='true'] .vela-boton__llama {
-  transform-box: fill-box;
-  transform-origin: 50% 100%;
-  animation: flama-boton 2.4s ease-in-out infinite;
-}
-
-/* Hamburguesa (solo en pantallas pequeñas) */
+/* Hamburguesa (solo en pantallas pequeñas).
+   Su icono se transforma en aspa al abrir: lo hace morphicons. */
 .nav__hamburguesa {
   display: none;
   flex: none;
@@ -266,23 +260,11 @@ select:focus-visible {
   height: 38px;
   border: none;
   background: transparent;
+  color: var(--tinta);
   cursor: pointer;
   padding: 0;
   place-items: center;
-  gap: 4px;
-  grid-auto-flow: row;
 }
-.nav__raya {
-  display: block;
-  width: 20px;
-  height: 1.5px;
-  border-radius: 2px;
-  background: var(--tinta);
-  transition: transform 0.3s ease, opacity 0.25s ease;
-}
-.nav__hamburguesa.abierta .nav__raya:nth-child(2) { transform: translateY(5.5px) rotate(45deg); }
-.nav__hamburguesa.abierta .nav__raya:nth-child(3) { opacity: 0; }
-.nav__hamburguesa.abierta .nav__raya:nth-child(4) { transform: translateY(-5.5px) rotate(-45deg); }
 
 /* Panel desplegable */
 .nav__movil[hidden] { display: none; }

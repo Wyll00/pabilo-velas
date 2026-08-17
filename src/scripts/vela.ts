@@ -14,6 +14,9 @@
 //  movimiento, el cambio es instantáneo y ya está.
 // ─────────────────────────────────────────────────────────────
 
+import { Moon, Flame } from 'lucide';
+import type { MorphIconElement } from 'morphicons/element';
+
 type Rotulos = { encender: string; apagar: string };
 
 const CLAVE = 'pabilo-noche';
@@ -22,6 +25,7 @@ const CURVA = 'cubic-bezier(0.4, 0, 0.2, 1)';
 
 export function iniciarVela(rotulos: Record<string, Rotulos>) {
   const boton = document.getElementById('vela-boton');
+  const icono = document.getElementById('vela-icono') as MorphIconElement | null;
   const raiz = document.documentElement;
   const idioma = raiz.lang === 'en' ? 'en' : 'es';
   const texto = rotulos[idioma] ?? rotulos.es;
@@ -29,7 +33,7 @@ export function iniciarVela(rotulos: Record<string, Rotulos>) {
   const sinMovimiento = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const soportado = () => typeof (document as any).startViewTransition === 'function';
 
-  const pintar = (encendida: boolean) => {
+  const pintar = (encendida: boolean, animarIcono = true) => {
     raiz.classList.toggle('noche', encendida);
     boton?.setAttribute('aria-pressed', String(encendida));
     const rotulo = encendida ? texto.apagar : texto.encender;
@@ -39,6 +43,14 @@ export function iniciarVela(rotulos: Record<string, Rotulos>) {
     document
       .querySelector('meta[name="theme-color"]')
       ?.setAttribute('content', encendida ? '#16120F' : '#2B2521');
+
+    // De noche se ve la llama (púlsala y vuelve el día); de día, la luna.
+    // El icono es un web component: hasta que el navegador no lo registra
+    // no tiene sus métodos, así que se comprueba antes de tocarlo.
+    const siguiente = encendida ? Flame : Moon;
+    if (typeof icono?.morphTo === 'function') {
+      animarIcono ? icono.morphTo(siguiente) : icono.set(siguiente);
+    }
   };
 
   // El centro del botón: de ahí sale (y ahí vuelve) la mancha
@@ -52,8 +64,18 @@ export function iniciarVela(rotulos: Record<string, Rotulos>) {
   const radioNecesario = (x: number, y: number) =>
     Math.hypot(Math.max(x, window.innerWidth - x), Math.max(y, window.innerHeight - y));
 
-  // Al cargar, el <script> del <head> ya pudo dejarla encendida
-  pintar(raiz.classList.contains('noche'));
+  // Al cargar, el <script> del <head> ya pudo dejarla encendida:
+  // el icono se coloca sin animar, que aún no ha pasado nada.
+  pintar(raiz.classList.contains('noche'), false);
+
+  // Y cuando el navegador registre el icono, se coloca el que toca
+  customElements
+    ?.whenDefined('morph-icon')
+    .then(() => {
+      const encendida = raiz.classList.contains('noche');
+      if (typeof icono?.set === 'function') icono.set(encendida ? Flame : Moon);
+    })
+    .catch(() => {});
 
   boton?.addEventListener('click', () => {
     const encendida = !raiz.classList.contains('noche');

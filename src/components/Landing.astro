@@ -2,6 +2,8 @@
 // La web entera, en el idioma que se le pase.
 // Español en «/», inglés en «/en/» — mismo diseño, mismos datos.
 import { Image } from 'astro:assets';
+import MorphIcon from 'morphicons/astro';
+import { Moon, Menu } from 'lucide';
 import { articulosDe } from '../lib/blog.js';
 import { velas, combinaciones } from '../data/velas.js';
 import { contacto, linkWhatsApp } from '../data/contacto.js';
@@ -92,26 +94,18 @@ const datosCliente = {
         {t.otroIdioma.etiqueta}
       </a>
 
-      <!-- Enciende la vela: apaga la web y deja que alumbre la llama -->
+      <!-- Enciende la vela: apaga la web y deja que alumbre la llama.
+           La luna se convierte en llama (y al revés) al cambiar de tema. -->
       <button class="vela-boton" id="vela-boton" type="button" aria-pressed="false" title={t.nav.encender}>
         <span class="visualmente-oculto">{t.nav.encender}</span>
-        <svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true">
-          <path
-            class="vela-boton__llama"
-            d="M12 2.5c1.9 2.4 2.8 4.1 2.8 5.5a2.8 2.8 0 1 1-5.6 0c0-1.4.9-3.1 2.8-5.5Z"
-            fill="currentColor"
-          />
-          <rect x="8.5" y="12.5" width="7" height="9" rx="1.6" fill="none" stroke="currentColor" stroke-width="1.5" />
-        </svg>
+        <MorphIcon id="vela-icono" icon={Moon} size={17} strokeWidth={1.8} spring="smooth" aria-hidden="true" />
       </button>
 
       <a href={waGeneral} class="pill pill--acento pill--mini" target="_blank" rel="noopener">{t.nav.pedir}</a>
 
       <button class="nav__hamburguesa" id="nav-hamburguesa" type="button" aria-expanded="false" aria-controls="nav-movil">
         <span class="visualmente-oculto">{t.nav.abrirMenu}</span>
-        <span class="nav__raya" aria-hidden="true"></span>
-        <span class="nav__raya" aria-hidden="true"></span>
-        <span class="nav__raya" aria-hidden="true"></span>
+        <MorphIcon id="menu-icono" icon={Menu} size={20} strokeWidth={1.8} spring="snappy" aria-hidden="true" />
       </button>
     </div>
   </div>
@@ -551,6 +545,8 @@ const datosCliente = {
 
 <script>
   import { iniciarVela, seguirConLaLuz } from '../scripts/vela.ts';
+  import { Menu, X } from 'lucide';
+  import type { MorphIconElement } from 'morphicons/element';
 
   // Los textos y las mezclas vienen resueltos desde el servidor,
   // así este archivo sirve igual para la web en español y en inglés.
@@ -560,13 +556,14 @@ const datosCliente = {
   // ── Menú de pantallas pequeñas ──
   const hamburguesa = document.getElementById('nav-hamburguesa');
   const menuMovil = document.getElementById('nav-movil');
+  const menuIcono = document.getElementById('menu-icono') as MorphIconElement | null;
   if (hamburguesa && menuMovil) {
     const abrirMenu = (abierto: boolean) => {
       menuMovil.hidden = !abierto;
       hamburguesa.setAttribute('aria-expanded', String(abierto));
-      hamburguesa.classList.toggle('abierta', abierto);
       const etiqueta = hamburguesa.querySelector('.visualmente-oculto');
       if (etiqueta) etiqueta.textContent = abierto ? datos.nav.cerrarMenu : datos.nav.abrirMenu;
+      if (typeof menuIcono?.morphTo === 'function') menuIcono.morphTo(abierto ? X : Menu);
     };
 
     hamburguesa.addEventListener('click', () => abrirMenu(menuMovil.hidden));

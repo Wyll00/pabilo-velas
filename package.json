@@ -11,6 +11,8 @@
     "astro": "astro"
   },
   "dependencies": {
-    "astro": "^4.16.0"
+    "astro": "^4.16.0",
+    "lucide": "^1.31.0",
+    "morphicons": "^1.7.0"
   }
 }
