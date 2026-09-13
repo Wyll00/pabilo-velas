@@ -748,7 +748,13 @@ const datosCliente = {
       if (typeof chatIcono?.morphTo === 'function') chatIcono.morphTo(abierto ? X : Velita);
     };
 
+    // Quién tenía el foco antes de abrir el chat, para devolvérselo al cerrar.
+    let focoPrevio: HTMLElement | null = null;
+    const sigueUtil = (el: HTMLElement | null) =>
+      !!el && document.contains(el) && el.getClientRects().length > 0;
+
     const abrir = () => {
+      focoPrevio = (document.activeElement as HTMLElement | null) ?? chatBoton;
       chatPanel.hidden = false;
       chatBoton.setAttribute('aria-expanded', 'true');
       pintarIconoChat(true);
@@ -763,6 +769,12 @@ const datosCliente = {
       chatPanel.hidden = true;
       chatBoton.setAttribute('aria-expanded', 'false');
       pintarIconoChat(false);
+      // Al cerrar con Escape el foco se quedaba en <body>: había que recorrer
+      // la página entera con el tabulador para volver a donde estabas.
+      // Si quien lo abrió ya no está a la vista (la burbuja de saludo se
+      // esconde al pulsarla), el relevo lo coge el botón del chat.
+      (sigueUtil(focoPrevio) ? focoPrevio! : chatBoton).focus();
+      focoPrevio = null;
     };
 
     chatBoton.addEventListener('click', () => (chatPanel.hidden ? abrir() : cerrar()));

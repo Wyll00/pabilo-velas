@@ -12,9 +12,13 @@
   --tarjeta:      #FCF8EF;  /* superficie de tarjeta */
   --tinta:        #2A241E;  /* texto principal */
   --texto:        #6A5B4B;  /* texto secundario */
-  --etiqueta:     #8A7660;  /* etiquetas, terciario */
+  --etiqueta:     #736250;  /* etiquetas, terciario: 4,6 sobre arena (AA) */
   --acento:       #C05A2B;  /* acento de marca (textos y detalles) */
   --acento-osc:   #A34818;  /* fondo de botones: sobre crema da 5,3 de contraste */
+  /* El acento de marca (#C05A2B) se queda en 4,2 sobre tarjeta y 3,5 sobre
+     arena: vale para títulos grandes, no para texto pequeño. Este es el
+     mismo naranja bajado hasta cumplir AA en textos menudos. */
+  --acento-texto: #A34818;
   --acento-hondo: #8F3D12;  /* su hover */
   --acento-claro: #E08A55;  /* acento sobre oscuro */
   --oscuro:       #2B2521;  /* sección oscura / footer */
@@ -31,7 +35,7 @@
   --cl-claro:  #F7F0E2;
   --cl-suave:  #C9BBA6;
   --cl-medio:  #A99A83;
-  --cl-tenue:  #8F8471;
+  --cl-tenue:  #978D7B;  /* 4,6 sobre el fondo oscuro (AA) */
   --cl-arena:  #B9A88F;
 
   /* Tipografía */
@@ -323,7 +327,7 @@ select:focus-visible {
 }
 .hero__texto {
   flex: 1 1 460px;
-  min-width: 320px;
+  min-width: 0;
   animation: fadeUp 0.9s ease both;
 }
 .hero__titulo {
@@ -512,7 +516,7 @@ select:focus-visible {
   flex-wrap: wrap;
   gap: 70px;
 }
-.historia__texto { flex: 1 1 440px; min-width: 320px; }
+.historia__texto { flex: 1 1 440px; min-width: 0; }
 .historia__texto .parrafo { margin-top: 28px; max-width: 480px; }
 .historia__texto .parrafo + .parrafo { margin-top: 18px; }
 .firma {
@@ -522,7 +526,7 @@ select:focus-visible {
   font-size: 21px;
   color: var(--tinta);
 }
-.historia__foto { flex: 1 1 420px; min-width: 320px; }
+.historia__foto { flex: 1 1 420px; min-width: 0; }
 .placa {
   position: relative;
 }
@@ -544,6 +548,9 @@ select:focus-visible {
 }
 @media (max-width: 700px) {
   .placa img { height: 400px; }
+  /* La placa dorada sobresalía 24px por la derecha del contenedor y eso
+     ensanchaba el documento entero en móvil. Aquí se queda dentro. */
+  .placa::before { inset: 16px 0 -16px 16px; }
 }
 
 /* ══════════════════════════════════════════════════════════════
@@ -682,7 +689,7 @@ select:focus-visible {
   font-size: 11px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--acento);
+  color: var(--acento-texto);
   font-weight: 600;
 }
 .tarjeta__nombre {
@@ -725,8 +732,8 @@ select:focus-visible {
   text-align: center;
   font-size: 14px;
   font-weight: 600;
-  color: var(--acento);
-  border: 1px solid rgba(192, 90, 43, 0.45);
+  color: var(--acento-texto);
+  border: 1px solid rgba(163, 72, 24, 0.55);
   padding: 11px 0;
   border-radius: 999px;
   display: block;
@@ -747,7 +754,7 @@ select:focus-visible {
   align-items: center;
   scroll-margin-top: 74px;
 }
-.mezclas__intro { flex: 1 1 340px; min-width: 280px; }
+.mezclas__intro { flex: 1 1 340px; min-width: 0; }
 .mezclas__eyebrow {
   font-size: 12px;
   letter-spacing: 0.22em;
@@ -773,7 +780,7 @@ select:focus-visible {
 }
 .mezclas__panel {
   flex: 1 1 380px;
-  min-width: 300px;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -832,9 +839,9 @@ select:focus-visible {
 .mezclas__resultado a {
   font-size: 15px;
   font-weight: 600;
-  color: var(--acento);
+  color: var(--acento-texto);
 }
-.mezclas__resultado a:hover { color: var(--acento-osc); }
+.mezclas__resultado a:hover { color: var(--acento-hondo); }
 .mezclas__detalle {
   margin: 10px 0 0;
   font-size: 14.5px;
@@ -855,10 +862,10 @@ select:focus-visible {
   gap: 60px;
   align-items: flex-start;
 }
-.wax__intro { flex: 1 1 380px; min-width: 300px; }
+.wax__intro { flex: 1 1 380px; min-width: 0; }
 .wax__intro .parrafo { margin-top: 24px; max-width: 420px; }
 .wax__intro .pill { margin-top: 34px; }
-.wax__filas { flex: 1 1 540px; min-width: 300px; }
+.wax__filas { flex: 1 1 540px; min-width: 0; }
 .wax__fila {
   border-top: 1px solid var(--borde-2);
   padding: 26px 0;
@@ -1003,8 +1010,8 @@ select:focus-visible {
   gap: 60px;
   align-items: flex-start;
 }
-.faq__cabecera { flex: 1 1 320px; min-width: 280px; }
-.faq__lista { flex: 1 1 560px; min-width: 300px; }
+.faq__cabecera { flex: 1 1 320px; min-width: 0; }
+.faq__lista { flex: 1 1 560px; min-width: 0; }
 .faq__item { border-bottom: 1px solid rgba(120, 95, 70, 0.25); }
 .faq__item summary {
   list-style: none;
@@ -1061,7 +1068,7 @@ select:focus-visible {
   flex-direction: column;
   gap: 16px;
 }
-.opinion__estrellas { color: var(--acento); font-size: 13px; letter-spacing: 5px; }
+.opinion__estrellas { color: var(--acento-texto); font-size: 13px; letter-spacing: 5px; }
 .opinion__texto {
   margin: 0;
   font-family: var(--serif);
@@ -1327,6 +1334,10 @@ select:focus-visible {
   50%      { opacity: 1; }
 }
 
+/* `hidden` y `display:flex` tienen la misma especificidad, y como esta regla
+   va después, ganaba: el atributo ocultaba los chips para el lector de
+   pantalla pero se seguían viendo. */
+.chat__chips[hidden] { display: none; }
 .chat__chips {
   display: flex;
   flex-wrap: wrap;
@@ -1470,7 +1481,7 @@ select:focus-visible {
   text-transform: uppercase;
   color: var(--etiqueta);
 }
-.apunte__etiqueta { color: var(--acento); font-weight: 600; }
+.apunte__etiqueta { color: var(--acento-texto); font-weight: 600; }
 
 /* Distintivo de borrador: solo se ve trabajando en local */
 .marca-borrador {
@@ -1503,9 +1514,9 @@ html.noche .marca-borrador { color: #2A1C0E; background: #C8863F; }
   margin-top: 18px;
   font-size: 14px;
   font-weight: 600;
-  color: var(--acento);
+  color: var(--acento-texto);
 }
-.apunte:hover .apunte__leer { color: var(--acento-osc); }
+.apunte:hover .apunte__leer { color: var(--acento-hondo); }
 
 /* ── Un artículo ─────────────────────────────────────────────── */
 .articulo { padding: clamp(40px, 6vw, 64px) 0 90px; }
@@ -1590,7 +1601,7 @@ html.noche .marca-borrador { color: #2A1C0E; background: #C8863F; }
 .prosa strong { color: var(--tinta); font-weight: 600; }
 .prosa em { font-family: var(--serif); font-size: 1.05em; }
 .prosa a {
-  color: var(--acento);
+  color: var(--acento-texto);
   text-decoration: underline;
   text-underline-offset: 3px;
   text-decoration-thickness: 1px;
@@ -1739,6 +1750,10 @@ html.noche {
   --acento:       #E08A55;
   --acento-osc:   #F0A570;
   --acento-hondo: #F8BC90;
+  /* De noche el fondo es oscuro, así que el acento de los textos pequeños no
+     se oscurece: se aclara. Sin esta línea heredaría el #A34818 del modo claro
+     y se quedaría en 2,8 de contraste sobre negro. */
+  --acento-texto: #E08A55;
   --oscuro:   #100D0B;
   --placa:    #6B5433;
 
