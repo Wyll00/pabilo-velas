@@ -219,6 +219,29 @@ Para activarlo en producción:
 
 Si la clave no está configurada, el chat falla con elegancia e invita a escribir por WhatsApp.
 
+### ⚠️ El modelo caduca
+
+Groq **retira sus modelos con fecha**. Cuando el que usamos se apaga, la API responde
+`model_decommissioned`, el chat empieza a contestar *«se me ha apagado la llama»* a todo
+y **la web sigue funcionando perfectamente**, así que nadie se entera. Ya pasó una vez:
+`llama-3.1-8b-instant` murió el **16 de agosto de 2026** y el chat estuvo semanas caído.
+
+El modelo está en una sola línea de `public/_worker.js` (`const MODELO`). Para cambiarlo:
+
+1. Mira qué modelos siguen vivos en [console.groq.com/docs/models](https://console.groq.com/docs/models)
+   y las bajas anunciadas en [/docs/deprecations](https://console.groq.com/docs/deprecations).
+2. Cambia `MODELO` y haz push.
+
+Cómo saber qué pasa cuando el chat falle, sin adivinar — los dos mensajes **no** significan
+lo mismo:
+
+| Lo que dice el chat | Qué significa |
+|---|---|
+| «Ahora mismo el chat está **descansando**» | Falta el secreto `GROQ_API_KEY` en Cloudflare |
+| «Se me ha **apagado la llama**» | La clave llega, pero Groq rechaza: modelo retirado, clave caducada o cuota agotada |
+
+El motivo exacto queda registrado en Cloudflare → Workers & Pages → `pabilo-velas` → **Logs**.
+
 ---
 
 ## Despliegue

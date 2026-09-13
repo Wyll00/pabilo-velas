@@ -125,6 +125,20 @@ const DESCANSO = {
   en: "The chat is resting right now 🕯️ Message us on WhatsApp (the green button next door) and we'll help you straight away.",
 };
 
+// Mensaje cuando Groq falla: clave caducada, cuota agotada o modelo retirado.
+const FALLO = {
+  es: 'Uy, se me ha apagado la llama un momento. Vuelve a intentarlo en unos segundos o escríbenos por WhatsApp. 🕯️',
+  en: "Oh — my flame just went out. Try again in a few seconds, or message us on WhatsApp. 🕯️",
+};
+
+// ⚠️ Groq retira modelos con fecha de caducidad. Cuando uno se apaga, la API
+//    responde «model_decommissioned» y el chat deja de contestar sin más aviso
+//    que el mensaje de arriba: el anterior (llama-3.1-8b-instant) murió el
+//    16/08/2026 y estuvo semanas roto sin que se notara.
+//    Modelos vivos:  https://console.groq.com/docs/models
+//    Fechas de baja: https://console.groq.com/docs/deprecations
+const MODELO = 'openai/gpt-oss-20b';
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
@@ -190,18 +204,26 @@ async function manejarChat(request, env) {
         Authorization: `Bearer ${env.GROQ_API_KEY}`,
       },
       body: JSON.stringify({
-        model: 'llama-3.1-8b-instant',
+        model: MODELO,
         messages: [{ role: 'system', content: instrucciones(idioma) }, ...mensajes],
-        max_tokens: 300,
+        // gpt-oss piensa antes de contestar, y ese pensamiento gasta del MISMO
+        // presupuesto que la respuesta. Con un tope corto se lo come entero y
+        // «content» vuelve vacío: el chat contestaría «no te he entendido» a
+        // todo. «low» y «hidden» lo dejan al mínimo y fuera de la respuesta;
+        // lo breve ya lo impone la instrucción de 2 a 4 frases.
+        reasoning_effort: 'low',
+        reasoning_format: 'hidden',
+        // Groq usa este nombre, no max_tokens.
+        max_completion_tokens: 800,
         temperature: 0.4,
       }),
     });
 
     if (!r.ok) {
-      return json({
-        respuesta:
-          'Uy, se me ha apagado la llama un momento. Vuelve a intentarlo en unos segundos o escríbenos por WhatsApp. 🕯️',
-      });
+      // Sin esta traza el fallo es invisible desde fuera. Se lee en Cloudflare →
+      // Workers & Pages → pabilo-velas → Logs (o `npx wrangler pages deployment tail`).
+      console.error('Groq respondió', r.status, (await r.text()).slice(0, 300));
+      return json({ respuesta: FALLO[idioma] });
     }
 
     const datos = await r.json();
@@ -209,10 +231,8 @@ async function manejarChat(request, env) {
     return json({
       respuesta: texto || 'No te he entendido bien, ¿me lo preguntas de otra forma?',
     });
-  } catch {
-    return json({
-      respuesta:
-        'Uy, se me ha apagado la llama un momento. Vuelve a intentarlo en unos segundos o escríbenos por WhatsApp. 🕯️',
-    });
+  } catch (fallo) {
+    console.error('No se pudo llamar a Groq:', fallo);
+    return json({ respuesta: FALLO[idioma] });
   }
 }
