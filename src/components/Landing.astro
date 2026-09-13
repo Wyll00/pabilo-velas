@@ -10,7 +10,7 @@ import { velas, combinaciones } from '../data/velas.js';
 import { contacto, linkWhatsApp } from '../data/contacto.js';
 import { faq } from '../data/faq.js';
 import { testimonios } from '../data/testimonios.js';
-import fotoHistoria from '../assets/historia.png';
+import fotoTaller from '../assets/taller.png';
 import { textos, campo, nombreAroma } from '../i18n/index.js';
 
 const { lang = 'es' } = Astro.props;
@@ -192,7 +192,7 @@ const datosCliente = {
       </div>
       <div class="historia__foto">
         <div class="placa">
-          <Image src={fotoHistoria} alt={t.historia.altFoto} width={1040} quality={80} />
+          <Image src={fotoTaller} alt={t.historia.altFoto} width={1040} quality={80} />
         </div>
       </div>
     </div>
@@ -345,7 +345,7 @@ const datosCliente = {
       </div>
       <h2 class="titulo">{t.taller.tituloAntes}<em>{t.taller.tituloEnfasis}</em>{t.taller.tituloDespues}</h2>
       <div class="taller__grid">
-        <Image class="taller__foto" src={fotoHistoria} alt={t.taller.altFoto} width={720} quality={78} />
+        <Image class="taller__foto" src={fotoTaller} alt={t.taller.altFoto} width={720} quality={78} />
         <div class="taller__mosaico">
           {velas.slice(0, 4).map((v) => (
             <div class="taller__pronto" style={`background: ${v.circulo};`}>{t.taller.pronto}</div>

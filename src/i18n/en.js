@@ -77,7 +77,7 @@ export default {
     parrafo2:
       'We pour every batch by hand, in small quantities, without rushing. Natural wax, scents you recognise, no strange smoke. Local and close to home is not a label for us: it is how we work.',
     firma: '— The two of us at Pabilo',
-    altFoto: 'Two pairs of hands finishing a Pabilo candle with dried flowers in the studio',
+    altFoto: 'Lit Pabilo candles among eucalyptus branches, with the brand mark on the wall behind',
   },
 
   coleccion: {
@@ -171,7 +171,7 @@ export default {
     tituloAntes: 'This is ',
     tituloEnfasis: 'how we do it',
     tituloDespues: '.',
-    altFoto: 'Pabilo candle with dried flowers, made by hand in the studio',
+    altFoto: 'Lit Pabilo candles on the studio table',
     pronto: 'soon',
     nota: 'More real photos of the studio and every candle, coming soon. 📷',
   },
