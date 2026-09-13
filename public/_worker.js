@@ -159,9 +159,32 @@ export default {
       return env.ASSETS.fetch(new Request(directo, request));
     }
 
-    return env.ASSETS.fetch(request);
+    return conCabeceras(await env.ASSETS.fetch(request), url.pathname);
   },
 };
+
+// ⚠️ Cuando hay un _worker.js, Cloudflare IGNORA el archivo `_headers`. Las
+//    cabeceras se ponen aquí o no se ponen en ninguna parte.
+//    https://developers.cloudflare.com/pages/configuration/headers/
+function conCabeceras(respuesta, ruta) {
+  const r = new Response(respuesta.body, respuesta);
+
+  // Todo lo de /_astro/ lleva un hash en el nombre: si cambia el contenido,
+  // cambia el nombre del archivo. Se puede guardar un año en el navegador sin
+  // riesgo de servir algo viejo. Antes se revalidaba en cada visita.
+  if (ruta.startsWith('/_astro/')) {
+    r.headers.set('Cache-Control', 'public, max-age=31536000, immutable');
+  }
+
+  // Impide que la web se abra dentro de un marco ajeno. `frame-ancestors` solo
+  // controla el enmarcado: no restringe scripts ni estilos, así que no puede
+  // romper la página. Una CSP completa es otra conversación, porque la web
+  // lleva scripts en línea y una política copiada sin adaptar la tumbaría.
+  r.headers.set('Content-Security-Policy', "frame-ancestors 'self'");
+  r.headers.set('X-Frame-Options', 'SAMEORIGIN');
+
+  return r;
+}
 
 function json(obj, status = 200) {
   return new Response(JSON.stringify(obj), {

@@ -2,8 +2,9 @@
 // La web en español. El inglés vive en /en/ y comparte el mismo diseño.
 import Layout from '../layouts/Layout.astro';
 import Landing from '../components/Landing.astro';
+import { portadasAlternativas } from '../i18n/index.js';
 ---
 
-<Layout lang="es">
+<Layout lang="es" catalogo alternativas={portadasAlternativas(Astro.site)}>
   <Landing lang="es" />
 </Layout>

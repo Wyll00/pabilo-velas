@@ -256,6 +256,15 @@ export default {
       'Ahora mismo no puedo responder 😅 Escríbenos por WhatsApp (el botón verde) y te atendemos al momento.',
   },
 
+  noEncontrada: {
+    meta: 'Esta página no existe · Pabilo',
+    eyebrow: 'Página no encontrada',
+    titulo: 'Aquí no hay nada encendido.',
+    sub: 'La dirección que buscas no existe o ha cambiado de sitio. Las velas siguen donde siempre.',
+    verVelas: 'Ver las velas',
+    inicio: 'Volver al inicio',
+  },
+
   whatsapp: {
     flotante: 'Escríbenos por WhatsApp',
     general: 'Hola Pabilo, me interesan vuestras velas.',

@@ -26,6 +26,16 @@ export function campo(objeto, clave, lang) {
   return objeto[clave];
 }
 
+/** Las portadas de cada idioma, para las etiquetas hreflang.
+ *  Solo valen para las portadas: una página del diario no tiene su
+ *  traducción aquí, así que no debe declarar ninguna. */
+export function portadasAlternativas(site) {
+  return Object.entries({ es: '/', en: '/en/' }).map(([codigo, ruta]) => ({
+    codigo,
+    href: new URL(ruta, site).href,
+  }));
+}
+
 /** Prefijo de las rutas: '' para español, '/en' para inglés. */
 export function base(lang) {
   return lang === 'es' ? '' : `/${lang}`;

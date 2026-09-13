@@ -1,0 +1,57 @@
+---
+// La página que se ve cuando la dirección no existe.
+//
+// No es solo cosmética: mientras no hubo un 404.html en la raíz, Cloudflare
+// Pages daba por hecho que esto era una aplicación de una sola página y
+// respondía a CUALQUIER dirección con la portada y un 200. Para un buscador
+// eso son páginas duplicadas que dicen existir sin existir.
+// Con este archivo, Pages vuelve a servir un 404 de verdad.
+import Layout from '../layouts/Layout.astro';
+import CabeceraBlog from '../components/CabeceraBlog.astro';
+import { textos } from '../i18n/index.js';
+
+// Una página de error es un archivo único: no puede saber el idioma de quien
+// llega, así que va en el principal.
+const lang = 'es';
+const t = textos(lang);
+---
+
+<Layout lang={lang} titulo={t.noEncontrada.meta} descripcion={t.noEncontrada.sub} sinIndexar>
+  <CabeceraBlog lang={lang} />
+
+  <main class="blog">
+    <div class="contenedor">
+      <header class="blog__cabecera">
+        <div class="kicker">
+          <span class="kicker__linea"></span>
+          <span class="kicker__texto">{t.noEncontrada.eyebrow}</span>
+        </div>
+        <h1 class="titulo">{t.noEncontrada.titulo}</h1>
+        <p class="parrafo error__texto">{t.noEncontrada.sub}</p>
+        <p class="error__acciones">
+          <a class="pill pill--acento" href="/#coleccion">{t.noEncontrada.verVelas}</a>
+          <a class="pill" href="/">{t.noEncontrada.inicio}</a>
+        </p>
+      </header>
+    </div>
+  </main>
+
+  <footer class="blog__pie">
+    <div class="contenedor">
+      <a href="/" class="marca" aria-label={t.nav.inicio}>pabilo</a>
+      <p class="footer__desc">{t.footer.desc}</p>
+    </div>
+  </footer>
+</Layout>
+
+<style>
+  .error__texto {
+    max-width: 46ch;
+  }
+  .error__acciones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.7rem;
+    margin-top: 1.6rem;
+  }
+</style>

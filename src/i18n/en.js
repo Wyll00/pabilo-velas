@@ -255,6 +255,15 @@ export default {
       "I can't answer right now 😅 Message us on WhatsApp (the green button) and we'll help you straight away.",
   },
 
+  noEncontrada: {
+    meta: 'This page does not exist · Pabilo',
+    eyebrow: 'Page not found',
+    titulo: 'Nothing is burning here.',
+    sub: 'The address you are looking for does not exist, or it has moved. The candles are where they always were.',
+    verVelas: 'See the candles',
+    inicio: 'Back to the start',
+  },
+
   whatsapp: {
     flotante: 'Message us on WhatsApp',
     general: 'Hi Pabilo, I am interested in your candles.',

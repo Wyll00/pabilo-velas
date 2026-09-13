@@ -48,7 +48,12 @@ const articuloSchema = {
 };
 ---
 
-<Layout lang={lang} titulo={`${articulo.data.titulo} · Pabilo`} descripcion={articulo.data.resumen}>
+<Layout
+  lang={lang}
+  titulo={`${articulo.data.titulo} · Pabilo`}
+  descripcion={articulo.data.resumen}
+  tipoOg="article"
+>
   <CabeceraBlog lang={lang} />
 
   <main class="articulo">
