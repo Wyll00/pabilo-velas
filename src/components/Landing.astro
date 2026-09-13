@@ -346,13 +346,7 @@ const datosCliente = {
       <h2 class="titulo">{t.taller.tituloAntes}<em>{t.taller.tituloEnfasis}</em>{t.taller.tituloDespues}</h2>
       <div class="taller__grid">
         <Image class="taller__foto" src={fotoTaller} alt={t.taller.altFoto} width={720} quality={78} />
-        <div class="taller__mosaico">
-          {velas.slice(0, 4).map((v) => (
-            <div class="taller__pronto" style={`background: ${v.circulo};`}>{t.taller.pronto}</div>
-          ))}
-        </div>
       </div>
-      <p class="taller__nota">{t.taller.nota}</p>
     </div>
   </section>
 
@@ -585,75 +579,49 @@ const datosCliente = {
   iniciarVela({ [datos.chat.idioma]: { encender: datos.nav.encender, apagar: datos.nav.apagar } });
   seguirConLaLuz();
 
-  // ── La cinta de velas: rota sola, en bucle, como una marquesina ──
+  // ── La cinta de velas: se mueve cuando lo decide quien mira ──
+  //
+  // Antes rotaba sola a 34 px/s y solo se paraba mientras el puntero o el
+  // foco seguían encima: eso obliga a leer al ritmo de la cinta y no da
+  // control de verdad. Además clonaba las cinco velas para que el bucle no
+  // tuviera costuras, así que el catálogo iba duplicado en el documento, y
+  // la animación seguía corriendo aunque la sección no se viera.
+  // Ahora es un carrusel manual: flechas, rueda y dedo.
   const cinta = document.getElementById('cinta-velas');
   if (cinta) {
-    const originales = Array.from(cinta.children);
+    const flechaPrev = document.querySelector('[data-prev]') as HTMLButtonElement | null;
+    const flechaNext = document.querySelector('[data-next]') as HTMLButtonElement | null;
 
-    // Clonamos el set completo para que el bucle no tenga costuras.
-    // Los clones son decorativos: ocultos a lectores y sin foco de teclado.
-    originales.forEach((el) => {
-      const clon = el.cloneNode(true) as HTMLElement;
-      clon.setAttribute('aria-hidden', 'true');
-      clon.querySelectorAll('a').forEach((a) => a.setAttribute('tabindex', '-1'));
-      cinta.appendChild(clon);
-    });
-
-    let anchoSet = 0;
-    const medir = () => {
-      const primerClon = cinta.children[originales.length] as HTMLElement | undefined;
-      const primero = originales[0] as HTMLElement;
-      anchoSet = primerClon ? primerClon.offsetLeft - primero.offsetLeft : 0;
-    };
-    medir();
-    window.addEventListener('resize', medir);
-
-    let auto = !reduceMotion;
-    let reanudarTimer: number | undefined;
-    const pausar = () => {
-      auto = false;
-      if (reanudarTimer) window.clearTimeout(reanudarTimer);
-    };
-    const reanudar = (ms = 1200) => {
-      if (reanudarTimer) window.clearTimeout(reanudarTimer);
-      reanudarTimer = window.setTimeout(() => { auto = !reduceMotion; }, ms);
+    // Un paso es una tarjeta, medida de verdad: así el hueco entre ellas
+    // entra en la cuenta y no hay que mantener un número a mano.
+    const paso = () => {
+      const a = cinta.children[0] as HTMLElement | undefined;
+      const b = cinta.children[1] as HTMLElement | undefined;
+      if (a && b) return b.offsetLeft - a.offsetLeft;
+      return a ? a.offsetWidth : 320;
     };
 
-    cinta.addEventListener('pointerenter', pausar);
-    cinta.addEventListener('pointerleave', () => reanudar(600));
-    cinta.addEventListener('touchstart', pausar, { passive: true });
-    cinta.addEventListener('touchend', () => reanudar(2400), { passive: true });
-    cinta.addEventListener('focusin', pausar);
-    cinta.addEventListener('focusout', () => reanudar(800));
+    // Con el enganche puesto, la cinta no descansa en 0 sino en su relleno
+    // izquierdo, así que comparar contra cero dejaría la flecha de volver
+    // encendida para siempre. La holgura sale del propio CSS.
+    const holgura = () => parseFloat(getComputedStyle(cinta).paddingLeft) + 2;
 
-    const VELOCIDAD = 34; // píxeles por segundo — pausado, como una cinta
-    let pos = cinta.scrollLeft;
-    let anterior = performance.now();
-    const bucle = (ahora: number) => {
-      const dt = Math.min((ahora - anterior) / 1000, 0.1);
-      anterior = ahora;
-      if (Math.abs(cinta.scrollLeft - pos) > 2) pos = cinta.scrollLeft;
-      if (auto && anchoSet > 0) {
-        pos += VELOCIDAD * dt;
-        if (pos >= anchoSet) pos -= anchoSet;
-        cinta.scrollLeft = pos;
-      }
-      requestAnimationFrame(bucle);
+    // Las flechas se apagan en los extremos: es la pista de dónde estás.
+    const refrescarFlechas = () => {
+      const tope = cinta.scrollWidth - cinta.clientWidth;
+      const margen = holgura();
+      if (flechaPrev) flechaPrev.disabled = cinta.scrollLeft <= margen;
+      if (flechaNext) flechaNext.disabled = cinta.scrollLeft >= tope - margen;
     };
-    if (!reduceMotion) requestAnimationFrame(bucle);
 
-    const PASO = 320;
-    document.querySelector('[data-prev]')?.addEventListener('click', () => {
-      pausar();
-      if (cinta.scrollLeft < PASO && anchoSet > 0) cinta.scrollLeft += anchoSet;
-      cinta.scrollBy({ left: -PASO, behavior: 'smooth' });
-      reanudar(2600);
-    });
-    document.querySelector('[data-next]')?.addEventListener('click', () => {
-      pausar();
-      cinta.scrollBy({ left: PASO, behavior: 'smooth' });
-      reanudar(2600);
-    });
+    const mover = (signo: number) =>
+      cinta.scrollBy({ left: signo * paso(), behavior: reduceMotion ? 'auto' : 'smooth' });
+
+    flechaPrev?.addEventListener('click', () => mover(-1));
+    flechaNext?.addEventListener('click', () => mover(1));
+    cinta.addEventListener('scroll', refrescarFlechas, { passive: true });
+    window.addEventListener('resize', refrescarFlechas);
+    refrescarFlechas();
   }
 
   // ── El taller de mezclas ──

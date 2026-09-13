@@ -32,7 +32,7 @@ export default {
     historia: 'Our story',
     faqLargo: 'Frequently asked questions',
     diario: 'Journal',
-    laWeb: 'The site',
+    laWeb: 'See the candles',
   },
 
   blog: {
@@ -172,8 +172,6 @@ export default {
     tituloEnfasis: 'how we do it',
     tituloDespues: '.',
     altFoto: 'A Pabilo candle in its jar, on a piece of driftwood surrounded by daisies',
-    pronto: 'soon',
-    nota: 'More real photos of the studio and every candle, coming soon. 📷',
   },
 
   pedidos: {

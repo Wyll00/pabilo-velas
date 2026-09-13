@@ -44,4 +44,6 @@ No intentamos competir con la vela de tres euros. Hacemos otra cosa: una vela qu
 
 ---
 
-*¿Alguna duda sobre cómo hacemos las cosas? Escríbenos por WhatsApp — nos encanta hablar de esto.*
+*¿Alguna duda sobre cómo hacemos las cosas? [Escríbenos por WhatsApp](/#contacto) — nos encanta hablar de esto.*
+
+*¿Y si lo que quieres es verlas? [Ver la colección](/#coleccion).*

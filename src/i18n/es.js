@@ -32,7 +32,7 @@ export default {
     historia: 'Historia',
     faqLargo: 'Preguntas frecuentes',
     diario: 'Diario',
-    laWeb: 'La web',
+    laWeb: 'Ver las velas',
   },
 
   blog: {
@@ -173,8 +173,6 @@ export default {
     tituloEnfasis: 'así',
     tituloDespues: '.',
     altFoto: 'Vela Pabilo en su tarro, sobre un tronco de madera con margaritas alrededor',
-    pronto: 'pronto',
-    nota: 'Pronto, más fotos reales del taller y de cada vela. 📷',
   },
 
   pedidos: {
