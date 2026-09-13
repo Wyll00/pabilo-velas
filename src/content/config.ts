@@ -17,7 +17,7 @@ const blog = defineCollection({
 
     // Opcionales, con valor por defecto
     idioma: z.enum(['es', 'en']).default('es'),
-    autor: z.string().default('Claudia & Ana'),
+    autor: z.string().default('Pabilo'),
     etiqueta: z.string().optional(),      // «El oficio», «Cuidados»…
     color: z.string().default('#F2D9B8'), // el tono de su tarjeta
     borrador: z.boolean().default(false), // true = no se publica

@@ -1,6 +1,6 @@
 // ─────────────────────────────────────────────────────────────
 //  Datos de contacto de Pabilo — un solo sitio para todo
-//  Rellena estos campos cuando Claudia y Ana los confirmen.
+//  Rellena estos campos cuando los confirmen en el taller.
 // ─────────────────────────────────────────────────────────────
 
 export const contacto = {

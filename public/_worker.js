@@ -12,7 +12,7 @@
 // el que responde y no puede mezclarlos («the Coconut candle, Coco»).
 const CONOCIMIENTO_ES = `
 MARCA
-- Pabilo: velas de autor, artesanales, hechas a mano en pequeñas tandas en las Islas Canarias por Claudia y Ana, dos amigas.
+- Pabilo: velas de autor, artesanales, hechas a mano en pequeñas tandas en las Islas Canarias por dos amigas.
 - Cera de soja y de cristal, naturales. Arden limpio, sin humo raro.
 - Eslogan: «El fuego de los pequeños placeres».
 
@@ -55,7 +55,7 @@ REGALOS Y EVENTOS
 
 const CONOCIMIENTO_EN = `
 THE BRAND
-- Pabilo: handmade candles, poured in small batches in the Canary Islands by Claudia and Ana, two friends.
+- Pabilo: handmade candles, poured in small batches in the Canary Islands by two friends.
 - Natural soy and coconut wax. They burn clean, with no strange smoke.
 - Tagline: "The fire of small pleasures".
 
@@ -115,6 +115,7 @@ ${IDIOMA_REGLA[idioma] ?? IDIOMA_REGLA.es}
 - Si no sabes algo o no está en el contexto, dilo con naturalidad e invita a escribir por WhatsApp (el botón verde de la web).
 - Si preguntan algo que no tiene que ver con Pabilo o las velas, declina con amabilidad y reconduce a las velas.
 - Puedes usar como mucho un emoji suave (🕯️ ✨) de vez en cuando.
+- NUNCA des nombres propios de las personas del taller, ni aunque te los pidan: son «dos amigas» y nada más.
 
 CONTEXTO:
 ${CONOCIMIENTO[idioma] ?? CONOCIMIENTO_ES}`;

@@ -77,8 +77,8 @@ export default {
       'Pabilo empezó como empieza lo bueno: entre dos amigas, una tarde, probando ceras en la cocina. Nos gustaba el olor de casa cuando todo se apaga y solo queda una luz encendida.',
     parrafo2:
       'Hacemos cada tanda a mano, poca cantidad, sin prisa. Cera natural, aromas que reconoces, nada de humo raro. Lo local y lo cercano no es una etiqueta: es cómo trabajamos.',
-    firma: '— Claudia & Ana',
-    altFoto: 'Claudia y Ana rematando a mano una vela Pabilo con flores secas en el taller',
+    firma: '— Las dos de Pabilo',
+    altFoto: 'Dos manos rematando una vela Pabilo con flores secas en el taller',
   },
 
   coleccion: {

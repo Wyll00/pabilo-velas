@@ -76,8 +76,8 @@ export default {
       'Pabilo began the way good things do: two friends, one afternoon, trying out waxes in the kitchen. We loved how a home smells when everything winds down and only one light is left burning.',
     parrafo2:
       'We pour every batch by hand, in small quantities, without rushing. Natural wax, scents you recognise, no strange smoke. Local and close to home is not a label for us: it is how we work.',
-    firma: '— Claudia & Ana',
-    altFoto: 'Claudia and Ana finishing a Pabilo candle with dried flowers by hand in the studio',
+    firma: '— The two of us at Pabilo',
+    altFoto: 'Two pairs of hands finishing a Pabilo candle with dried flowers in the studio',
   },
 
   coleccion: {

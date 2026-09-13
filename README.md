@@ -1,6 +1,6 @@
 # Pábilo · Velas de autor
 
-Web de **Pábilo**, una marca de velas artesanales hechas a mano en pequeñas tandas en las Islas Canarias por Claudia y Ana.
+Web de **Pábilo**, una marca de velas artesanales hechas a mano en pequeñas tandas en las Islas Canarias por dos amigas.
 
 > *El fuego de los pequeños placeres.*
 
