@@ -78,7 +78,7 @@ export default {
     parrafo2:
       'Hacemos cada tanda a mano, poca cantidad, sin prisa. Cera natural, aromas que reconoces, nada de humo raro. Lo local y lo cercano no es una etiqueta: es cómo trabajamos.',
     firma: '— Las dos de Pabilo',
-    altFoto: 'Velas Pabilo encendidas entre ramas de eucalipto, con el logotipo de la marca al fondo',
+    altFoto: 'Vela Pabilo encendida en su tarro de cristal, sobre madera y entre margaritas',
   },
 
   coleccion: {
@@ -172,7 +172,7 @@ export default {
     tituloAntes: 'Lo hacemos ',
     tituloEnfasis: 'así',
     tituloDespues: '.',
-    altFoto: 'Velas Pabilo encendidas sobre la mesa del taller',
+    altFoto: 'Vela Pabilo en su tarro, sobre un tronco de madera con margaritas alrededor',
     pronto: 'pronto',
     nota: 'Pronto, más fotos reales del taller y de cada vela. 📷',
   },
