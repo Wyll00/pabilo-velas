@@ -7,6 +7,7 @@
 import Legal from '../../layouts/Legal.astro';
 import { empresa } from '../../data/empresa.js';
 import { contacto } from '../../data/contacto.js';
+import { zonas, hayCondicionesEnvio } from '../../data/entrega.js';
 
 const dato = (valor) => valor && String(valor).trim();
 const PENDIENTE = '— pendiente —';
@@ -52,10 +53,30 @@ const PENDIENTE = '— pendiente —';
   </p>
 
   <h2>Entrega</h2>
-  <p>
-    {PENDIENTE} — zonas de entrega, plazos y costes. Hasta que estén publicados aquí,
-    se confirman uno a uno por WhatsApp antes de cerrar el pedido.
-  </p>
+  {hayCondicionesEnvio ? (
+    <div class="tabla-envoltorio">
+      <table>
+        <thead>
+          <tr><th>Zona</th><th>Plazo</th><th>Coste</th></tr>
+        </thead>
+        <tbody>
+          {zonas.map((z) => (
+            <tr>
+              <td>{z.nombre}</td>
+              <td>{dato(z.plazo) ?? PENDIENTE}</td>
+              <td>{dato(z.coste) ?? PENDIENTE}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  ) : (
+    <p>
+      Las zonas, los plazos y los costes de envío todavía no están publicados aquí.
+      Hasta que lo estén, se confirman uno a uno por WhatsApp antes de cerrar el
+      pedido, y nunca después.
+    </p>
+  )}
   <p>
     Ten en cuenta que cada tanda se elabora a mano y reposa unos días antes de salir:
     un encargo no sale el mismo día. El plazo concreto te lo decimos al confirmarlo.

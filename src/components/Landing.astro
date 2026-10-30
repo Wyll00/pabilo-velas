@@ -96,6 +96,14 @@ const datosCliente = {
   pedido: {
     whatsapp: contacto.whatsapp,
     velas: velas.map((v) => ({ id: v.id, nombre: campo(v, 'nombre', lang), precio: v.precio })),
+    // El plazo y el coste viajan con la zona: en cuanto el taller los
+    // rellene, el mensaje del pedido los lleva sin tocar nada más.
+    zonas: zonas.map((z) => ({
+      id: z.id,
+      nombre: campo(z, 'nombre', lang),
+      plazo: z.plazo,
+      coste: z.coste,
+    })),
     textos: t.pedidos.resumen,
   },
   nav: { abrirMenu: t.nav.abrirMenu, cerrarMenu: t.nav.cerrarMenu, encender: t.nav.encender, apagar: t.nav.apagar },
@@ -453,7 +461,7 @@ const datosCliente = {
                 <select id="pedido-zona">
                   <option value="">{t.pedidos.resumen.zonaSinElegir}</option>
                   {zonas.map((z) => (
-                    <option value={campo(z, 'nombre', lang)}>{campo(z, 'nombre', lang)}</option>
+                    <option value={z.id}>{campo(z, 'nombre', lang)}</option>
                   ))}
                 </select>
               </label>
@@ -778,7 +786,14 @@ const datosCliente = {
           `${T.total}: ${vela.precio * pedidas} € (${T.sinEnvio})`,
         ];
         if (elRegalo?.checked) lineas.push(T.msgRegalo);
-        if (elZona?.value) lineas.push(`${T.msgEntrega}: ${elZona.value}`);
+
+        const zona = datos.pedido.zonas?.find((z) => z.id === elZona?.value);
+        if (zona) {
+          // El plazo y el coste solo se nombran si existen: mejor callar que
+          // prometer un plazo que nadie ha confirmado.
+          const detalle = [zona.plazo, zona.coste].filter(Boolean).join(' · ');
+          lineas.push(`${T.msgEntrega}: ${zona.nombre}${detalle ? ` (${detalle})` : ''}`);
+        }
 
         const mensaje = lineas.join('\n');
         elResumen.textContent = mensaje;
