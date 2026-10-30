@@ -196,6 +196,29 @@ export default {
           'Carefully wrapped, ready to light or to give. Local delivery or shipping, whichever you prefer.',
       },
     ],
+
+    resumen: {
+      titulo: 'Put your order together',
+      intro:
+        'Fill this in and WhatsApp opens with the order already written, so the conversation does not start from scratch.',
+      vela: 'Which candle',
+      cantidad: 'How many',
+      regalo: 'It is a gift',
+      zona: 'Where you receive it',
+      zonaSinElegir: 'Not sure yet',
+      resumenAria: 'Summary of your order',
+      total: 'Candles total',
+      sinEnvio: 'shipping not included',
+      enviar: 'Order on WhatsApp',
+      aviso:
+        'Nothing is paid here. We confirm the total, the timing and the shipping with you on WhatsApp before anything is settled.',
+
+      // Pieces of the message that gets sent. Joined together in the browser.
+      msgSaludo: 'Hi Pabilo, I would like to order:',
+      msgCadaUna: 'each',
+      msgRegalo: 'It is a gift.',
+      msgEntrega: 'Delivery',
+    },
   },
 
   faq: {

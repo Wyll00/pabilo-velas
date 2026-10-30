@@ -958,6 +958,121 @@ select:focus-visible {
   border-radius: 22px;
 }
 
+/* ── Preparar el pedido ──────────────────────────────────────
+   Un formulario corto para que la conversación de WhatsApp empiece
+   con el pedido decidido en vez de con un «hola». */
+.resumen {
+  margin: 56px auto 0;
+  max-width: 680px;
+  padding: 30px;
+  background: var(--tarjeta);
+  border: 1px solid var(--borde);
+  border-radius: 24px;
+}
+.resumen__titulo {
+  margin: 0;
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 26px;
+  line-height: 1.2;
+  color: var(--tinta);
+}
+.resumen__intro {
+  margin: 10px 0 24px;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--texto);
+}
+.resumen__campos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.campo {
+  flex: 1 1 200px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.campo--corto { flex: 0 1 110px; }
+.campo__etiqueta {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--etiqueta);
+}
+.resumen select,
+.resumen input[type='number'] {
+  width: 100%;
+  min-width: 0;
+  padding: 12px 14px;
+  font-family: var(--sans);
+  font-size: 15px;
+  color: var(--tinta);
+  background: var(--crema);
+  border: 1px solid var(--borde-2);
+  border-radius: 12px;
+  transition: border-color 0.25s ease;
+}
+.resumen select:hover,
+.resumen input[type='number']:hover { border-color: var(--borde-fuerte); }
+.resumen select:focus-visible,
+.resumen input[type='number']:focus-visible {
+  outline: 2px solid var(--acento-texto);
+  outline-offset: 2px;
+  border-color: var(--acento-texto);
+}
+.campo--casilla {
+  margin-top: 14px;
+  /* La etiqueta entera es la zona pulsable, no solo el cuadradito: con
+     44px de alto se marca con el pulgar sin apuntar. */
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  font-size: 15px;
+  color: var(--tinta);
+  cursor: pointer;
+}
+.campo--casilla input {
+  width: 20px;
+  height: 20px;
+  flex: 0 0 auto;
+  accent-color: var(--acento-texto);
+  cursor: pointer;
+}
+
+/* El mensaje tal cual se va a enviar: se respetan sus saltos de línea
+   para que lo que se lee sea idéntico a lo que llega al otro lado. */
+.resumen__mensaje {
+  margin: 22px 0 0;
+  padding: 16px 18px;
+  white-space: pre-line;
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: var(--texto);
+  background: var(--crema);
+  border-left: 3px solid var(--placa);
+  border-radius: 12px;
+}
+.resumen__enviar {
+  margin-top: 22px;
+  display: inline-flex;
+}
+.resumen__aviso {
+  margin: 16px 0 0;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--etiqueta);
+}
+
+@media (max-width: 560px) {
+  .resumen { padding: 22px; border-radius: 20px; }
+  .campo--corto { flex: 1 1 100%; }
+}
+
 /* ══════════════════════════════════════════════════════════════
    Cómo pedimos
    ══════════════════════════════════════════════════════════════ */

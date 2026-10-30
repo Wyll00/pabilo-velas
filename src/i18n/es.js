@@ -197,6 +197,29 @@ export default {
           'Envuelta con cuidado, lista para encender o para regalar. Entrega local o envío, como prefieras.',
       },
     ],
+
+    resumen: {
+      titulo: 'Prepara tu pedido',
+      intro:
+        'Apúntalo aquí y se abre WhatsApp con el pedido ya escrito. Así no hay que empezar la conversación de cero.',
+      vela: 'Qué vela',
+      cantidad: 'Cuántas',
+      regalo: 'Es para regalar',
+      zona: 'Dónde la recibes',
+      zonaSinElegir: 'Aún no lo sé',
+      resumenAria: 'Resumen de tu pedido',
+      total: 'Total en velas',
+      sinEnvio: 'sin el envío',
+      enviar: 'Pedir por WhatsApp',
+      aviso:
+        'Aquí no se paga nada. Te confirmamos el total, el plazo y el envío por WhatsApp antes de que haya nada cerrado.',
+
+      // Piezas del mensaje que se manda. Se juntan en el navegador.
+      msgSaludo: 'Hola Pabilo, me gustaría pedir:',
+      msgCadaUna: 'cada una',
+      msgRegalo: 'Es para regalar.',
+      msgEntrega: 'Entrega',
+    },
   },
 
   faq: {

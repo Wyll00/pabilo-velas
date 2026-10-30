@@ -9,6 +9,7 @@ import { articulosDe } from '../lib/blog.js';
 import { velas, combinaciones } from '../data/velas.js';
 import { contacto, linkWhatsApp } from '../data/contacto.js';
 import { hayDatosLegales } from '../data/empresa.js';
+import { zonas } from '../data/entrega.js';
 import { faq } from '../data/faq.js';
 import { testimonios } from '../data/testimonios.js';
 import fotoTaller from '../assets/taller.png';
@@ -72,6 +73,11 @@ const datosCliente = {
     saludo: t.chat.saludo,
     sinRespuesta: t.chat.sinRespuesta,
     error: t.chat.error,
+  },
+  pedido: {
+    whatsapp: contacto.whatsapp,
+    velas: velas.map((v) => ({ id: v.id, nombre: campo(v, 'nombre', lang), precio: v.precio })),
+    textos: t.pedidos.resumen,
   },
   nav: { abrirMenu: t.nav.abrirMenu, cerrarMenu: t.nav.cerrarMenu, encender: t.nav.encender, apagar: t.nav.apagar },
 };
@@ -373,6 +379,68 @@ const datosCliente = {
           </div>
         ))}
       </div>
+
+      {/* Sin número de WhatsApp configurado esto no tendría a dónde llevar,
+          así que ni se pinta: igual que el resto de botones de pedir. */}
+      {linkWhatsApp() && (
+        <div class="resumen" id="preparar-pedido">
+          <h3 class="resumen__titulo">{t.pedidos.resumen.titulo}</h3>
+          <p class="resumen__intro">{t.pedidos.resumen.intro}</p>
+
+          <div class="resumen__campos">
+            <label class="campo">
+              <span class="campo__etiqueta">{t.pedidos.resumen.vela}</span>
+              <select id="pedido-vela">
+                {velas.map((v) => (
+                  <option value={v.id}>{campo(v, 'nombre', lang)} — {v.precio} €</option>
+                ))}
+              </select>
+            </label>
+
+            <label class="campo campo--corto">
+              <span class="campo__etiqueta">{t.pedidos.resumen.cantidad}</span>
+              <input type="number" id="pedido-cantidad" value="1" min="1" max="20" step="1" inputmode="numeric" />
+            </label>
+
+            {zonas.length > 0 && (
+              <label class="campo">
+                <span class="campo__etiqueta">{t.pedidos.resumen.zona}</span>
+                <select id="pedido-zona">
+                  <option value="">{t.pedidos.resumen.zonaSinElegir}</option>
+                  {zonas.map((z) => (
+                    <option value={campo(z, 'nombre', lang)}>{campo(z, 'nombre', lang)}</option>
+                  ))}
+                </select>
+              </label>
+            )}
+          </div>
+
+          <label class="campo--casilla">
+            <input type="checkbox" id="pedido-regalo" />
+            <span>{t.pedidos.resumen.regalo}</span>
+          </label>
+
+          {/* Lo que se lee aqui es, palabra por palabra, lo que se manda. */}
+          <p
+            class="resumen__mensaje"
+            id="pedido-resumen"
+            aria-live="polite"
+            aria-label={t.pedidos.resumen.resumenAria}
+          ></p>
+
+          <a
+            class="pill pill--acento resumen__enviar"
+            id="pedido-enviar"
+            href={waContacto}
+            target="_blank"
+            rel="noopener"
+          >
+            {t.pedidos.resumen.enviar}
+          </a>
+
+          <p class="resumen__aviso">{t.pedidos.resumen.aviso}</p>
+        </div>
+      )}
     </div>
   </section>
 
@@ -633,6 +701,50 @@ const datosCliente = {
     cinta.addEventListener('scroll', refrescarFlechas, { passive: true });
     window.addEventListener('resize', refrescarFlechas);
     refrescarFlechas();
+  }
+
+  // ── Preparar el pedido antes de abrir WhatsApp ──
+  // La idea: que la conversación no empiece con un «hola» sino con el pedido
+  // ya decidido. Lo que se lee en pantalla es exactamente lo que se envía,
+  // para que nadie se encuentre con un mensaje que no escribió.
+  const formPedido = document.getElementById('preparar-pedido');
+  if (formPedido && datos.pedido?.whatsapp) {
+    const elVela = document.getElementById('pedido-vela') as HTMLSelectElement | null;
+    const elCantidad = document.getElementById('pedido-cantidad') as HTMLInputElement | null;
+    const elZona = document.getElementById('pedido-zona') as HTMLSelectElement | null;
+    const elRegalo = document.getElementById('pedido-regalo') as HTMLInputElement | null;
+    const elResumen = document.getElementById('pedido-resumen');
+    const elEnviar = document.getElementById('pedido-enviar') as HTMLAnchorElement | null;
+    const T = datos.pedido.textos;
+
+    if (elVela && elCantidad && elResumen && elEnviar) {
+      const refrescar = () => {
+        const vela =
+          datos.pedido.velas.find((v) => v.id === elVela.value) ?? datos.pedido.velas[0];
+
+        // El número se encierra entre 1 y 20: el campo deja escribir
+        // cualquier cosa a mano, incluso un 0 o un texto vacío.
+        const pedidas = Math.min(20, Math.max(1, Math.floor(Number(elCantidad.value) || 1)));
+        if (String(pedidas) !== elCantidad.value) elCantidad.value = String(pedidas);
+
+        const lineas = [
+          T.msgSaludo,
+          `· ${pedidas} × ${vela.nombre} (${vela.precio} € ${T.msgCadaUna})`,
+          `${T.total}: ${vela.precio * pedidas} € (${T.sinEnvio})`,
+        ];
+        if (elRegalo?.checked) lineas.push(T.msgRegalo);
+        if (elZona?.value) lineas.push(`${T.msgEntrega}: ${elZona.value}`);
+
+        const mensaje = lineas.join('\n');
+        elResumen.textContent = mensaje;
+        elEnviar.href = `https://wa.me/${datos.pedido.whatsapp}?text=${encodeURIComponent(mensaje)}`;
+      };
+
+      [elVela, elCantidad, elZona, elRegalo].forEach((el) =>
+        el?.addEventListener('input', refrescar)
+      );
+      refrescar();
+    }
   }
 
   // ── El taller de mezclas ──
