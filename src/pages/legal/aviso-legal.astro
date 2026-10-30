@@ -1,0 +1,73 @@
+---
+// Aviso legal — identificación de quien vende (LSSI, artículo 10).
+import Legal from '../../layouts/Legal.astro';
+import { empresa } from '../../data/empresa.js';
+import { contacto } from '../../data/contacto.js';
+
+// Lo que aún no ha dado el taller se marca, no se inventa.
+const dato = (valor) => valor && String(valor).trim();
+const PENDIENTE = '— pendiente —';
+---
+
+<Legal
+  titulo="Aviso legal"
+  resumen="Quién está detrás de esta web y cómo ponerse en contacto."
+  actualizado="2026-10-30"
+>
+  <h2>Quién vende</h2>
+  <p>
+    Esta web la gestiona <strong>{dato(empresa.nombre) ?? PENDIENTE}</strong>,
+    que opera bajo el nombre comercial <strong>{empresa.nombreComercial}</strong>.
+  </p>
+  <ul>
+    <li><strong>NIF:</strong> {dato(empresa.nif) ?? PENDIENTE}</li>
+    <li><strong>Domicilio:</strong> {dato(empresa.domicilio) ?? PENDIENTE}</li>
+    <li><strong>Correo:</strong> {dato(empresa.email) ?? PENDIENTE}</li>
+    {dato(contacto.whatsapp) && <li><strong>WhatsApp:</strong> +{contacto.whatsapp}</li>}
+    {dato(empresa.registroMercantil) && (
+      <li><strong>Registro Mercantil:</strong> {empresa.registroMercantil}</li>
+    )}
+  </ul>
+
+  <h2>Qué se hace aquí</h2>
+  <p>
+    Esta web presenta las velas y los wax melts de {empresa.nombreComercial} y permite
+    ponerse en contacto para encargarlos. Los pedidos no se cierran en la web: se
+    acuerdan por WhatsApp, y las condiciones de cada uno se confirman en esa
+    conversación antes de que haya nada que pagar.
+  </p>
+
+  <h2>Uso de la web</h2>
+  <p>
+    Navegar por aquí es gratis y no hace falta registrarse. Al usarla te comprometes a
+    no hacer un uso que dañe la web, impida que funcione para los demás o vulnere
+    derechos de terceros.
+  </p>
+
+  <h2>Los contenidos</h2>
+  <p>
+    Los textos, las fotografías, los dibujos y la marca Pabilo son de quien figura más
+    arriba, salvo que se indique otra cosa. Puedes compartir enlaces a la web
+    libremente; para reproducir los contenidos en otro sitio, escríbenos antes.
+  </p>
+
+  <h2>Enlaces a otros sitios</h2>
+  <p>
+    Desde aquí se enlaza a WhatsApp y, cuando exista, a Instagram. Lo que ocurra en
+    esos servicios se rige por sus propias condiciones, no por estas.
+  </p>
+
+  <h2>Responsabilidad</h2>
+  <p>
+    Ponemos cuidado en que todo lo que se cuenta aquí —aromas, duraciones, precios— sea
+    exacto, pero pueden colarse errores o quedarse algo desactualizado. Lo que vale es
+    lo que se confirme en la conversación del pedido. Si ves algo que no cuadra,
+    dínoslo y lo corregimos.
+  </p>
+
+  <h2>Ley aplicable</h2>
+  <p>
+    A esta web y a lo que se acuerde a través de ella se les aplica la legislación
+    española.
+  </p>
+</Legal>

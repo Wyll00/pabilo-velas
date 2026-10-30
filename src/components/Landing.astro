@@ -8,6 +8,7 @@ import { Velita } from '../lib/iconos.js';
 import { articulosDe } from '../lib/blog.js';
 import { velas, combinaciones } from '../data/velas.js';
 import { contacto, linkWhatsApp } from '../data/contacto.js';
+import { hayDatosLegales } from '../data/empresa.js';
 import { faq } from '../data/faq.js';
 import { testimonios } from '../data/testimonios.js';
 import fotoTaller from '../assets/taller.png';
@@ -469,6 +470,16 @@ const datosCliente = {
             <a href="#faq">{t.nav.faqLargo}</a>
           </div>
         </nav>
+        {hayDatosLegales && (
+          <nav aria-label={t.footer.legal}>
+            <div class="footer__titulo">{t.footer.legal}</div>
+            <div class="footer__lista">
+              <a href="/legal/aviso-legal/">{t.footer.avisoLegal}</a>
+              <a href="/legal/privacidad/">{t.footer.privacidad}</a>
+              <a href="/legal/condiciones/">{t.footer.condiciones}</a>
+            </div>
+          </nav>
+        )}
         <div>
           <div class="footer__titulo">{t.footer.contacto}</div>
           <div class="footer__lista">

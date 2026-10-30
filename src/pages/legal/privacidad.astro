@@ -1,0 +1,118 @@
+---
+// Política de privacidad.
+//
+// El contenido describe lo que la web hace DE VERDAD, comprobado en el
+// código: no hay analítica ni rastreadores, se guardan dos claves
+// funcionales en el navegador, y hay cuatro terceros implicados
+// (Cloudflare, Groq, Google Fonts y WhatsApp).
+// Si algún día se añade analítica o un píxel, hay que actualizar esto.
+import Legal from '../../layouts/Legal.astro';
+import { empresa } from '../../data/empresa.js';
+
+const dato = (valor) => valor && String(valor).trim();
+const PENDIENTE = '— pendiente —';
+---
+
+<Legal
+  titulo="Privacidad"
+  resumen="Qué datos tuyos pasan por aquí, para qué, y cómo pedir que desaparezcan."
+  actualizado="2026-10-30"
+>
+  <h2>Lo primero, en corto</h2>
+  <p>
+    Esta web <strong>no usa analítica, ni cookies de publicidad, ni rastreadores</strong>.
+    No sabemos quién nos visita. Solo tenemos datos tuyos si nos escribes, y entonces
+    son los que tú nos cuentes.
+  </p>
+
+  <h2>Quién responde de tus datos</h2>
+  <ul>
+    <li><strong>Responsable:</strong> {dato(empresa.nombre) ?? PENDIENTE}</li>
+    <li><strong>NIF:</strong> {dato(empresa.nif) ?? PENDIENTE}</li>
+    <li><strong>Dirección:</strong> {dato(empresa.domicilio) ?? PENDIENTE}</li>
+    <li><strong>Correo:</strong> {dato(empresa.email) ?? PENDIENTE}</li>
+  </ul>
+
+  <h2>Qué datos y para qué</h2>
+
+  <h3>Si nos escribes por WhatsApp</h3>
+  <p>
+    Nos llega tu número, tu nombre tal y como lo tengas puesto, y lo que nos escribas.
+    Lo usamos para atender tu consulta y preparar tu pedido, y lo conservamos mientras
+    dure la relación y después el tiempo que obliguen las normas fiscales. La base
+    legal es tu propia petición: nos escribes tú.
+  </p>
+  <p>
+    La conversación ocurre dentro de WhatsApp, que es de Meta y tiene sus propias
+    condiciones. Nosotros solo vemos el chat, como cualquier otra persona con la que
+    hables por ahí.
+  </p>
+
+  <h3>Si usas el asistente de la web</h3>
+  <p>
+    El chat de la esquina responde preguntas sobre las velas. Lo que escribes
+    <strong>se envía a Groq</strong>, el proveedor que genera la respuesta, con
+    servidores en Estados Unidos. Se le mandan tus últimos mensajes de esa
+    conversación y nada más: ni tu nombre, ni tu correo, ni tu número.
+  </p>
+  <p>
+    No guardamos esas conversaciones: cuando cierras la página, desaparecen.
+    <strong>No escribas datos personales ni nada sensible en ese chat.</strong>
+    Si quieres hablar de tu pedido, hazlo por WhatsApp.
+  </p>
+
+  <h3>Mientras navegas</h3>
+  <p>
+    La web guarda dos cosas en tu navegador, y ninguna sale de él ni nos llega:
+  </p>
+  <ul>
+    <li><code>pabilo-noche</code> — si has encendido la vela (el modo oscuro), para recordarlo la próxima vez.</li>
+    <li><code>pabilo-chat-saludado</code> — si ya te saludó el chat, para no repetirlo en la misma visita.</li>
+  </ul>
+  <p>
+    Son estrictamente funcionales: sirven para que la web se comporte como esperas, no
+    para seguirte ni para medir nada.
+  </p>
+
+  <h2>Quién más está involucrado</h2>
+  <ul>
+    <li>
+      <strong>Cloudflare</strong> — aloja la web y la sirve. Como cualquier servidor,
+      procesa la dirección IP necesaria para enviarte la página.
+    </li>
+    <li>
+      <strong>Groq</strong> (Estados Unidos) — genera las respuestas del asistente, con
+      lo que le escribas en ese chat.
+    </li>
+    <li>
+      <strong>Google Fonts</strong> — las tipografías se cargan desde servidores de
+      Google, lo que supone que tu navegador les pide los archivos y, al hacerlo, les
+      llega tu dirección IP.
+    </li>
+    <li>
+      <strong>Meta (WhatsApp)</strong> — solo si decides escribirnos por ahí.
+    </li>
+  </ul>
+
+  <h2>Tus derechos</h2>
+  <p>
+    Puedes pedirnos acceder a tus datos, corregirlos, borrarlos, limitarlos, oponerte a
+    que los usemos o llevártelos a otro sitio. Basta con escribir a
+    <strong>{dato(empresa.email) ?? PENDIENTE}</strong> diciendo qué quieres.
+    Respondemos lo antes posible y, como tarde, en un mes.
+  </p>
+  <p>
+    Si crees que no lo hacemos bien, puedes reclamar ante la Agencia Española de
+    Protección de Datos (<a href="https://www.aepd.es" target="_blank" rel="noopener">aepd.es</a>).
+  </p>
+
+  <h2>Menores</h2>
+  <p>
+    Esta web no va dirigida a menores de 14 años y no les pedimos datos a propósito.
+  </p>
+
+  <h2>Cambios</h2>
+  <p>
+    Si cambiamos cómo funciona esto, actualizamos esta página y la fecha de arriba.
+  </p>
+</Legal>

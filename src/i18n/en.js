@@ -4,6 +4,8 @@
 //  cercanía que en español. Mantén las claves de es.js.
 // ─────────────────────────────────────────────────────────────
 
+import { marca } from '../data/marca.js';
+
 export default {
   codigo: 'en',
   htmlLang: 'en',
@@ -12,8 +14,7 @@ export default {
 
   meta: {
     titulo: 'Pabilo · Handmade candles from the Canary Islands',
-    descripcion:
-      'Small-batch candles poured by hand with soy and coconut wax. The fire of small pleasures.',
+    descripcion: `Small-batch candles poured by hand with ${marca.cera_en}. The fire of small pleasures.`,
   },
 
   nav: {
@@ -59,12 +60,11 @@ export default {
     tituloAntes: 'The fire of ',
     tituloEnfasis: 'small pleasures',
     tituloDespues: '.',
-    intro:
-      'Small-batch candles poured by hand with soy and coconut wax. Made to bring you home and slow the day down.',
+    intro: `Small-batch candles poured by hand with ${marca.cera_en}. Made to bring you home and slow the day down.`,
     verColeccion: 'See the collection',
     nuestraHistoria: 'Our story',
     compromisos: 'What we promise',
-    claims: ['Soy and coconut wax', 'Small batches', 'Handmade in the Canary Islands'],
+    claims: [marca.ceraClaim_en, 'Small batches', 'Handmade in the Canary Islands'],
   },
 
   historia: {
@@ -226,13 +226,17 @@ export default {
 
   footer: {
     volverArriba: 'Pabilo, back to top',
-    desc: 'Small-batch candles poured by hand with soy and coconut wax. Made in the Canary Islands.',
+    desc: `Small-batch candles poured by hand with ${marca.cera_en}. Made in the Canary Islands.`,
     explora: 'Explore',
     contacto: 'Contact',
     enlacesPie: 'Footer links',
     lema: 'the elegance of things that pass',
     copy: '© 2026 Pabilo · Handmade candles',
     creditoAntes: 'Website designed and built by',
+    legal: 'Legal',
+    avisoLegal: 'Legal notice',
+    privacidad: 'Privacy',
+    condiciones: 'Terms of sale',
   },
 
   chat: {

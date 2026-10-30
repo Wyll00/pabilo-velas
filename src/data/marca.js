@@ -19,6 +19,25 @@ export const marca = {
   quienes_en:
     'Handmade candles, poured in small batches in the Canary Islands by two friends.',
 
+  // ⚠️ PENDIENTE DE CONFIRMAR EN EL TALLER — y es el único sitio donde se
+  //    dice de qué están hechas. Hasta el 30/10/2026 la web lo afirmaba en
+  //    OCHO sitios y no coincidían: «cera de soja y cristal» en español y
+  //    «soy and coconut wax» en inglés. La cera de gel (cristal) y la de coco
+  //    son materiales distintos, así que una de las dos era falsa.
+  //
+  //    La pista: el artículo del diario dice «soja y de coco», el inglés dice
+  //    coco en sus cuatro sitios, y justo al lado hay un «tarro de cristal».
+  //    Lo de «cristal» parece venir del tarro, no de la cera. Pero afirmar un
+  //    material equivocado en un producto físico no es un detalle: hasta que
+  //    lo confirmen, se dice solo lo seguro.
+  //
+  //    Para arreglarlo cuando lo confirmen: añade el segundo componente aquí
+  //    y en faq.js. Son los dos únicos sitios.
+  cera: 'cera de soja',
+  cera_en: 'soy wax',
+  ceraClaim: 'Cera de soja',
+  ceraClaim_en: 'Soy wax',
+
   eslogan: 'El fuego de los pequeños placeres.',
   eslogan_en: 'The fire of small pleasures.',
 

@@ -4,6 +4,8 @@
 //  añádela también en en.js.
 // ─────────────────────────────────────────────────────────────
 
+import { marca } from '../data/marca.js';
+
 export default {
   codigo: 'es',
   htmlLang: 'es',
@@ -12,8 +14,7 @@ export default {
 
   meta: {
     titulo: 'Pabilo · Velas de autor',
-    descripcion:
-      'Velas artesanales en pequeñas tandas, con cera de soja y cristal. El fuego de los pequeños placeres.',
+    descripcion: `Velas artesanales en pequeñas tandas, con ${marca.cera}. El fuego de los pequeños placeres.`,
   },
 
   nav: {
@@ -60,12 +61,11 @@ export default {
     tituloAntes: 'El fuego de los ',
     tituloEnfasis: 'pequeños placeres',
     tituloDespues: '.',
-    intro:
-      'Velas artesanales en pequeñas tandas, con cera de soja y cristal. Hechas a mano, para volver a casa y bajar el ritmo.',
+    intro: `Velas artesanales en pequeñas tandas, con ${marca.cera}. Hechas a mano, para volver a casa y bajar el ritmo.`,
     verColeccion: 'Ver la colección',
     nuestraHistoria: 'Nuestra historia',
     compromisos: 'Nuestros compromisos',
-    claims: ['Cera de soja y cristal', 'Tandas pequeñas', 'Hecho a mano en Canarias'],
+    claims: [marca.ceraClaim, 'Tandas pequeñas', 'Hecho a mano en Canarias'],
   },
 
   historia: {
@@ -227,13 +227,17 @@ export default {
 
   footer: {
     volverArriba: 'Pabilo, volver arriba',
-    desc: 'Velas artesanales en pequeñas tandas, con cera de soja y cristal. Hechas a mano en Canarias.',
+    desc: `Velas artesanales en pequeñas tandas, con ${marca.cera}. Hechas a mano en Canarias.`,
     explora: 'Explora',
     contacto: 'Contacto',
     enlacesPie: 'Enlaces del pie',
     lema: 'la elegancia de lo efímero',
     copy: '© 2026 Pabilo · Velas de autor',
     creditoAntes: 'Web diseñada y desarrollada por',
+    legal: 'Legal',
+    avisoLegal: 'Aviso legal',
+    privacidad: 'Privacidad',
+    condiciones: 'Condiciones de compra',
   },
 
   chat: {

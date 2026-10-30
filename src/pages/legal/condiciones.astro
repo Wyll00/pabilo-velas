@@ -1,0 +1,102 @@
+---
+// Condiciones de compra.
+//
+// ⚠️ Hay huecos marcados que dependen del taller: zonas de entrega reales,
+//    plazos y costes de envío. Mientras no estén, la página lo dice en vez
+//    de inventar un plazo, que es lo peor que se puede hacer aquí.
+import Legal from '../../layouts/Legal.astro';
+import { empresa } from '../../data/empresa.js';
+import { contacto } from '../../data/contacto.js';
+
+const dato = (valor) => valor && String(valor).trim();
+const PENDIENTE = '— pendiente —';
+---
+
+<Legal
+  titulo="Condiciones de compra"
+  resumen="Cómo se encarga una vela, qué llega, cuánto tarda y qué pasa si no te convence."
+  actualizado="2026-10-30"
+>
+  <h2>Quién vende</h2>
+  <p>
+    Vende <strong>{dato(empresa.nombre) ?? PENDIENTE}</strong> (NIF
+    {dato(empresa.nif) ?? PENDIENTE}), bajo el nombre comercial
+    {empresa.nombreComercial}. Los datos completos están en el
+    <a href="/legal/aviso-legal/">aviso legal</a>.
+  </p>
+
+  <h2>Cómo se hace un pedido</h2>
+  <p>
+    En la web no hay carrito ni se paga nada. Eliges lo que te interesa, pulsas
+    «Pedir» y se abre una conversación de WhatsApp con el mensaje ya escrito. Ahí se
+    confirma qué quieres, cuántas unidades, dónde lo quieres recibir y cuánto suma en
+    total.
+  </p>
+  <p>
+    <strong>El pedido existe cuando lo confirmamos los dos en esa conversación</strong>,
+    no antes. Hasta ese momento no hay compromiso por ninguna parte.
+  </p>
+
+  <h2>Precios</h2>
+  <p>
+    Los precios de la web están en euros
+    {empresa.preciosConImpuesto
+      ? ` e incluyen el ${empresa.impuesto}`
+      : `, sin el ${empresa.impuesto}, que se suma al confirmar el pedido`}.
+    Los gastos de envío no van incluidos: se calculan según el destino y se te dicen
+    antes de que confirmes nada.
+  </p>
+  <p>
+    Las velas se hacen a mano en tandas pequeñas, así que los precios pueden cambiar
+    con el tiempo. Vale el que se te confirme en la conversación del pedido.
+  </p>
+
+  <h2>Entrega</h2>
+  <p>
+    {PENDIENTE} — zonas de entrega, plazos y costes. Hasta que estén publicados aquí,
+    se confirman uno a uno por WhatsApp antes de cerrar el pedido.
+  </p>
+  <p>
+    Ten en cuenta que cada tanda se elabora a mano y reposa unos días antes de salir:
+    un encargo no sale el mismo día. El plazo concreto te lo decimos al confirmarlo.
+  </p>
+
+  <h2>Si no te convence</h2>
+  <p>
+    Tienes <strong>{empresa.diasDesistimiento} días naturales</strong> desde que
+    recibes el pedido para desistir de la compra, sin tener que explicar por qué.
+    Escríbenos y te decimos cómo devolverlo. Te reembolsamos lo pagado, incluidos los
+    gastos de envío ordinarios, en cuanto recibamos la vela de vuelta.
+  </p>
+  <p>
+    <strong>Una excepción importante:</strong> las velas hechas a medida —una mezcla
+    personalizada, una dedicatoria concreta, un encargo para un evento— quedan fuera de
+    ese derecho, porque se fabrican expresamente para ti y no se pueden volver a
+    vender. Las velas de la colección sí se pueden devolver con normalidad.
+  </p>
+
+  <h2>Si llega mal</h2>
+  <p>
+    Si la vela llega rota, defectuosa o no es la que pediste, dínoslo cuanto antes con
+    una foto y lo arreglamos: la reponemos o te devolvemos el dinero. Esto es aparte
+    del plazo de desistimiento, y es tu derecho como consumidora durante los plazos que
+    marca la ley.
+  </p>
+
+  <h2>Usar la vela con cabeza</h2>
+  <p>
+    Una vela es fuego. No la dejes encendida sin vigilancia, ni cerca de cortinas,
+    papel o cualquier cosa que prenda, ni al alcance de niños o animales. No la tengas
+    encendida más de cuatro horas seguidas y recorta la mecha a unos cinco milímetros
+    antes de cada uso. El tarro se calienta: no lo muevas mientras arde.
+  </p>
+
+  <h2>Reclamaciones</h2>
+  <p>
+    Si algo no va bien, lo primero es escribirnos
+    {dato(contacto.whatsapp) ? ' por WhatsApp' : ''}
+    {dato(empresa.email) ? ` o a ${empresa.email}` : ''}: casi todo se resuelve
+    hablando. Si no quedas conforme, puedes acudir a los servicios de consumo de tu
+    comunidad o a la plataforma de resolución de litigios en línea de la Unión Europea.
+  </p>
+</Legal>
