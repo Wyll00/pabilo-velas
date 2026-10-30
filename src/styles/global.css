@@ -617,6 +617,47 @@ select:focus-visible {
   display: flex;
   flex-direction: column;
 }
+/* La foto real de la vela, cuando la hay. Ocupa la misma caja que el
+   dibujo en CSS al que sustituye, así que la tarjeta no cambia de alto. */
+.tarjeta__foto {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* La ficha: peso, medidas, recipiente, intensidad. Solo salen las líneas
+   que tengan dato, así que de momento esto no se ve en ninguna tarjeta. */
+.tarjeta__ficha {
+  margin: 16px 0 0;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 4px 14px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+.tarjeta__ficha dt {
+  color: var(--etiqueta);
+}
+.tarjeta__ficha dd {
+  margin: 0;
+  color: var(--tinta);
+  text-align: right;
+}
+
+/* Que una vela se haga por encargo no es una pega: es cómo se trabaja.
+   Pero hay que decirlo antes de pedir, no después. */
+.tarjeta__estado {
+  margin: 10px 0 0;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--etiqueta);
+}
+.tarjeta__estado--agotada {
+  color: var(--acento-texto);
+}
+
 .tarjeta__escena {
   position: relative;
   height: 230px;

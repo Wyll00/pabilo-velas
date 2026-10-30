@@ -56,6 +56,16 @@ const imagenSitio = new URL('/og.jpg', Astro.site).href;
 // diario describiría un contenido que esa página no tiene.
 const perfiles = [contacto.instagram && `https://instagram.com/${contacto.instagram}`].filter(Boolean);
 
+// Lo que se le dice a Google sobre existencias. Sale del dato de cada vela:
+// antes estaba fijo en «InStock» mientras el mensaje de pedido preguntaba si
+// quedaba, que es justo la contradicción que no debería haber.
+// «MadeToOrder» es lo honesto para algo hecho a mano y por tandas.
+const DISPONIBILIDAD = {
+  si: 'https://schema.org/InStock',
+  'bajo-pedido': 'https://schema.org/MadeToOrder',
+  no: 'https://schema.org/OutOfStock',
+};
+
 const negocio = {
   '@type': 'LocalBusiness',
   '@id': `${urlSitio}#negocio`,
@@ -88,11 +98,7 @@ const listaDeVelas = {
         '@type': 'Offer',
         price: String(v.precio),
         priceCurrency: 'EUR',
-        // ⚠️ Se declara disponible siempre. Cuando haya control real de
-        //    existencias, esto debe salir de ahí: decirle a Google que hay
-        //    stock mientras el mensaje de pedido pregunta si queda es una
-        //    contradicción que acaba pagando quien compra.
-        availability: 'https://schema.org/InStock',
+        availability: DISPONIBILIDAD[v.disponible] ?? DISPONIBILIDAD['bajo-pedido'],
         seller: { '@type': 'Organization', name: 'Pabilo' },
       },
     },

@@ -1,0 +1,16 @@
+Las fotos de las velas van aquí.
+
+Mientras esta carpeta esté vacía, la web dibuja cada vela en CSS, como
+hasta ahora. En cuanto dejes una foto aquí y escribas su nombre en el
+campo `foto` de esa vela en src/data/velas.js, la foto sustituye al
+dibujo en su tarjeta.
+
+  1. Deja el archivo aquí dentro, por ejemplo:  lavanda.jpg
+  2. En src/data/velas.js, en la vela Lavanda:  foto: 'lavanda.jpg',
+
+Valen .jpg, .jpeg, .png y .webp. Astro las optimiza y las convierte a
+webp al construir, así que no hace falta que las toques: sube la foto
+buena tal cual salga de la cámara.
+
+Se recortan a cuadrado desde el centro, así que procura que la vela
+quede centrada y con aire alrededor.

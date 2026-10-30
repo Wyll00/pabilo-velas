@@ -6,6 +6,18 @@
 //  · familia  → familia olfativa breve (etiqueta pequeña)
 //  · precio   → número en euros (se formatea automáticamente)
 //  · duracion → horas de combustión aproximadas
+//
+//  Los de abajo salen en la ficha solo si los rellenas. Mientras estén
+//  vacíos, esa línea sencillamente no aparece: la web no enseña huecos.
+//  · peso        → p. ej. '180 g'
+//  · medidas     → p. ej. '8 × 9 cm'
+//  · recipiente  → p. ej. 'Tarro de cristal reutilizable'
+//  · intensidad  → 'suave' | 'media' | 'intensa'
+//  · foto        → nombre del archivo en src/assets/velas/ (p. ej. 'lavanda.jpg').
+//                  Mientras no haya foto se dibuja la vela en CSS, como hasta ahora.
+//  · disponible  → 'si' | 'bajo-pedido' | 'no'. Por defecto 'bajo-pedido',
+//                  que es la verdad mientras todo se haga a mano por tandas.
+//                  De aquí sale también lo que se le dice a Google.
 //  · tono     → [colorA, colorB] para el degradado del placeholder de foto
 //  · circulo  → color del círculo de fondo en la tarjeta
 //
@@ -24,6 +36,13 @@ export const velas = [
     familia_en: 'Sweet · spiced',
     precio: 22,
     duracion: 45,
+    peso: '',
+    medidas: '',
+    recipiente: '',
+    recipiente_en: '',
+    intensidad: '',
+    foto: '',
+    disponible: 'bajo-pedido',
     tono: ['#C98A4B', '#8F5730'],
     circulo: '#F2D9B8',
   },
@@ -37,6 +56,13 @@ export const velas = [
     familia_en: 'Woody · floral',
     precio: 24,
     duracion: 50,
+    peso: '',
+    medidas: '',
+    recipiente: '',
+    recipiente_en: '',
+    intensidad: '',
+    foto: '',
+    disponible: 'bajo-pedido',
     tono: ['#8A6B4F', '#54402F'],
     circulo: '#EAD9E2',
   },
@@ -50,6 +76,13 @@ export const velas = [
     familia_en: 'Herbal · floral',
     precio: 20,
     duracion: 40,
+    peso: '',
+    medidas: '',
+    recipiente: '',
+    recipiente_en: '',
+    intensidad: '',
+    foto: '',
+    disponible: 'bajo-pedido',
     tono: ['#8A8B6C', '#6E6F54'],
     circulo: '#D8DCE8',
   },
@@ -63,6 +96,13 @@ export const velas = [
     familia_en: 'Fruity',
     precio: 20,
     duracion: 40,
+    peso: '',
+    medidas: '',
+    recipiente: '',
+    recipiente_en: '',
+    intensidad: '',
+    foto: '',
+    disponible: 'bajo-pedido',
     tono: ['#A33E36', '#6C2823'],
     circulo: '#F0CFCB',
   },
@@ -76,6 +116,13 @@ export const velas = [
     familia_en: 'Creamy · tropical',
     precio: 22,
     duracion: 45,
+    peso: '',
+    medidas: '',
+    recipiente: '',
+    recipiente_en: '',
+    intensidad: '',
+    foto: '',
+    disponible: 'bajo-pedido',
     tono: ['#C9B291', '#9A8266'],
     circulo: '#EFE8D6',
   },

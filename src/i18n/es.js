@@ -92,6 +92,22 @@ export default {
     listaAria: 'Colección de velas',
     pedir: 'Pedir',
     horas: 'h aprox.',
+
+    // Etiquetas de la ficha. Cada línea aparece solo si el dato existe
+    // en velas.js: mientras esté vacío, ni se pinta.
+    ficha: {
+      peso: 'Peso',
+      medidas: 'Medidas',
+      recipiente: 'Recipiente',
+      intensidad: 'Intensidad',
+    },
+    intensidades: { suave: 'Suave', media: 'Media', intensa: 'Intensa' },
+    disponibilidad: {
+      si: 'Disponible',
+      'bajo-pedido': 'Bajo pedido',
+      no: 'Agotada por ahora',
+    },
+    altVela: (nombre) => `Vela Pabilo «${nombre}» en su tarro`,
   },
 
   mezclas: {

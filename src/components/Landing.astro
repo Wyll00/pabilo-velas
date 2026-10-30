@@ -23,6 +23,25 @@ const articulos = await articulosDe(lang);
 const hayDiario = articulos.length > 0;
 const rutaDiario = lang === 'es' ? '/blog/' : `/${lang}/blog/`;
 
+// Las fotos de las velas, si las hay. Mientras src/assets/velas/ esté
+// vacía esto es un objeto vacío y cada tarjeta sigue dibujando su vela en
+// CSS, como hasta ahora. Basta con dejar el archivo ahí y nombrarlo en el
+// campo `foto` de velas.js para que la foto tome el relevo.
+const fotosVelas = import.meta.glob('../assets/velas/*.{jpg,jpeg,png,webp}', {
+  eager: true,
+});
+const fotoDe = (vela) =>
+  vela.foto ? fotosVelas[`../assets/velas/${vela.foto}`]?.default : undefined;
+
+// La ficha: solo las líneas que tengan dato. Un hueco vacío no se enseña.
+const fichaDe = (vela) =>
+  [
+    [t.coleccion.ficha.peso, vela.peso],
+    [t.coleccion.ficha.medidas, vela.medidas],
+    [t.coleccion.ficha.recipiente, campo(vela, 'recipiente', lang)],
+    [t.coleccion.ficha.intensidad, t.coleccion.intensidades[vela.intensidad]],
+  ].filter(([, valor]) => valor);
+
 // Enlaces de WhatsApp con el mensaje ya escrito (o #contacto si no hay número)
 const wa = (mensaje) => linkWhatsApp(mensaje) ?? '#contacto';
 const waGeneral = wa(t.whatsapp.general);
@@ -229,29 +248,55 @@ const datosCliente = {
       <div class="cinta" id="cinta-velas" aria-label={t.coleccion.listaAria}>
         {velas.map((vela) => {
           const nombre = campo(vela, 'nombre', lang);
+          const foto = fotoDe(vela);
+          const ficha = fichaDe(vela);
           return (
             <article class="tarjeta">
-              <div class="tarjeta__escena" aria-hidden="true">
-                <div class="tarjeta__circulo" style={`background: ${vela.circulo};`}></div>
-                <div class="mini">
-                  <div class="mini__mecha"></div>
-                  <div class="mini__tarro">
-                    <div class="mini__boca"></div>
-                    <div class="mini__etiqueta">
-                      <span class="mini__logo">pabilo</span>
-                      <span class="mini__nombre">{nombre}</span>
+              {foto ? (
+                <div class="tarjeta__escena">
+                  <Image class="tarjeta__foto" src={foto} alt={t.coleccion.altVela(nombre)} width={592} quality={78} />
+                </div>
+              ) : (
+                <div class="tarjeta__escena" aria-hidden="true">
+                  <div class="tarjeta__circulo" style={`background: ${vela.circulo};`}></div>
+                  <div class="mini">
+                    <div class="mini__mecha"></div>
+                    <div class="mini__tarro">
+                      <div class="mini__boca"></div>
+                      <div class="mini__etiqueta">
+                        <span class="mini__logo">pabilo</span>
+                        <span class="mini__nombre">{nombre}</span>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
+              )}
               <div class="tarjeta__cuerpo">
                 <div class="tarjeta__tag">{campo(vela, 'familia', lang)}</div>
                 <h3 class="tarjeta__nombre">{nombre}</h3>
                 <p class="tarjeta__desc">{campo(vela, 'nota', lang)}</p>
+
+                {ficha.length > 0 && (
+                  <dl class="tarjeta__ficha">
+                    {ficha.map(([etiqueta, valor]) => (
+                      <>
+                        <dt>{etiqueta}</dt>
+                        <dd>{valor}</dd>
+                      </>
+                    ))}
+                  </dl>
+                )}
+
                 <div class="tarjeta__pie">
                   <span class="tarjeta__precio">{vela.precio} €</span>
                   <span class="tarjeta__horas">{vela.duracion} {t.coleccion.horas}</span>
                 </div>
+
+                {vela.disponible !== 'si' && (
+                  <p class={`tarjeta__estado tarjeta__estado--${vela.disponible === 'no' ? 'agotada' : 'encargo'}`}>
+                    {t.coleccion.disponibilidad[vela.disponible] ?? t.coleccion.disponibilidad['bajo-pedido']}
+                  </p>
+                )}
                 <a href={wa(t.whatsapp.vela(nombre))} class="tarjeta__pedir" target="_blank" rel="noopener">
                   {t.coleccion.pedir}
                 </a>

@@ -91,6 +91,21 @@ export default {
     listaAria: 'Candle collection',
     pedir: 'Order',
     horas: 'hrs approx.',
+
+    // Spec labels. Each line only shows if the value exists in velas.js.
+    ficha: {
+      peso: 'Weight',
+      medidas: 'Size',
+      recipiente: 'Vessel',
+      intensidad: 'Strength',
+    },
+    intensidades: { suave: 'Soft', media: 'Medium', intensa: 'Strong' },
+    disponibilidad: {
+      si: 'In stock',
+      'bajo-pedido': 'Made to order',
+      no: 'Sold out for now',
+    },
+    altVela: (nombre) => `Pabilo “${nombre}” candle in its jar`,
   },
 
   mezclas: {
