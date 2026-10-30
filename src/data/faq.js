@@ -21,13 +21,20 @@ export const faq = [
     respuesta_en:
       'The first time, let it burn until the whole surface has melted (that stops it tunnelling). Trim the wick to about 5 mm before each use, and never burn it for more than 4 hours at a time.',
   },
+  // ⚠️ PENDIENTE DE CONFIRMAR EN EL TALLER — y es el único sitio donde se
+  //    dice de qué están hechas: lo de aquí es lo que repite el asistente.
+  //    Hasta el 30/10/2026 la web afirmaba dos cosas distintas: «cera de soja
+  //    y de cristal» en español y «soy and coconut wax» en inglés. La cera de
+  //    gel (cristal) y la de coco son materiales distintos, así que una de las
+  //    dos era falsa. Mientras no se confirme cuál, se afirma solo lo seguro.
+  //    Cuando lo confirmen, añade aquí el segundo componente y ya está.
   {
     pregunta: '¿Con qué cera están hechas?',
     pregunta_en: 'What wax are they made with?',
     respuesta:
-      'Con cera de soja y de cristal, naturales. Arden limpio, sin humo raro, y mantienen bien el aroma hasta el final.',
+      'Con cera de soja natural. Arden limpio, sin humo raro, y mantienen bien el aroma hasta el final.',
     respuesta_en:
-      'With natural soy and coconut wax. They burn clean, with no strange smoke, and hold their scent right to the end.',
+      'With natural soy wax. They burn clean, with no strange smoke, and hold their scent right to the end.',
   },
   {
     pregunta: '¿Hacéis envíos?',

@@ -6,9 +6,10 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "build": "astro build",
+    "build": "npm run datos && astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "datos": "node scripts/generar-conocimiento.mjs"
   },
   "dependencies": {
     "astro": "^4.16.0",
